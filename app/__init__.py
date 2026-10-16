@@ -1,5 +1,7 @@
 import os
-from flask import Flask
+import logging
+from logging.handlers import RotatingFileHandler
+from flask import Flask, render_template
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.exceptions import RequestEntityTooLarge
@@ -33,6 +35,31 @@ def create_app(config_name='default'):
     login_manager.init_app(app)
     csrf.init_app(app)
     
+    # Configure production logging
+    if not app.debug:
+        # Ensure logs directory exists
+        if not os.path.exists('logs'):
+            os.makedirs('logs')
+        
+        # Configure rotating file handler
+        file_handler = RotatingFileHandler(
+            'logs/erpportal.log',
+            maxBytes=10 * 1024 * 1024,  # 10MB
+            backupCount=10
+        )
+        
+        # Set formatter with detailed information
+        formatter = logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        )
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel(logging.INFO)
+        
+        # Add handler to app logger
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('ERP Portal startup')
+    
     # Configure Flask-Login
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Please log in to access this page.'
@@ -46,6 +73,23 @@ def create_app(config_name='default'):
             return User.query.get(user_id_int)
         except (ValueError, TypeError):
             return None
+    
+    # Register error handlers
+    @app.errorhandler(403)
+    def forbidden(e):
+        """Handle 403 Forbidden errors."""
+        return render_template('errors/403.html'), 403
+    
+    @app.errorhandler(404)
+    def not_found(e):
+        """Handle 404 Not Found errors."""
+        return render_template('errors/404.html'), 404
+    
+    @app.errorhandler(500)
+    def internal_error(e):
+        """Handle 500 Internal Server Error."""
+        app.logger.error('Internal server error', exc_info=True)
+        return render_template('errors/500.html'), 500
     
     # Register error handler for file upload size limit
     @app.errorhandler(RequestEntityTooLarge)

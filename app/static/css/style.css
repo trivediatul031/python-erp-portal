@@ -31,8 +31,9 @@ body {
 }
 
 .stat-card {
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: var(--shadow);
+    padding: 1.5rem;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -51,6 +52,9 @@ body {
     border-right: 1px solid #e5e7eb;
     min-height: 100vh;
     padding-top: 20px;
+    width: 240px;
+    position: sticky;
+    top: 0;
 }
 
 .sidebar .nav-link {
@@ -70,6 +74,70 @@ body {
 .sidebar .nav-link.active {
     background-color: var(--primary-blue);
     color: white;
+}
+
+/* Top navigation bar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+/* Hamburger menu toggle - only visible on mobile */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1040;
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Mobile sidebar overlay */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -240px;
+        top: 0;
+        z-index: 1035;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        overflow-y: auto;
+    }
+    
+    .sidebar.show {
+        left: 0;
+    }
+    
+    .sidebar-toggle {
+        display: block;
+    }
+    
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1034;
+    }
+    
+    .sidebar-overlay.show {
+        display: block;
+    }
+    
+    /* Main content shifts on mobile */
+    main.col-md-9 {
+        margin-left: 0 !important;
+        width: 100%;
+    }
 }
 
 /* Main Content Area */
@@ -175,6 +243,22 @@ body {
     font-size: 0.8rem;
 }
 
+/* Status Badge Colors */
+.badge-warning {
+    background-color: var(--warning-orange);
+    color: white;
+}
+
+.badge-success {
+    background-color: var(--success-green);
+    color: white;
+}
+
+.badge-danger {
+    background-color: var(--danger-red);
+    color: white;
+}
+
 /* Alert Styles */
 .alert {
     border-radius: 8px;
@@ -227,6 +311,22 @@ body {
     
     .chart-container {
         height: 300px !important;
+    }
+    
+    /* Stats cards reflow to single column */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Tables scroll horizontally */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Forms adapt to narrow width */
+    .form-control, .form-select {
+        font-size: 16px; /* Prevent zoom on iOS */
     }
 }
 

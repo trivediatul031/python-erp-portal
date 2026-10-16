@@ -240,6 +240,317 @@ with app.app_context():
 - File upload size limits (10MB)
 - Database transaction isolation (READ COMMITTED)
 
+## Production Deployment
+
+### Prerequisites for Production
+
+1. **Generate a Secure SECRET_KEY**
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Update `.env` file with the generated key:
+```
+SECRET_KEY=your-generated-secret-key-here
+```
+
+2. **Update Flask Environment**
+
+Set Flask to production mode in `.env`:
+```
+FLASK_ENV=production
+FLASK_DEBUG=False
+```
+
+3. **Enable Secure Cookies**
+
+For HTTPS deployments, ensure `SESSION_COOKIE_SECURE=True` in your configuration. This prevents session cookies from being transmitted over unencrypted connections.
+
+Update `config.py`:
+```python
+class ProductionConfig(Config):
+    DEBUG = False
+    SESSION_COOKIE_SECURE = True  # Requires HTTPS
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+```
+
+4. **Verify MySQL Timezone Configuration**
+
+Ensure MySQL session timezone is set to UTC:
+```bash
+mysql -u root -p tas_erp -e "SELECT @@session.time_zone;"
+```
+
+Expected output: `+00:00`
+
+If not set, add to `my.cnf` or `my.ini`:
+```
+[mysqld]
+default-time-zone='+00:00'
+```
+
+5. **File Permissions**
+
+Ensure the application can write to the logs directory:
+
+**Windows:**
+```powershell
+New-Item -ItemType Directory -Force -Path logs
+icacls logs /grant:r "Users:(OI)(CI)F"
+```
+
+**Linux/Mac:**
+```bash
+mkdir -p logs
+chmod 755 logs
+```
+
+Ensure UPLOAD_FOLDER is writable:
+```bash
+mkdir -p app/static/uploads
+chmod 755 app/static/uploads
+```
+
+6. **Scheduled Cleanup Task**
+
+Configure scheduled task to clean up old export files daily.
+
+**Windows Task Scheduler:**
+1. Open Task Scheduler
+2. Create Basic Task: "TAS ERP File Cleanup"
+3. Trigger: Daily at 2:00 AM
+4. Action: Start a program
+   - Program: `C:\path\to\venv\Scripts\python.exe`
+   - Arguments: `-c "from app.utils import cleanup_old_exports; from app import create_app; app = create_app('production'); with app.app_context(): cleanup_old_exports(app.config['UPLOAD_FOLDER'])"`
+   - Start in: `C:\path\to\erpportalflask`
+
+**Linux/Mac Cron Job:**
+```bash
+# Edit crontab
+crontab -e
+
+# Add entry (runs daily at 2:00 AM)
+0 2 * * * cd /path/to/erpportalflask && /path/to/venv/bin/python -c "from app.utils import cleanup_old_exports; from app import create_app; app = create_app('production'); with app.app_context(): cleanup_old_exports(app.config['UPLOAD_FOLDER'])" >> /path/to/logs/cleanup.log 2>&1
+```
+
+7. **Production Server**
+
+Use a production WSGI server like Gunicorn (Linux/Mac) or Waitress (Windows).
+
+**Gunicorn (Linux/Mac):**
+```bash
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 "run:app"
+```
+
+**Waitress (Windows):**
+```bash
+pip install waitress
+waitress-serve --port=5000 run:app
+```
+
+8. **Reverse Proxy with Nginx**
+
+Configure Nginx to proxy requests to the WSGI server and handle HTTPS:
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name your-domain.com;
+
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static {
+        alias /path/to/erpportalflask/app/static;
+        expires 30d;
+    }
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### 1. MySQL Timezone Not UTC
+
+**Symptom:** Timestamps are incorrect in the database.
+
+**Solution:** 
+```bash
+# Check current timezone
+mysql -u root -p tas_erp -e "SELECT @@session.time_zone, @@global.time_zone;"
+
+# Set timezone to UTC in my.cnf or my.ini
+[mysqld]
+default-time-zone='+00:00'
+
+# Restart MySQL service
+# Windows: net stop mysql80 && net start mysql80
+# Linux: sudo systemctl restart mysql
+```
+
+#### 2. Logs Directory Permission Denied
+
+**Symptom:** Application fails to start with "Permission denied" error for logs/erpportal.log.
+
+**Solution:**
+```bash
+# Windows
+icacls logs /grant:r "Users:(OI)(CI)F"
+
+# Linux/Mac
+chmod 755 logs
+chown appuser:appuser logs
+```
+
+#### 3. UPLOAD_FOLDER Not Writable
+
+**Symptom:** Import/export operations fail with "Permission denied" or "Cannot write to file".
+
+**Solution:**
+```bash
+# Windows
+icacls app\static\uploads /grant:r "Users:(OI)(CI)F"
+
+# Linux/Mac
+chmod 755 app/static/uploads
+chown appuser:appuser app/static/uploads
+```
+
+#### 4. SECRET_KEY Not Set
+
+**Symptom:** Application fails with "RuntimeError: The session is unavailable because no secret key was set."
+
+**Solution:**
+```bash
+# Generate a secret key
+python -c "import secrets; print(secrets.token_hex(32))"
+
+# Add to .env file
+SECRET_KEY=your-generated-key-here
+```
+
+#### 5. CSRF Token Missing
+
+**Symptom:** Forms fail with "400 Bad Request: The CSRF token is missing."
+
+**Solution:** Ensure all forms include `{{ form.hidden_tag() }}` or manual CSRF token:
+```html
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <!-- form fields -->
+</form>
+```
+
+For manual forms without WTForms:
+```html
+<form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <!-- form fields -->
+</form>
+```
+
+#### 6. Database Connection Failed
+
+**Symptom:** "Can't connect to MySQL server" or "Access denied for user".
+
+**Solution:**
+- Verify MySQL is running: `mysql -u root -p`
+- Check DATABASE_URL in `.env` file
+- Verify database credentials
+- Ensure database exists: `mysql -u root -p -e "SHOW DATABASES;"`
+
+#### 7. Import Fails with "Missing required columns"
+
+**Symptom:** Employee import shows error about missing columns.
+
+**Solution:** Ensure CSV/Excel file has required columns: `emp_id`, `name`, `email`. Optional columns: `department`, `designation`, `manager_id`.
+
+Example CSV format:
+```csv
+emp_id,name,email,department,designation,manager_id
+1987,John Doe,john@example.com,IT,Developer,2001
+```
+
+#### 8. Export File Not Cleaned Up
+
+**Symptom:** Export files accumulate in `app/static/uploads/`.
+
+**Solution:**
+- Verify `call_on_close()` is working (files should auto-delete after download)
+- Run manual cleanup:
+```python
+from app import create_app
+from app.utils import cleanup_old_exports
+
+app = create_app()
+with app.app_context():
+    cleanup_old_exports(app.config['UPLOAD_FOLDER'], hours=24)
+```
+- Set up scheduled cleanup task (see Production Deployment section)
+
+#### 9. Chart Not Displaying on Dashboard
+
+**Symptom:** Dashboard chart area is blank.
+
+**Solution:**
+- Check browser console for JavaScript errors
+- Verify Chart.js library is loaded
+- Ensure `chartData` variable is properly passed from template
+- Check that TAS records exist in database
+
+#### 10. Responsive Layout Issues on Mobile
+
+**Symptom:** Sidebar doesn't collapse or elements overflow on mobile.
+
+**Solution:**
+- Clear browser cache
+- Test with browser DevTools mobile emulation
+- Verify viewport meta tag in base.html:
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+
+### Logging and Debugging
+
+**View Application Logs:**
+```bash
+# View recent logs
+tail -f logs/erpportal.log
+
+# Windows PowerShell
+Get-Content logs/erpportal.log -Tail 50 -Wait
+```
+
+**Enable Debug Mode (Development Only):**
+```
+FLASK_ENV=development
+FLASK_DEBUG=True
+```
+
+**Database Query Logging:**
+Add to config.py for development:
+```python
+SQLALCHEMY_ECHO = True  # Log all SQL queries
+```
+
 ## Support
 
 For issues or questions, contact the IT administrator.

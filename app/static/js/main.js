@@ -2,6 +2,26 @@
 
 // Initialize DataTables on all tables with the .datatable class
 $(document).ready(function() {
+    // Responsive sidebar toggle for mobile
+    $('#sidebarToggle').on('click', function() {
+        $('#sidebar').toggleClass('show');
+        $('#sidebarOverlay').toggleClass('show');
+    });
+    
+    // Close sidebar when clicking overlay
+    $('#sidebarOverlay').on('click', function() {
+        $('#sidebar').removeClass('show');
+        $('#sidebarOverlay').removeClass('show');
+    });
+    
+    // Close sidebar when clicking a link (mobile)
+    $('#sidebar .nav-link').on('click', function() {
+        if ($(window).width() < 768) {
+            $('#sidebar').removeClass('show');
+            $('#sidebarOverlay').removeClass('show');
+        }
+    });
+    
     $('.datatable').DataTable({
         pageLength: 25,
         responsive: true,
@@ -42,20 +62,25 @@ $(document).ready(function() {
             paging: false,
             searching: false,
             info: false,
-            order: [[0, 'desc']]
+            order: [[0, 'desc']],
+            responsive: true
         });
     }
     
     // Initialize Chart.js for dashboard
-    if ($('#tasChart').length > 0 && typeof chartData !== 'undefined') {
+    if ($('#tasChart').length > 0) {
+        // Handle empty or missing chartData gracefully
+        var chartLabels = (typeof chartData !== 'undefined' && chartData.dates) ? chartData.dates : [];
+        var chartCounts = (typeof chartData !== 'undefined' && chartData.counts) ? chartData.counts : [];
+        
         const ctx = document.getElementById('tasChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: chartData.dates,
+                labels: chartLabels,
                 datasets: [{
                     label: 'TAS Submissions',
-                    data: chartData.counts,
+                    data: chartCounts,
                     borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-blue').trim() || '#4F46E5',
                     backgroundColor: 'rgba(79, 70, 229, 0.1)',
                     borderWidth: 2,
@@ -67,7 +92,7 @@ $(document).ready(function() {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false
