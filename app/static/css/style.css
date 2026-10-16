@@ -1,0 +1,236 @@
+/* TAS ERP Portal - Custom Styles */
+
+:root {
+    --primary-blue: #4F46E5;
+    --success-green: #10B981;
+    --warning-orange: #F59E0B;
+    --danger-red: #EF4444;
+    --purple: #8B5CF6;
+    --background-gray: #F9FAFB;
+    --text-dark: #1F2937;
+    --text-muted: #6B7280;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--background-gray);
+    color: var(--text-dark);
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: white;
+    border-right: 1px solid #e5e7eb;
+    min-height: 100vh;
+    padding-top: 20px;
+}
+
+.sidebar .nav-link {
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 12px 20px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #f3f4f6;
+    color: var(--primary-blue);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+/* Main Content Area */
+.content-area {
+    padding: 30px 20px;
+    min-height: calc(100vh - 56px);
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 15px 20px;
+}
+
+/* Table Styles */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table thead th {
+    background-color: #f9fafb;
+    color: var(--text-dark);
+    font-weight: 600;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 12px 15px;
+    font-size: 0.9rem;
+}
+
+.table tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 8px 20px;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+}
+
+.btn-success {
+    background-color: var(--success-green);
+    border-color: var(--success-green);
+}
+
+.btn-warning {
+    background-color: var(--warning-orange);
+    border-color: var(--warning-orange);
+}
+
+.btn-danger {
+    background-color: var(--danger-red);
+    border-color: var(--danger-red);
+}
+
+/* Form Styles */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 10px 15px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+/* Badge Styles */
+.badge {
+    border-radius: 12px;
+    padding: 5px 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+/* Footer */
+.footer {
+    background-color: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 20px 0;
+    margin-top: 40px;
+}
+
+/* Login Page Styles */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--purple) 100%);
+}
+
+.login-card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 420px;
+    width: 100%;
+}
+
+.login-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        min-height: auto;
+    }
+    
+    .stats-number {
+        font-size: 2rem !important;
+    }
+    
+    .chart-container {
+        height: 300px !important;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Utility Classes */
+.text-primary-blue {
+    color: var(--primary-blue);
+}
+
+.bg-primary-blue {
+    background-color: var(--primary-blue);
+}
+
+.shadow-sm-custom {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.shadow-md-custom {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}

@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - TAS ERP{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .stats-card-purple {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .stats-card-green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+    
+    .stats-card-blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+    }
+    
+    .stats-card-orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+    }
+    
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 10px 0;
+    }
+    
+    .stats-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+    
+    .stats-subtitle {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        margin-top: 5px;
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        border-left: 4px solid #4f46e5;
+    }
+    
+    .info-card-title {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 5px;
+    }
+    
+    .info-card-text {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        height: 400px;
+    }
+    
+    .status-bar {
+        height: 24px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: white;
+    }
+    
+    .status-bar-active {
+        background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    }
+    
+    .status-bar-pending {
+        background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+    }
+    
+    .status-bar-rejected {
+        background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+    }
+    
+    .chart-tabs {
+        margin-bottom: 15px;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .chart-tab {
+        display: inline-block;
+        padding: 8px 20px;
+        margin-right: 10px;
+        color: #6b7280;
+        text-decoration: none;
+        border-bottom: 3px solid transparent;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .chart-tab.active {
+        color: #4f46e5;
+        border-bottom-color: #4f46e5;
+    }
+    
+    .recent-tas-table {
+        margin-top: 20px;
+    }
+    
+    .badge-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .badge-approved {
+        background-color: #d1fae5;
+        color: #065f46;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .badge-rejected {
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <h2 class="mb-4">Dashboard</h2>
+    
+    <!-- Statistics Cards Row -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stats-card stats-card-purple">
+                <div class="stats-label">TOTAL TAS SUBMISSIONS</div>
+                <div class="stats-number">{{ total_tas }}</div>
+                <div class="stats-subtitle">All time records</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stats-card stats-card-green">
+                <div class="stats-label">PENDING APPROVALS</div>
+                <div class="stats-number">{{ pending_tas }}</div>
+                <div class="stats-subtitle">{{ pending_percentage }}% of all records</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stats-card stats-card-blue">
+                <div class="stats-label">APPROVED</div>
+                <div class="stats-number">{{ approved_tas }}</div>
+                <div class="stats-subtitle">{{ approved_percentage }}% approval rate</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stats-card stats-card-orange">
+                <div class="stats-label">REJECTED</div>
+                <div class="stats-number">{{ rejected_tas }}</div>
+                <div class="stats-subtitle">{{ rejected_percentage }}% of all records</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info Cards Row -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="info-card">
+                <div class="info-card-title">Employee Database</div>
+                <div class="info-card-text">{{ total_employees }} employees registered</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="info-card">
+                <div class="info-card-title">Active Employees</div>
+                <div class="info-card-text">{{ active_employees }} currently active</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="info-card">
+                <div class="info-card-title">Quick Actions</div>
+                <div class="info-card-text">
+                    <a href="{{ url_for('admin.import_employees') }}" class="text-primary">Import employees</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="info-card">
+                <div class="info-card-title">Export Data</div>
+                <div class="info-card-text">
+                    <a href="{{ url_for('admin.export_tas') }}" class="text-primary">Download TAS records</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="chart-container">
+                <div class="chart-tabs">
+                    <a href="#" class="chart-tab active">Month</a>
+                    <a href="#" class="chart-tab">Department</a>
+                    <a href="#" class="chart-tab">Status</a>
+                </div>
+                <h5>TAS Submissions over time</h5>
+                <canvas id="tasChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="chart-container">
+                <h5>Status Mix</h5>
+                <p class="text-muted" style="font-size: 0.9rem;">Share of Active vs Inactive</p>
+                
+                <div class="mt-4">
+                    <div style="font-size: 3rem; font-weight: 700; color: #10b981;">
+                        {{ approved_percentage }}%
+                    </div>
+                    <p class="text-muted mb-4">Approved delegations</p>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span style="font-weight: 600;">Approved</span>
+                            <span style="font-weight: 600;">{{ approved_tas }}</span>
+                        </div>
+                        <div class="status-bar status-bar-active" style="width: {{ approved_percentage }}%"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span style="font-weight: 600;">Pending</span>
+                            <span style="font-weight: 600;">{{ pending_tas }}</span>
+                        </div>
+                        <div class="status-bar status-bar-pending" style="width: {{ pending_percentage if pending_percentage > 10 else 10 }}%"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span style="font-weight: 600;">Rejected</span>
+                            <span style="font-weight: 600;">{{ rejected_tas }}</span>
+                        </div>
+                        <div class="status-bar status-bar-rejected" style="width: {{ rejected_percentage if rejected_percentage > 10 else 10 }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent TAS Submissions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent TAS Submissions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>TAS Number</th>
+                                    <th>Employee</th>
+                                    <th>Travel To</th>
+                                    <th>Travel Dates</th>
+                                    <th>Status</th>
+                                    <th>Submitted</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tas in recent_tas %}
+                                <tr>
+                                    <td><strong>{{ tas.tas_number }}</strong></td>
+                                    <td>
+                                        {{ tas.employee.name }}<br>
+                                        <small class="text-muted">{{ tas.employee.emp_id }}</small>
+                                    </td>
+                                    <td>{{ tas.travel_to }}</td>
+                                    <td>
+                                        {{ tas.travel_date_start.strftime('%d %b') }} - 
+                                        {{ tas.travel_date_end.strftime('%d %b %Y') }}
+                                    </td>
+                                    <td>
+                                        {% if tas.status == 'Pending' %}
+                                            <span class="badge-pending">Pending</span>
+                                        {% elif tas.status == 'Approved' %}
+                                            <span class="badge-approved">Approved</span>
+                                        {% else %}
+                                            <span class="badge-rejected">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else '-' }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin.tas_records') }}" class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No TAS submissions yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // TAS Submissions Chart
+    const ctx = document.getElementById('tasChart').getContext('2d');
+    const tasChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_labels|tojson }},
+            datasets: [{
+                label: 'TAS Submissions',
+                data: {{ chart_values|tojson }},
+                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                borderColor: 'rgba(139, 92, 246, 1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: 'rgba(139, 92, 246, 1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
