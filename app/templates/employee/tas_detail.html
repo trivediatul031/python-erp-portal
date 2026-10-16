@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}TAS Details - {{ tas_record.tas_number }} - TAS ERP{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>TAS Details</h2>
+    <a href="{{ url_for('employee.tas_history') }}" class="btn btn-outline-secondary">Back to History</a>
+</div>
+
+<!-- TAS Info Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">TAS Information</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>TAS Number:</strong><br>
+                <span class="fs-5">{{ tas_record.tas_number }}</span>
+            </div>
+            <div class="col-md-6">
+                <strong>Status:</strong><br>
+                {% if tas_record.status == 'Pending' %}
+                <span class="badge bg-warning text-dark fs-6">Pending</span>
+                {% elif tas_record.status == 'Approved' %}
+                <span class="badge bg-success fs-6">Approved</span>
+                {% elif tas_record.status == 'Rejected' %}
+                <span class="badge bg-danger fs-6">Rejected</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <strong>Submitted Date:</strong><br>
+                {{ tas_record.submitted_at.strftime('%Y-%m-%d %H:%M:%S') if tas_record.submitted_at else 'N/A' }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Travel Details Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Travel Details</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>From:</strong><br>
+                {{ tas_record.travel_from }}
+            </div>
+            <div class="col-md-6">
+                <strong>To:</strong><br>
+                {{ tas_record.travel_to }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>Travel Start Date:</strong><br>
+                {{ tas_record.travel_date_start.strftime('%Y-%m-%d') }}
+            </div>
+            <div class="col-md-6">
+                <strong>Travel End Date:</strong><br>
+                {{ tas_record.travel_date_end.strftime('%Y-%m-%d') }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <strong>Purpose:</strong><br>
+                {{ tas_record.purpose }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <strong>Estimated Cost:</strong><br>
+                <span class="fs-5">${{ "%.2f"|format(tas_record.estimated_cost) }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Approval Info Card (if approved or rejected) -->
+{% if tas_record.status in ['Approved', 'Rejected'] %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Approval Information</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>Reviewed Date:</strong><br>
+                {{ tas_record.reviewed_at.strftime('%Y-%m-%d %H:%M:%S') if tas_record.reviewed_at else 'N/A' }}
+            </div>
+            <div class="col-md-6">
+                <strong>Reviewed By:</strong><br>
+                {% if reviewer_info %}
+                {{ reviewer_info.name }}
+                {% else %}
+                N/A
+                {% endif %}
+            </div>
+        </div>
+        {% if tas_record.status == 'Rejected' and tas_record.rejection_reason %}
+        <div class="row">
+            <div class="col-md-12">
+                <strong>Rejection Reason:</strong><br>
+                <div class="alert alert-danger">
+                    {{ tas_record.rejection_reason }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

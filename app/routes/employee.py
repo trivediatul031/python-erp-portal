@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime
-from app.models import db, TASRecord, Employee
-from app.forms import SubmitTASForm
+from app.models import db, TASRecord, Employee, User
+from app.forms import TASForm
 from app.utils import generate_tas_number
 
 employee_bp = Blueprint('employee', __name__, url_prefix='/employee')
@@ -67,11 +67,17 @@ def dashboard():
 @employee_required
 def submit_tas():
     """Submit a new TAS request"""
-    form = SubmitTASForm()
+    from flask import current_app
+    form = TASForm()
     
     if form.validate_on_submit():
         try:
-            # Generate TAS number
+            # Validate emp_id
+            if not current_user.emp_id:
+                flash('Your account is not linked to an employee record. Contact admin.', 'error')
+                return redirect(url_for('employee.dashboard'))
+            
+            # Generate TAS number (does not commit internally)
             tas_number = generate_tas_number(current_user.emp_id)
             
             # Create TAS record
@@ -84,19 +90,20 @@ def submit_tas():
                 travel_date_end=form.travel_date_end.data,
                 purpose=form.purpose.data,
                 estimated_cost=form.estimated_cost.data,
-                status='Pending',
-                submitted_at=datetime.utcnow()
+                status='Pending'
             )
             
             db.session.add(tas)
+            # Commit both sequence update and TAS record atomically
             db.session.commit()
             
-            flash(f'TAS request submitted successfully! Your TAS number is: {tas_number}', 'success')
+            flash(f'TAS submitted successfully. Your TAS number is {tas_number}', 'success')
             return redirect(url_for('employee.tas_history'))
         
         except Exception as e:
             db.session.rollback()
-            flash(f'Error submitting TAS request: {str(e)}', 'danger')
+            current_app.logger.error(f'Error submitting TAS: {str(e)}', exc_info=True)
+            flash('Failed to submit TAS. Please try again.', 'error')
             return redirect(url_for('employee.submit_tas'))
     
     return render_template('employee/submit_tas.html', form=form)
@@ -124,3 +131,40 @@ def tas_history():
         tas_records=tas_records,
         status_filter=status_filter
     )
+
+
+@employee_bp.route('/tas/<int:tas_id>')
+@login_required
+@employee_required
+def tas_detail(tas_id):
+    """View TAS detail"""
+    from flask import abort, current_app
+    
+    # Query TAS record
+    tas_record = TASRecord.query.get(tas_id)
+    
+    if not tas_record:
+        abort(404)
+    
+    # Validate ownership
+    if tas_record.emp_id != current_user.emp_id:
+        abort(403, 'You do not have permission to view this TAS')
+    
+    # Query reviewer info if reviewed
+    reviewer_info = None
+    if tas_record.reviewed_by:
+        reviewer_user = User.query.get(tas_record.reviewed_by)
+        if reviewer_user and reviewer_user.employee_profile:
+            reviewer_info = {
+                'name': reviewer_user.employee_profile.name,
+                'username': reviewer_user.username
+            }
+        elif reviewer_user:
+            reviewer_info = {
+                'name': reviewer_user.username,
+                'username': reviewer_user.username
+            }
+    
+    return render_template('employee/tas_detail.html', 
+                         tas_record=tas_record,
+                         reviewer_info=reviewer_info)

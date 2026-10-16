@@ -18,6 +18,24 @@ $(document).ready(function() {
         }
     });
     
+    // Initialize DataTables on tables with .data-table class (FEAT-003)
+    $('.data-table').DataTable({
+        pageLength: 20,
+        order: [[0, 'desc']],
+        responsive: true,
+        language: {
+            search: "Search:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            }
+        }
+    });
+    
     // Initialize dashboard recent table with no pagination/search
     if ($('#dashboard-recent-table').length > 0) {
         $('#dashboard-recent-table').DataTable({

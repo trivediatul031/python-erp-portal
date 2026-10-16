@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}My TAS History - TAS ERP{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My TAS History</h2>
+    <a href="{{ url_for('employee.submit_tas') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Submit New TAS
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if tas_records %}
+        <div class="table-responsive">
+            <table class="table table-striped data-table">
+                <thead>
+                    <tr>
+                        <th>TAS Number</th>
+                        <th>Destination</th>
+                        <th>Travel Dates</th>
+                        <th>Status</th>
+                        <th>Submitted Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tas in tas_records %}
+                    <tr>
+                        <td><a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}">{{ tas.tas_number }}</a></td>
+                        <td>{{ tas.travel_to }}</td>
+                        <td>{{ tas.travel_date_start.strftime('%Y-%m-%d') }} to {{ tas.travel_date_end.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if tas.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif tas.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                            {% elif tas.status == 'Rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ tas.submitted_at.strftime('%Y-%m-%d %H:%M') if tas.submitted_at else 'N/A' }}</td>
+                        <td>
+                            <a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <p class="text-muted mb-3">No TAS submissions yet</p>
+            <a href="{{ url_for('employee.submit_tas') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Submit Your First TAS
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -448,14 +448,188 @@ def export_tas():
 @admin_bp.route('/tas_list')
 @admin_required
 def tas_list():
-    """View all TAS records. Placeholder for FEAT-003."""
-    flash('TAS list view will be implemented in FEAT-003', 'info')
-    return redirect(url_for('admin.dashboard'))
+    """View all TAS records with filters."""
+    try:
+        # Parse query params
+        status = request.args.get('status', '')
+        date_from = request.args.get('date_from', '')
+        date_to = request.args.get('date_to', '')
+        department = request.args.get('department', '')
+        
+        # Build query with Employee join
+        query = db.session.query(TASRecord, Employee).join(
+            Employee, TASRecord.emp_id == Employee.emp_id
+        )
+        
+        # Apply filters
+        if status and status != 'All':
+            query = query.filter(TASRecord.status == status)
+        
+        if date_from:
+            try:
+                date_from_dt = datetime.fromisoformat(date_from)
+                query = query.filter(TASRecord.submitted_at >= date_from_dt)
+            except ValueError:
+                logger.warning(f"Invalid date_from format: {date_from}")
+        
+        if date_to:
+            try:
+                date_to_dt = datetime.fromisoformat(date_to)
+                # FINDING #10: Include full day by adding 1 day
+                query = query.filter(TASRecord.submitted_at < date_to_dt + timedelta(days=1))
+            except ValueError:
+                logger.warning(f"Invalid date_to format: {date_to}")
+        
+        if department:
+            query = query.filter(Employee.department == department)
+        
+        # Execute query
+        results = query.order_by(TASRecord.submitted_at.desc()).all()
+        
+        return render_template('admin/tas_list.html',
+                             results=results,
+                             status_filter=status,
+                             date_from=date_from,
+                             date_to=date_to,
+                             department=department)
+    except Exception as e:
+        logger.error(f"Error loading TAS list: {str(e)}", exc_info=True)
+        flash('Error loading TAS list', 'error')
+        return render_template('admin/tas_list.html',
+                             results=[],
+                             status_filter='',
+                             date_from='',
+                             date_to='',
+                             department='')
 
 
 @admin_bp.route('/tas/<int:tas_id>')
 @admin_required
 def tas_detail(tas_id):
-    """View TAS detail. Placeholder for FEAT-003."""
-    flash('TAS detail view will be implemented in FEAT-003', 'info')
-    return redirect(url_for('admin.dashboard'))
+    """View TAS detail with employee info and approval actions."""
+    from flask import abort
+    
+    try:
+        # Query TAS record with employee join
+        result = db.session.query(TASRecord, Employee).join(
+            Employee, TASRecord.emp_id == Employee.emp_id
+        ).filter(TASRecord.tas_id == tas_id).first()
+        
+        if not result:
+            abort(404)
+        
+        tas_record, employee = result
+        
+        # Query reviewer info if reviewed
+        reviewer_info = None
+        if tas_record.reviewed_by:
+            reviewer_user = User.query.get(tas_record.reviewed_by)
+            if reviewer_user and reviewer_user.employee_profile:
+                reviewer_info = {
+                    'name': reviewer_user.employee_profile.name,
+                    'username': reviewer_user.username
+                }
+            elif reviewer_user:
+                reviewer_info = {
+                    'name': reviewer_user.username,
+                    'username': reviewer_user.username
+                }
+        
+        return render_template('admin/tas_detail.html',
+                             tas_record=tas_record,
+                             employee=employee,
+                             reviewer_info=reviewer_info)
+    except Exception as e:
+        logger.error(f"Error loading TAS detail: {str(e)}", exc_info=True)
+        flash('Error loading TAS detail', 'error')
+        return redirect(url_for('admin.tas_list'))
+
+
+@admin_bp.route('/tas/<int:tas_id>/approve', methods=['POST'])
+@admin_required
+def approve_tas(tas_id):
+    """Approve a TAS request with manual CSRF validation (FINDING #2)."""
+    from flask import abort
+    from flask_wtf.csrf import validate_csrf
+    from wtforms import ValidationError
+    
+    # Manual CSRF validation
+    try:
+        validate_csrf(request.form.get('csrf_token'))
+    except ValidationError:
+        abort(403)
+    
+    try:
+        # Query TAS record
+        tas_record = TASRecord.query.get(tas_id)
+        
+        if not tas_record:
+            abort(404)
+        
+        # Check if already processed
+        if tas_record.status != 'Pending':
+            flash('TAS has already been processed', 'warning')
+            return redirect(url_for('admin.tas_detail', tas_id=tas_id))
+        
+        # Update TAS record
+        tas_record.status = 'Approved'
+        tas_record.reviewed_at = datetime.utcnow()
+        tas_record.reviewed_by = current_user.user_id
+        
+        db.session.commit()
+        
+        flash('TAS approved successfully', 'success')
+        return redirect(url_for('admin.tas_detail', tas_id=tas_id))
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f'Error approving TAS: {str(e)}', exc_info=True)
+        flash('Error updating TAS status', 'error')
+        return redirect(url_for('admin.tas_detail', tas_id=tas_id))
+
+
+@admin_bp.route('/tas/<int:tas_id>/reject', methods=['POST'])
+@admin_required
+def reject_tas(tas_id):
+    """Reject a TAS request with manual CSRF validation (FINDING #2)."""
+    from flask import abort
+    from flask_wtf.csrf import validate_csrf
+    from wtforms import ValidationError
+    
+    # Manual CSRF validation
+    try:
+        validate_csrf(request.form.get('csrf_token'))
+    except ValidationError:
+        abort(403)
+    
+    try:
+        # Query TAS record
+        tas_record = TASRecord.query.get(tas_id)
+        
+        if not tas_record:
+            abort(404)
+        
+        # Check if already processed
+        if tas_record.status != 'Pending':
+            flash('TAS has already been processed', 'warning')
+            return redirect(url_for('admin.tas_detail', tas_id=tas_id))
+        
+        # Get rejection reason (limit to 500 chars)
+        rejection_reason = request.form.get('rejection_reason', '').strip()[:500]
+        
+        # Update TAS record
+        tas_record.status = 'Rejected'
+        tas_record.reviewed_at = datetime.utcnow()
+        tas_record.reviewed_by = current_user.user_id
+        tas_record.rejection_reason = rejection_reason
+        
+        db.session.commit()
+        
+        flash('TAS rejected', 'success')
+        return redirect(url_for('admin.tas_detail', tas_id=tas_id))
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f'Error rejecting TAS: {str(e)}', exc_info=True)
+        flash('Error updating TAS status', 'error')
+        return redirect(url_for('admin.tas_detail', tas_id=tas_id))

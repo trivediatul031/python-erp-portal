@@ -65,7 +65,10 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">TAS Records</a>
+                            <a class="nav-link {% if request.endpoint == 'admin.tas_list' %}active{% endif %}" 
+                               href="{{ url_for('admin.tas_list') }}">
+                                TAS Records
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'admin.user_management' %}active{% endif %}" 
@@ -81,10 +84,16 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Submit TAS</a>
+                            <a class="nav-link {% if request.endpoint == 'employee.submit_tas' %}active{% endif %}" 
+                               href="{{ url_for('employee.submit_tas') }}">
+                                Submit TAS
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">My TAS History</a>
+                            <a class="nav-link {% if request.endpoint == 'employee.tas_history' %}active{% endif %}" 
+                               href="{{ url_for('employee.tas_history') }}">
+                                My TAS History
+                            </a>
                         </li>
                         {% endif %}
                     </ul>

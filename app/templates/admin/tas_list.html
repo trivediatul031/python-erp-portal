@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}All TAS Records - TAS ERP{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>All TAS Records</h2>
+</div>
+
+<!-- Filter Form -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Filters</h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('admin.tas_list') }}">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">All</option>
+                        <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                        <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
+                        <option value="Rejected" {% if status_filter == 'Rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="date_from" class="form-label">Date From</label>
+                    <input type="date" name="date_from" id="date_from" class="form-control" value="{{ date_from }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="date_to" class="form-label">Date To</label>
+                    <input type="date" name="date_to" id="date_to" class="form-control" value="{{ date_to }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="department" class="form-label">Department</label>
+                    <input type="text" name="department" id="department" class="form-control" value="{{ department }}" placeholder="Enter department">
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="{{ url_for('admin.tas_list') }}" class="btn btn-outline-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- TAS Records Table -->
+<div class="card">
+    <div class="card-body">
+        {% if results %}
+        <div class="table-responsive">
+            <table class="table table-striped data-table">
+                <thead>
+                    <tr>
+                        <th>TAS Number</th>
+                        <th>Employee Name</th>
+                        <th>Department</th>
+                        <th>Destination</th>
+                        <th>Travel Start</th>
+                        <th>Status</th>
+                        <th>Submitted At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tas_record, employee in results %}
+                    <tr>
+                        <td><a href="{{ url_for('admin.tas_detail', tas_id=tas_record.tas_id) }}">{{ tas_record.tas_number }}</a></td>
+                        <td>{{ employee.name }}</td>
+                        <td>{{ employee.department or 'N/A' }}</td>
+                        <td>{{ tas_record.travel_to }}</td>
+                        <td>{{ tas_record.travel_date_start.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if tas_record.status == 'Pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif tas_record.status == 'Approved' %}
+                            <span class="badge bg-success">Approved</span>
+                            {% elif tas_record.status == 'Rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ tas_record.submitted_at.strftime('%Y-%m-%d %H:%M') if tas_record.submitted_at else 'N/A' }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.tas_detail', tas_id=tas_record.tas_id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                            {% if tas_record.status == 'Pending' %}
+                            <span class="text-muted small">| Pending Review</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <p class="text-muted mb-0">No TAS records found</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
