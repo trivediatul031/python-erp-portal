@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, DateField, DecimalField
-from wtforms.validators import DataRequired, Email, Length, NumberRange, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, DateField, DecimalField, SelectField, BooleanField
+from wtforms.validators import DataRequired, Email, Length, NumberRange, ValidationError, Optional, Regexp
 from datetime import date
 
 class LoginForm(FlaskForm):
@@ -61,4 +61,29 @@ class SubmitTASForm(FlaskForm):
         """Validate that start date is not in the past."""
         if field.data and field.data < date.today():
             raise ValidationError('Start date cannot be in the past')
+
+
+class CreateUserForm(FlaskForm):
+    """Form for creating new users."""
+    username = StringField('Username', validators=[
+        DataRequired(),
+        Length(min=3, max=50),
+        Regexp(r'^[a-zA-Z0-9_]+$', message='Username must contain only letters, numbers, and underscores')
+    ])
+    password = PasswordField('Password', validators=[
+        DataRequired(),
+        Length(min=8, message='Password must be at least 8 characters')
+    ])
+    role = SelectField('Role', choices=[
+        ('admin', 'Admin'),
+        ('employee', 'Employee')
+    ], validators=[DataRequired()])
+    emp_id = SelectField('Employee ID', coerce=lambda x: x or None, validators=[Optional()])
+    is_active = BooleanField('Active', default=True)
+    submit = SubmitField('Create User')
+    
+    def validate_emp_id(self, field):
+        """Validate that employee ID is provided for employee role."""
+        if self.role.data == 'employee' and not field.data:
+            raise ValidationError('Employee ID is required for employee role')
 

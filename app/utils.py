@@ -1,6 +1,11 @@
 """Utility functions for the TAS ERP application."""
 from app.models import db, TASSequence
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime, timedelta
+import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def generate_tas_number(emp_id):
@@ -42,4 +47,41 @@ def generate_tas_number(emp_id):
             continue
     
     raise RuntimeError(f"Failed to generate TAS number for {emp_id}")
+
+
+def cleanup_old_exports(upload_folder, hours=24):
+    """
+    Remove export files older than specified hours.
+    
+    Args:
+        upload_folder: Path to the upload folder
+        hours: Age threshold in hours (default: 24)
+    """
+    try:
+        if not os.path.exists(upload_folder):
+            logger.warning(f"Upload folder does not exist: {upload_folder}")
+            return
+        
+        cutoff_time = datetime.now() - timedelta(hours=hours)
+        deleted_count = 0
+        
+        for filename in os.listdir(upload_folder):
+            if filename.startswith('tas_records_'):
+                filepath = os.path.join(upload_folder, filename)
+                try:
+                    file_mtime = datetime.fromtimestamp(os.path.getmtime(filepath))
+                    if file_mtime < cutoff_time:
+                        os.remove(filepath)
+                        deleted_count += 1
+                        logger.info(f"Deleted old export file: {filename}")
+                except Exception as e:
+                    logger.error(f"Error deleting file {filename}: {str(e)}")
+        
+        if deleted_count > 0:
+            logger.info(f"Cleanup complete: removed {deleted_count} old export files")
+        else:
+            logger.info("Cleanup complete: no old files found")
+            
+    except Exception as e:
+        logger.error(f"Error during cleanup_old_exports: {str(e)}", exc_info=True)
 

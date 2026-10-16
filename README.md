@@ -193,14 +193,34 @@ erpportalflask/
 
 ### Cleanup Old Export Files
 
-The system creates temporary export files in `app/static/uploads/`. A cleanup utility should be scheduled to run periodically:
+The system creates temporary export files in `app/static/uploads/`. These files should be cleaned up regularly to prevent disk space issues.
 
+#### Scheduled Cleanup
+
+Run `cleanup_old_exports()` daily via cron (Linux/Mac) or Task Scheduler (Windows) to remove export files older than 24 hours.
+
+**Example cron job (Linux/Mac):**
 ```bash
-# Add to cron or Task Scheduler
-# Cleanup files older than 1 hour
+0 2 * * * /path/to/venv/bin/python -c "from app.utils import cleanup_old_exports; from app import create_app; app = create_app(); with app.app_context(): cleanup_old_exports(app.config['UPLOAD_FOLDER'])"
 ```
 
-The cleanup function will be available via the admin interface in production.
+**Windows Task Scheduler:**
+1. Open Task Scheduler
+2. Create Basic Task
+3. Set trigger to Daily at 2:00 AM
+4. Action: Start a program
+5. Program: `C:\path\to\venv\Scripts\python.exe`
+6. Arguments: `-c "from app.utils import cleanup_old_exports; from app import create_app; app = create_app(); with app.app_context(): cleanup_old_exports(app.config['UPLOAD_FOLDER'])"`
+
+**Manual cleanup:**
+```python
+from app import create_app
+from app.utils import cleanup_old_exports
+
+app = create_app()
+with app.app_context():
+    cleanup_old_exports(app.config['UPLOAD_FOLDER'], hours=24)
+```
 
 ## Technology Stack
 

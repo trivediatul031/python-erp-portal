@@ -59,13 +59,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Import Employees</a>
+                            <a class="nav-link {% if request.endpoint == 'admin.import_employees' %}active{% endif %}" 
+                               href="{{ url_for('admin.import_employees') }}">
+                                Import Employees
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">TAS Records</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">User Management</a>
+                            <a class="nav-link {% if request.endpoint == 'admin.user_management' %}active{% endif %}" 
+                               href="{{ url_for('admin.user_management') }}">
+                                User Management
+                            </a>
                         </li>
                         {% elif current_user.role == 'employee' %}
                         <li class="nav-item">

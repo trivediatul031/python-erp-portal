@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Import Employees - TAS ERP{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Import Employees</h1>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Upload Employee File</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.file.label(class="form-label") }}
+                        {{ form.file(class="form-control", accept=".xlsx,.xls,.csv") }}
+                        {% if form.file.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.file.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">File Requirements:</h6>
+                        <ul class="mb-0">
+                            <li><strong>Required columns:</strong> emp_id, name, email</li>
+                            <li><strong>Optional columns:</strong> department, designation, manager_id</li>
+                            <li><strong>Row limit:</strong> Maximum 1000 rows per file</li>
+                            <li><strong>File formats:</strong> .xlsx, .xls, or .csv</li>
+                            <li><strong>Duplicate handling:</strong> If emp_id exists, the record will be updated</li>
+                            <li><strong>Manager ID:</strong> Can be blank, 'none', 'null', 'n/a', or 'na' for no manager</li>
+                        </ul>
+                    </div>
+                    
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Sample File</h5>
+            </div>
+            <div class="card-body">
+                <p>Download a sample CSV file to see the expected format:</p>
+                <a href="{{ url_for('static', filename='sample_employees.csv') }}" class="btn btn-outline-primary btn-sm" download>
+                    Download Sample CSV
+                </a>
+                
+                <hr>
+                
+                <h6 class="mt-3">Column Descriptions:</h6>
+                <dl class="small">
+                    <dt>emp_id</dt>
+                    <dd>Unique employee identifier (max 20 characters)</dd>
+                    
+                    <dt>name</dt>
+                    <dd>Full name of employee (max 255 characters)</dd>
+                    
+                    <dt>email</dt>
+                    <dd>Valid email address (max 255 characters)</dd>
+                    
+                    <dt>department</dt>
+                    <dd>Optional department name</dd>
+                    
+                    <dt>designation</dt>
+                    <dd>Optional job title</dd>
+                    
+                    <dt>manager_id</dt>
+                    <dd>Optional manager's emp_id</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

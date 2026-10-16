@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Create User - TAS ERP{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Create New User</h1>
+    <a href="{{ url_for('admin.user_management') }}" class="btn btn-secondary">Back to User Management</a>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">User Details</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control", placeholder="Enter username") }}
+                        {% if form.username.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.username.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="text-muted">3-50 characters, letters, numbers, and underscores only</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control", placeholder="Enter password") }}
+                        {% if form.password.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.password.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="text-muted">Minimum 8 characters</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.role.label(class="form-label") }}
+                        {{ form.role(class="form-select") }}
+                        {% if form.role.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.role.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.emp_id.label(class="form-label") }}
+                        {{ form.emp_id(class="form-select") }}
+                        {% if form.emp_id.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.emp_id.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="text-muted">Required for employee role. Select employee to link this user account to.</small>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        {{ form.is_active(class="form-check-input") }}
+                        {{ form.is_active.label(class="form-check-label") }}
+                        {% if form.is_active.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.is_active.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('admin.user_management') }}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Instructions</h5>
+            </div>
+            <div class="card-body">
+                <h6>User Roles:</h6>
+                <dl>
+                    <dt>Admin</dt>
+                    <dd>Full access to all features including dashboard, employee management, TAS approval, and user management. Does not need to be linked to an employee record.</dd>
+                    
+                    <dt>Employee</dt>
+                    <dd>Can submit TAS requests and view their own submission history. Must be linked to an employee record.</dd>
+                </dl>
+                
+                <hr>
+                
+                <h6>Username Requirements:</h6>
+                <ul class="small">
+                    <li>3 to 50 characters long</li>
+                    <li>Letters, numbers, and underscores only</li>
+                    <li>Must be unique</li>
+                </ul>
+                
+                <h6>Password Requirements:</h6>
+                <ul class="small">
+                    <li>Minimum 8 characters</li>
+                    <li>Stored securely using bcrypt hashing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

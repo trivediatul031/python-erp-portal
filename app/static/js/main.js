@@ -18,6 +18,73 @@ $(document).ready(function() {
         }
     });
     
+    // Initialize dashboard recent table with no pagination/search
+    if ($('#dashboard-recent-table').length > 0) {
+        $('#dashboard-recent-table').DataTable({
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[0, 'desc']]
+        });
+    }
+    
+    // Initialize Chart.js for dashboard
+    if ($('#tasChart').length > 0 && typeof chartData !== 'undefined') {
+        const ctx = document.getElementById('tasChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.dates,
+                datasets: [{
+                    label: 'TAS Submissions',
+                    data: chartData.counts,
+                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-blue').trim() || '#4F46E5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
     // Auto-dismiss alerts after 5 seconds
     setTimeout(function() {
         $('.alert').fadeOut('slow');

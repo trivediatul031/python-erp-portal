@@ -1,0 +1,6 @@
+emp_id,name,email,department,designation,manager_id
+1987,John Doe,john@example.com,IT,Manager,
+1988,Jane Smith,jane@example.com,IT,Developer,1987
+1989,Bob Johnson,bob@example.com,HR,Manager,
+1990,Alice Williams,alice@example.com,Finance,Analyst,
+1991,Charlie Brown,charlie@example.com,IT,Developer,1987
