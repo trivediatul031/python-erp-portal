@@ -1,0 +1,32 @@
+{
+  "project_type": "Python Flask web application with MySQL database, SQLAlchemy ORM, Bootstrap 5 frontend, jQuery + DataTables + Chart.js for UI interactions",
+  "language": "Python 3.9+",
+  "build_system": "pip + virtualenv. No build step needed for Python. Development server via 'flask run' or 'python run.py'",
+  "test_framework": "Manual functional testing per verification procedure in plan.md. No automated test framework in MVP scope.",
+  "build_command": "No build command. Install dependencies: 'pip install -r requirements.txt'",
+  "test_command": "Manual testing: 'flask run' then browser testing + mysql CLI verification. See plan.md Verification Procedure section for complete checklist.",
+  "verification_instructions": "Each feature verified by: (1) flask run without errors, (2) navigate to feature URLs, (3) test user interactions, (4) verify database state with mysql CLI queries, (5) verify logs for errors. Complete procedure in plan.md lines 365-430.",
+  "snapshot_or_generated_files": "None. No build artifacts or generated code. Database schema applied manually via 'mysql < schema.sql'.",
+  "environment_constraints": "Requires MySQL 8.0+ running locally or accessible via network. MySQL must be configured with timezone UTC (SET time_zone = '+00:00'). Virtual environment must be activated before running. Windows environment (PowerShell commands).",
+  "contribution_requirements": "All 10 design review findings MUST be resolved: (1) schema-first strategy with no Python defaults for MySQL-managed columns, (2) manual CSRF validation on approve/reject routes, (3) User.get_id() type safety, (4) TAS number generation race condition handling with IntegrityError retry, (5) MySQL UTC timezone enforcement, (6) READ COMMITTED isolation level in config, (7) import partial success documented, (8) export empty results handling, (9) manager_id null value parsing with pd.isna(), (10) date_to filter with +1 day for full day inclusion. Every database operation must have try/except with rollback and logging (exc_info=True). CSRF tokens required on all forms.",
+  "key_patterns": "Flask app factory pattern in app/__init__.py. Blueprint registration for modular routing (auth_bp, admin_bp, employee_bp). Role-based access control via @admin_required and @employee_required decorators. WTForms for form handling with automatic CSRF. SQLAlchemy ORM models with relationships (Employee.tas_records, User.employee_profile). TAS number generation uses SELECT FOR UPDATE locking. Pandas for Excel/CSV import/export. Bootstrap 5 + DataTables for UI. Chart.js for dashboard charts. Flash messages map error→danger for Bootstrap. Response.call_on_close() for export file cleanup.",
+  "relevant_files": [
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.agents\\tasks\\design.md (complete technical design - READ FIRST)",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.agents\\tasks\\design-review.md (10 findings to resolve)",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.agents\\tasks\\plan.md (implementation plan with 15 steps)",
+    "config.py (to create - Config classes with SQLALCHEMY_ENGINE_OPTIONS)",
+    "requirements.txt (to create - Flask 2.3.3, SQLAlchemy 2.0.20, etc)",
+    "schema.sql (to create - database schema with SET time_zone)",
+    "app/__init__.py (to create - app factory)",
+    "app/models.py (to create - User, Employee, TASRecord, TASSequence)",
+    "app/forms.py (to create - LoginForm, TASForm, CreateUserForm, etc)",
+    "app/utils.py (to create - generate_tas_number with race condition handling)",
+    "app/auth.py (to create - role decorators)",
+    "app/routes/auth.py, admin.py, employee.py (to create - blueprints)",
+    "app/templates/base.html (to create - Bootstrap 5 layout with nav/sidebar)",
+    "app/static/css/style.css (to create - color palette, stat cards, responsive)",
+    "app/static/js/main.js (to create - DataTables and Chart.js init)",
+    "sample_employees.csv (to create - test data)"
+  ],
+  "directory_structure": "app/ contains __init__.py (app factory), models.py (4 models), forms.py (5 forms), utils.py (generate_tas_number, cleanup_old_exports), auth.py (decorators); app/routes/ contains auth.py, admin.py, employee.py blueprints; app/templates/ contains base.html, login.html, admin/ subdir (dashboard, import_employees, tas_list, tas_detail, user_management, create_user), employee/ subdir (dashboard, submit_tas, tas_history, tas_detail), errors/ subdir (403, 404, 500); app/static/ contains css/style.css, js/main.js, uploads/ (temp storage); root contains config.py, requirements.txt, run.py, schema.sql, sample_employees.csv, README.md, .env.example, logs/ (created by app)"
+}

@@ -7,7 +7,6 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import func, cast, Date, extract
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
-import pandas as pd
 import os
 import logging
 
@@ -93,6 +92,8 @@ def dashboard():
 @admin_required
 def import_employees():
     """Import employees from Excel/CSV file."""
+    import pandas as pd
+    
     form = ImportEmployeesForm()
     
     if form.validate_on_submit():
@@ -339,6 +340,8 @@ def create_user():
 @admin_required
 def export_tas():
     """Export TAS records with filters."""
+    import pandas as pd
+    
     try:
         # Parse query params
         format_type = request.args.get('format', 'xlsx')
