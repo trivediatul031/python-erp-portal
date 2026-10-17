@@ -56,7 +56,6 @@
                     <tr>
                         <th>Emp ID</th>
                         <th>Name</th>
-                        <th>Email</th>
                         <th>Department</th>
                         <th>Designation</th>
                         <th>Manager</th>
@@ -68,7 +67,6 @@
                         <tr>
                             <td><span class="badge bg-primary">{{ employee.emp_id }}</span></td>
                             <td>{{ employee.name }}</td>
-                            <td>{{ employee.email }}</td>
                             <td>
                                 {% if employee.department %}
                                     <span class="badge bg-info">{{ employee.department }}</span>
@@ -88,7 +86,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
+                            <td colspan="5" class="text-center text-muted py-4">
                                 No employees found. 
                                 <a href="{{ url_for('admin.import_employees') }}">Import employees</a>
                             </td>
