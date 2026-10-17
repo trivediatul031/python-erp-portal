@@ -65,22 +65,34 @@
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
-                <strong>From:</strong><br>
-                {{ tas_record.travel_from }}
+                <strong>Employee Name:</strong><br>
+                {{ tas_record.emp_name }}
             </div>
             <div class="col-md-6">
-                <strong>To:</strong><br>
-                {{ tas_record.travel_to }}
+                <strong>Department:</strong><br>
+                {{ tas_record.department }}
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
-                <strong>Travel Start Date:</strong><br>
-                {{ tas_record.travel_date_start.strftime('%Y-%m-%d') }}
+                <strong>Travel Type:</strong><br>
+                {% if tas_record.travel_type == 'Domestic' %}
+                    <span class="badge bg-success">Domestic</span>
+                {% elif tas_record.travel_type == 'International' %}
+                    <span class="badge bg-info">International</span>
+                {% else %}
+                    {{ tas_record.travel_type or 'N/A' }}
+                {% endif %}
             </div>
             <div class="col-md-6">
-                <strong>Travel End Date:</strong><br>
-                {{ tas_record.travel_date_end.strftime('%Y-%m-%d') }}
+                <strong>Travel Mode:</strong><br>
+                {{ tas_record.travel_mode or 'N/A' }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>Travel Date:</strong><br>
+                {{ tas_record.travel_date_start.strftime('%d %b %Y') }}
             </div>
         </div>
         <div class="row mb-3">
@@ -89,12 +101,6 @@
                 <div class="border rounded p-3 bg-light">
                     {{ tas_record.purpose }}
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <strong>Estimated Cost:</strong><br>
-                <span class="fs-5">${{ "%.2f"|format(tas_record.estimated_cost) }}</span>
             </div>
         </div>
     </div>
