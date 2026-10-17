@@ -17,21 +17,33 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="travel_from" class="form-label">{{ form.travel_from.label }}</label>
-                            {{ form.travel_from(class="form-control" + (" is-invalid" if form.travel_from.errors else "")) }}
-                            {% if form.travel_from.errors %}
+                            <label for="emp_name" class="form-label">Employee Name</label>
+                            <input type="text" class="form-control" id="emp_name" value="{{ current_user.employee_profile.name }}" readonly>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="department" value="{{ current_user.employee_profile.department }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="travel_type" class="form-label">{{ form.travel_type.label }}</label>
+                            {{ form.travel_type(class="form-select" + (" is-invalid" if form.travel_type.errors else "")) }}
+                            {% if form.travel_type.errors %}
                                 <div class="invalid-feedback">
-                                    {% for error in form.travel_from.errors %}{{ error }}{% endfor %}
+                                    {% for error in form.travel_type.errors %}{{ error }}{% endfor %}
                                 </div>
                             {% endif %}
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label for="travel_to" class="form-label">{{ form.travel_to.label }}</label>
-                            {{ form.travel_to(class="form-control" + (" is-invalid" if form.travel_to.errors else "")) }}
-                            {% if form.travel_to.errors %}
+                            <label for="travel_mode" class="form-label">{{ form.travel_mode.label }}</label>
+                            {{ form.travel_mode(class="form-select" + (" is-invalid" if form.travel_mode.errors else "")) }}
+                            {% if form.travel_mode.errors %}
                                 <div class="invalid-feedback">
-                                    {% for error in form.travel_to.errors %}{{ error }}{% endfor %}
+                                    {% for error in form.travel_mode.errors %}{{ error }}{% endfor %}
                                 </div>
                             {% endif %}
                         </div>
@@ -39,51 +51,27 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
+                            <label for="purpose" class="form-label">{{ form.purpose.label }}</label>
+                            {{ form.purpose(class="form-select" + (" is-invalid" if form.purpose.errors else "")) }}
+                            {% if form.purpose.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.purpose.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
                             <label for="travel_date_start" class="form-label">{{ form.travel_date_start.label }}</label>
-                            {{ form.travel_date_start(class="form-control" + (" is-invalid" if form.travel_date_start.errors else ""), type="date") }}
+                            {{ form.travel_date_start(class="form-control" + (" is-invalid" if form.travel_date_start.errors else ""), type="date", placeholder="dd-mm-yyyy") }}
                             {% if form.travel_date_start.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.travel_date_start.errors %}{{ error }}{% endfor %}
                                 </div>
                             {% endif %}
                         </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="travel_date_end" class="form-label">{{ form.travel_date_end.label }}</label>
-                            {{ form.travel_date_end(class="form-control" + (" is-invalid" if form.travel_date_end.errors else ""), type="date") }}
-                            {% if form.travel_date_end.errors %}
-                                <div class="invalid-feedback">
-                                    {% for error in form.travel_date_end.errors %}{{ error }}{% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="purpose" class="form-label">{{ form.purpose.label }}</label>
-                        {{ form.purpose(class="form-control" + (" is-invalid" if form.purpose.errors else ""), rows="4") }}
-                        <div class="form-text">Describe the purpose of your travel (max 1000 characters)</div>
-                        {% if form.purpose.errors %}
-                            <div class="invalid-feedback">
-                                {% for error in form.purpose.errors %}{{ error }}{% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="estimated_cost" class="form-label">{{ form.estimated_cost.label }}</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            {{ form.estimated_cost(class="form-control" + (" is-invalid" if form.estimated_cost.errors else ""), min="0", step="0.01") }}
-                            {% if form.estimated_cost.errors %}
-                                <div class="invalid-feedback">
-                                    {% for error in form.estimated_cost.errors %}{{ error }}{% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="d-grid gap-2">
+                    <div class="d-grid gap-2 mt-4">
                         {{ form.submit(class="btn btn-primary btn-lg") }}
                     </div>
                 </form>

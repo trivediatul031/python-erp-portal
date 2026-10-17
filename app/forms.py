@@ -31,36 +31,36 @@ class RejectTASForm(FlaskForm):
 
 class TASForm(FlaskForm):
     """Form for employees to submit TAS requests."""
-    travel_from = StringField('Travel From', validators=[
-        DataRequired(),
-        Length(max=255)
-    ])
-    travel_to = StringField('Travel To', validators=[
-        DataRequired(),
-        Length(max=255)
-    ])
-    travel_date_start = DateField('Start Date', validators=[DataRequired()])
-    travel_date_end = DateField('End Date', validators=[DataRequired()])
-    purpose = TextAreaField('Purpose of Travel', validators=[
-        DataRequired(),
-        Length(max=1000)
-    ])
-    estimated_cost = DecimalField('Estimated Cost', validators=[
-        DataRequired(),
-        NumberRange(min=0)
-    ], places=2)
+    travel_type = SelectField('Travel Type', choices=[
+        ('Domestic', 'Domestic'),
+        ('International', 'International')
+    ], validators=[DataRequired()])
+    
+    travel_mode = SelectField('Travel Mode', choices=[
+        ('Air', 'Air'),
+        ('Rail', 'Rail'),
+        ('Road', 'Road'),
+        ('Bus', 'Bus')
+    ], validators=[DataRequired()])
+    
+    purpose = SelectField('Purpose of Travel', choices=[
+        ('Road Show', 'Road Show'),
+        ('Client Meeting', 'Client Meeting'),
+        ('Conference', 'Conference'),
+        ('Training', 'Training'),
+        ('Site Visit', 'Site Visit'),
+        ('Business Development', 'Business Development'),
+        ('Other', 'Other')
+    ], validators=[DataRequired()])
+    
+    travel_date_start = DateField('Travel Date', validators=[DataRequired()])
+    
     submit = SubmitField('Submit TAS Request')
     
     def validate_travel_date_start(self, field):
-        """Validate that start date is not in the past."""
+        """Validate that travel date is not in the past."""
         if field.data and field.data < date.today():
-            raise ValidationError('Travel start date cannot be in the past')
-    
-    def validate_travel_date_end(self, field):
-        """Validate that end date is not before start date."""
-        if hasattr(self, 'travel_date_start') and self.travel_date_start.data and field.data:
-            if field.data < self.travel_date_start.data:
-                raise ValidationError('Travel end date must be after start date')
+            raise ValidationError('Travel date cannot be in the past')
 
 
 class CreateUserForm(FlaskForm):

@@ -77,6 +77,12 @@ def submit_tas():
                 flash('Your account is not linked to an employee record. Contact admin.', 'error')
                 return redirect(url_for('employee.dashboard'))
             
+            # Get employee details
+            employee = Employee.query.get(current_user.emp_id)
+            if not employee:
+                flash('Employee record not found. Contact admin.', 'error')
+                return redirect(url_for('employee.dashboard'))
+            
             # Generate TAS number (does not commit internally)
             tas_number = generate_tas_number(current_user.emp_id)
             
@@ -84,12 +90,12 @@ def submit_tas():
             tas = TASRecord(
                 tas_number=tas_number,
                 emp_id=current_user.emp_id,
-                travel_from=form.travel_from.data,
-                travel_to=form.travel_to.data,
+                emp_name=employee.name,
+                department=employee.department,
+                travel_type=form.travel_type.data,
+                travel_mode=form.travel_mode.data,
                 travel_date_start=form.travel_date_start.data,
-                travel_date_end=form.travel_date_end.data,
                 purpose=form.purpose.data,
-                estimated_cost=form.estimated_cost.data,
                 status='Pending'
             )
             
