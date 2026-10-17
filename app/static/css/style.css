@@ -262,3 +262,10 @@ body {
 .shadow-md-custom {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
+
+
+/* Custom badge colors for departments */
+.badge.bg-purple {
+    background-color: var(--purple) !important;
+    color: white;
+}

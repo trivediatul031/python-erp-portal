@@ -68,7 +68,18 @@
                             <td>{{ employee.name }}</td>
                             <td>
                                 {% if employee.department %}
-                                    <span class="badge bg-info">{{ employee.department }}</span>
+                                    {% set dept_colors = {
+                                        'Technology': 'primary',
+                                        'Europe & UK': 'success',
+                                        'State Facilitation': 'warning',
+                                        'Asia & MENA': 'danger',
+                                        'Industrial': 'info',
+                                        'Finance & Accounts': 'purple',
+                                        'IT Infrastructure Support': 'dark',
+                                        'Company Ops': 'secondary'
+                                    } %}
+                                    {% set color = dept_colors.get(employee.department, 'info') %}
+                                    <span class="badge bg-{{ color }}">{{ employee.department }}</span>
                                 {% else %}
                                     <span class="text-muted">N/A</span>
                                 {% endif %}
