@@ -38,41 +38,21 @@
 
 <!-- Summary Statistics -->
 <div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <h6 class="text-muted mb-2">Total Submissions</h6>
-                <h3 class="mb-0">{{ total_tas }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <h6 class="text-muted mb-2">Pending Approvals</h6>
-                <h3 class="mb-0">
-                    <span class="badge bg-warning text-dark" style="font-size: 1.5rem;">{{ pending_tas }}</span>
-                </h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <h6 class="text-muted mb-2">Approved</h6>
-                <h3 class="mb-0">
-                    <span class="badge bg-success" style="font-size: 1.5rem;">{{ approved_tas }}</span>
-                </h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <h6 class="text-muted mb-2">Rejected</h6>
-                <h3 class="mb-0">
-                    <span class="badge bg-danger" style="font-size: 1.5rem;">{{ rejected_tas }}</span>
-                </h3>
+    <div class="col-12">
+        <div class="card bg-gradient-primary text-white shadow-lg">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                            <i class="bi bi-file-earmark-text-fill" style="font-size: 3rem;"></i>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h2 class="mb-1 fw-bold">{{ total_tas }}</h2>
+                        <h5 class="mb-0 opacity-90">Total TAS Submissions</h5>
+                        <p class="mb-0 mt-2 opacity-75"><i class="bi bi-info-circle"></i> All your travel approval requests</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -87,32 +67,36 @@
     <div class="card-body">
         {% if recent_tas %}
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
                     <tr>
-                        <th>TAS Number</th>
-                        <th>Destination</th>
-                        <th>Travel Date</th>
-                        <th>Status</th>
-                        <th>Submitted</th>
+                        <th><i class="bi bi-hash"></i> TAS Number</th>
+                        <th><i class="bi bi-airplane"></i> Travel Type</th>
+                        <th><i class="bi bi-calendar-event"></i> Travel Date</th>
+                        <th><i class="bi bi-briefcase"></i> Purpose</th>
+                        <th><i class="bi bi-clock"></i> Submitted</th>
+                        <th class="text-center"><i class="bi bi-eye"></i> Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for tas in recent_tas %}
                     <tr>
-                        <td><a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}">{{ tas.tas_number }}</a></td>
-                        <td>{{ tas.travel_to }}</td>
-                        <td>{{ tas.travel_date_start.strftime('%Y-%m-%d') }}</td>
+                        <td class="fw-bold text-primary">{{ tas.tas_number }}</td>
                         <td>
-                            {% if tas.status == 'Pending' %}
-                            <span class="badge bg-warning text-dark">Pending</span>
-                            {% elif tas.status == 'Approved' %}
-                            <span class="badge bg-success">Approved</span>
-                            {% elif tas.status == 'Rejected' %}
-                            <span class="badge bg-danger">Rejected</span>
+                            {% if tas.travel_type == 'Domestic' %}
+                            <span class="badge bg-info"><i class="bi bi-geo-alt-fill"></i> Domestic</span>
+                            {% else %}
+                            <span class="badge bg-primary"><i class="bi bi-globe"></i> International</span>
                             {% endif %}
                         </td>
-                        <td>{{ tas.submitted_at.strftime('%Y-%m-%d %H:%M') if tas.submitted_at else 'N/A' }}</td>
+                        <td>{{ tas.travel_date_start.strftime('%d %b %Y') }}</td>
+                        <td>{{ tas.purpose }}</td>
+                        <td class="text-muted">{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}</td>
+                        <td class="text-center">
+                            <a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
