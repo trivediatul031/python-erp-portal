@@ -29,7 +29,7 @@
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     
     <!-- Top Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-blue);">
+    <nav class="navbar navbar-expand-lg navbar-dark top-navbar">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <strong>TAS ERP</strong>
@@ -111,7 +111,7 @@
             </nav>
 
             <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
                 <div class="content-area">
                     <!-- Flash Messages -->
                     {% with messages = get_flashed_messages(with_categories=true) %}

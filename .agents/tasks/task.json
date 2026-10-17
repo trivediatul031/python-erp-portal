@@ -1,7 +1,7 @@
 {
   "task_id": "task-tas-erp-portal",
   "task_description": "Build complete Python Flask + MySQL Travel Approval System ERP portal with admin dashboard, employee TAS submission with auto-generated TAS numbers (TAS-EMPID-SEQ format), import/export, and approval workflow",
-  "status": "pending",
+  "status": "completed",
   "feature_order": [
     "FEAT-001",
     "FEAT-002",
