@@ -2,7 +2,7 @@
 
 {% block title %}My TAS History - TAS ERP{% endblock %}
 
-{% block content %}
+{% block authenticated_content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>My TAS History</h2>
     <a href="{{ url_for('employee.submit_tas') }}" class="btn btn-primary">

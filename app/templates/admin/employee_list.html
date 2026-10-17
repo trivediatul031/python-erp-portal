@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Employee List - TAS ERP{% endblock %}
+
+{% block authenticated_content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="page-title mb-1">
+                <i class="bi bi-people text-primary me-2"></i>Employee List
+            </h1>
+            <p class="page-subtitle mb-0">View all imported employees ({{ total_employees }} total)</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('admin.import_employees') }}" class="btn btn-success">
+                <i class="bi bi-cloud-upload me-1"></i>Import More
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Employee List Card -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-table me-2"></i>All Employees
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle datatable">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4 py-3">
+                            <i class="bi bi-hash text-primary me-2"></i>Emp. Code
+                        </th>
+                        <th class="py-3">
+                            <i class="bi bi-person text-success me-2"></i>Name
+                        </th>
+                        <th class="py-3">
+                            <i class="bi bi-building text-warning me-2"></i>Department
+                        </th>
+                        <th class="py-3">
+                            <i class="bi bi-briefcase text-secondary me-2"></i>Designation
+                        </th>
+                        <th class="py-3">
+                            <i class="bi bi-person-circle text-primary me-2"></i>Username
+                        </th>
+                        <th class="py-3">
+                            <i class="bi bi-key text-danger me-2"></i>Password
+                        </th>
+                        <th class="pe-4 py-3">
+                            <i class="bi bi-person-badge text-info me-2"></i>Manager
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if employees %}
+                        {% for employee, manager in employees %}
+                        <tr class="border-bottom">
+                            <td class="ps-4 py-3">
+                                <span class="badge bg-primary fs-6 px-3 py-2">{{ employee.emp_id }}</span>
+                            </td>
+                            <td class="py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle bg-success bg-opacity-10 text-success me-2">
+                                        {{ employee.name[0] }}
+                                    </div>
+                                    <span class="fw-medium">{{ employee.name }}</span>
+                                </div>
+                            </td>
+                            <td class="py-3">
+                                {% if employee.department %}
+                                <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                                    {{ employee.department }}
+                                </span>
+                                {% else %}
+                                <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3">
+                                {% if employee.designation %}
+                                <span class="text-dark">{{ employee.designation }}</span>
+                                {% else %}
+                                <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3">
+                                <span class="badge bg-primary fs-6 px-3 py-2">{{ employee.emp_id }}</span>
+                            </td>
+                            <td class="py-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <code class="text-danger fw-bold">{{ employee.emp_id }}emp@123</code>
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="copyPassword('{{ employee.emp_id }}emp@123')" title="Copy password">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="pe-4 py-3">
+                                {% if manager %}
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle bg-info bg-opacity-10 text-info me-2">
+                                        {{ manager.name[0] }}
+                                    </div>
+                                    <span class="fw-medium">{{ manager.name }}</span>
+                                </div>
+                                {% else %}
+                                <span class="text-muted">No Manager</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox fs-1 d-block mb-3 text-muted opacity-50"></i>
+                                <p class="mb-0">No employees found. <a href="{{ url_for('admin.import_employees') }}">Import employees</a></p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+</style>
+
+<script>
+function copyPassword(password) {
+    // Create a temporary input element
+    const tempInput = document.createElement('input');
+    tempInput.value = password;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    
+    // Show a toast notification (you can customize this)
+    alert('Password copied: ' + password);
+}
+</script>
+{% endblock %}

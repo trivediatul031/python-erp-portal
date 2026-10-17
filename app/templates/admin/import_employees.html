@@ -2,7 +2,7 @@
 
 {% block title %}Import Employees - TAS ERP{% endblock %}
 
-{% block content %}
+{% block authenticated_content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Import Employees</h1>
     <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>

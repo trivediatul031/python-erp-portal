@@ -2,7 +2,7 @@
 
 {% block title %}Create User - TAS ERP{% endblock %}
 
-{% block content %}
+{% block authenticated_content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Create New User</h1>
     <a href="{{ url_for('admin.user_management') }}" class="btn btn-secondary">Back to User Management</a>

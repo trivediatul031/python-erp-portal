@@ -2,7 +2,7 @@
 
 {% block title %}TAS Details - {{ tas_record.tas_number }} - TAS ERP{% endblock %}
 
-{% block content %}
+{% block authenticated_content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>TAS Details</h2>
     <a href="{{ url_for('employee.tas_history') }}" class="btn btn-outline-secondary">Back to History</a>
