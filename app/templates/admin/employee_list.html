@@ -118,21 +118,3 @@
 </div>
 
 {% endblock %}
-
-{% block extra_js %}
-<script>
-    $(document).ready(function() {
-        $('.datatable').DataTable({
-            "pageLength": 25,
-            "order": [[0, "asc"]],
-            "language": {
-                "search": "Search employees:",
-                "lengthMenu": "Show _MENU_ employees per page",
-                "info": "Showing _START_ to _END_ of _TOTAL_ employees",
-                "infoEmpty": "No employees to show",
-                "infoFiltered": "(filtered from _MAX_ total employees)"
-            }
-        });
-    });
-</script>
-{% endblock %}
