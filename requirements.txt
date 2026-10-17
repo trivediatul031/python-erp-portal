@@ -1,10 +1,27 @@
+# Flask Core
 Flask==2.3.3
+Werkzeug==2.3.7
+
+# Database
 SQLAlchemy==2.0.20
+Flask-SQLAlchemy==3.0.5
+PyMySQL==1.1.0
+
+# Authentication & Security
 Flask-Login==0.6.2
 Flask-WTF==1.1.1
 Flask-Bcrypt==1.0.1
-PyMySQL==1.1.0
+Flask-Limiter==3.5.0
+
+# Environment & Configuration
+python-dotenv==1.0.0
+
+# Data Processing
 pandas==2.1.0
 openpyxl==3.1.2
-Werkzeug==2.3.7
-python-dotenv==1.0.0
+
+# Production Server
+gunicorn==21.2.0
+
+# Health Checks
+requests==2.31.0

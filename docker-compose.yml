@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: tas_erp_web
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=mysql+pymysql://tas_user:${DB_PASSWORD}@db:3306/tas_erp
+      - SECRET_KEY=${SECRET_KEY}
+      - LOG_LEVEL=info
+    volumes:
+      - ./logs:/app/logs
+      - ./app/static/uploads:/app/static/uploads
+    depends_on:
+      - db
+    networks:
+      - tas_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: mysql:8.0
+    container_name: tas_erp_db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=tas_erp
+      - MYSQL_USER=tas_user
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - tas_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    container_name: tas_erp_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./app/static:/usr/share/nginx/html/static:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - web
+    networks:
+      - tas_network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  tas_network:
+    driver: bridge

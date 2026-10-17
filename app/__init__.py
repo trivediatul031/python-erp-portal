@@ -4,12 +4,19 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from werkzeug.exceptions import RequestEntityTooLarge
 from config import config
 from app.models import db, bcrypt
 
 login_manager = LoginManager()
 csrf = CSRFProtect()
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
 
 def create_app(config_name='default'):
     """Flask application factory."""
@@ -34,6 +41,7 @@ def create_app(config_name='default'):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+    limiter.init_app(app)
     
     # Configure production logging
     if not app.debug:
@@ -95,6 +103,21 @@ def create_app(config_name='default'):
     @app.errorhandler(RequestEntityTooLarge)
     def handle_file_too_large(e):
         return 'File is too large. Maximum size is 10MB.', 413
+    
+    # Add security headers to all responses
+    @app.after_request
+    def add_security_headers(response):
+        """Add security headers to all responses"""
+        security_headers = app.config.get('SECURITY_HEADERS', {})
+        for header, value in security_headers.items():
+            response.headers[header] = value
+        return response
+    
+    # Health check endpoint
+    @app.route('/health')
+    def health_check():
+        """Simple health check endpoint for monitoring"""
+        return {'status': 'healthy'}, 200
     
     # Register blueprints
     from app.routes.auth import auth_bp

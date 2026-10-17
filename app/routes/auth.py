@@ -2,12 +2,14 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, current_user
 from app.forms import LoginForm
 from app.models import User
+from app import limiter
 import logging
 
 auth_bp = Blueprint('auth', __name__)
 logger = logging.getLogger(__name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")  # Rate limit: 5 login attempts per minute
 def login():
     """Login route for user authentication."""
     if current_user.is_authenticated:

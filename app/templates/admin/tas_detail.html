@@ -3,198 +3,194 @@
 {% block title %}TAS Details - {{ tas_record.tas_number }} - TAS ERP{% endblock %}
 
 {% block authenticated_content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>TAS Details - {{ tas_record.tas_number }}</h2>
-    <a href="{{ url_for('admin.tas_list') }}" class="btn btn-outline-secondary">Back to List</a>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-file-earmark-text me-2"></i>TAS Details - {{ tas_record.tas_number }}</h1>
+    <a href="{{ url_for('admin.tas_list') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to List
+    </a>
 </div>
 
 <!-- Employee Info Card -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Employee Information</h5>
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Employee Information</h5>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <strong>Name:</strong><br>
-                {{ employee.name }}
-            </div>
-            <div class="col-md-6 mb-3">
-                <strong>Email:</strong><br>
-                {{ employee.email }}
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Name</label>
+                    <p class="fw-semibold mb-0">{{ employee.name }}</p>
+                </div>
             </div>
             <div class="col-md-6">
-                <strong>Department:</strong><br>
-                {{ employee.department or 'N/A' }}
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Email</label>
+                    <p class="mb-0">{{ employee.email }}</p>
+                </div>
             </div>
             <div class="col-md-6">
-                <strong>Designation:</strong><br>
-                {{ employee.designation or 'N/A' }}
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Department</label>
+                    <p class="mb-0">{{ employee.department or 'N/A' }}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Designation</label>
+                    <p class="mb-0">{{ employee.designation or 'N/A' }}</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- TAS Info Card -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">TAS Information</h5>
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-airplane me-2"></i>Travel Information</h5>
     </div>
     <div class="card-body">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong>TAS Number:</strong><br>
-                <span class="fs-5">{{ tas_record.tas_number }}</span>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">TAS Number</label>
+                    <p class="fw-bold fs-5 mb-0 text-primary">{{ tas_record.tas_number }}</p>
+                </div>
             </div>
-            <div class="col-md-6">
-                <strong>Status:</strong><br>
-                {% if tas_record.status == 'Pending' %}
-                <span class="badge bg-warning text-dark fs-6">Pending</span>
-                {% elif tas_record.status == 'Approved' %}
-                <span class="badge bg-success fs-6">Approved</span>
-                {% elif tas_record.status == 'Rejected' %}
-                <span class="badge bg-danger fs-6">Rejected</span>
-                {% endif %}
+            <div class="col-md-4">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Submitted Date</label>
+                    <p class="mb-0">
+                        <i class="bi bi-clock me-1 text-muted"></i>
+                        {{ tas_record.submitted_at.strftime('%d %b %Y, %H:%M') if tas_record.submitted_at else 'N/A' }}
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <strong>Submitted Date:</strong><br>
-                {{ tas_record.submitted_at.strftime('%Y-%m-%d %H:%M:%S') if tas_record.submitted_at else 'N/A' }}
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong>Employee Name:</strong><br>
-                {{ tas_record.emp_name }}
-            </div>
-            <div class="col-md-6">
-                <strong>Department:</strong><br>
-                {{ tas_record.department }}
+            <div class="col-md-4">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Travel Date</label>
+                    <p class="mb-0">
+                        <i class="bi bi-calendar3 me-1 text-muted"></i>
+                        {{ tas_record.travel_date_start.strftime('%d %b %Y') }}
+                    </p>
+                </div>
             </div>
         </div>
-        <div class="row mb-3">
+        
+        <div class="row g-4 mb-4">
             <div class="col-md-6">
-                <strong>Travel Type:</strong><br>
-                {% if tas_record.travel_type == 'Domestic' %}
-                    <span class="badge bg-success">Domestic</span>
-                {% elif tas_record.travel_type == 'International' %}
-                    <span class="badge bg-info">International</span>
-                {% else %}
-                    {{ tas_record.travel_type or 'N/A' }}
-                {% endif %}
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Employee Name</label>
+                    <p class="mb-0">{{ tas_record.emp_name }}</p>
+                </div>
             </div>
             <div class="col-md-6">
-                <strong>Travel Mode:</strong><br>
-                {{ tas_record.travel_mode or 'N/A' }}
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong>Travel Date:</strong><br>
-                {{ tas_record.travel_date_start.strftime('%d %b %Y') }}
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Department</label>
+                    <p class="mb-0">{{ tas_record.department }}</p>
+                </div>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <strong>Purpose:</strong><br>
-                <div class="border rounded p-3 bg-light">
-                    {{ tas_record.purpose }}
+        
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Travel Type</label>
+                    <p class="mb-0">
+                        {% if tas_record.travel_type == 'Domestic' %}
+                            <span class="badge rounded-pill bg-success">
+                                <i class="bi bi-house-door me-1"></i>Domestic
+                            </span>
+                        {% elif tas_record.travel_type == 'International' %}
+                            <span class="badge rounded-pill bg-info">
+                                <i class="bi bi-globe me-1"></i>International
+                            </span>
+                        {% else %}
+                            {{ tas_record.travel_type or 'N/A' }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Travel Mode</label>
+                    <p class="mb-0">
+                        <span class="badge rounded-pill bg-secondary">
+                            <i class="bi bi-{{ 'airplane' if tas_record.travel_mode == 'Air' else 'train-front' if tas_record.travel_mode == 'Rail' else 'bus-front' }} me-1"></i>
+                            {{ tas_record.travel_mode or 'N/A' }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="info-item">
+                    <label class="text-muted small mb-2"><i class="bi bi-chat-left-text me-1"></i>Purpose</label>
+                    <div class="border rounded p-3 bg-light">
+                        {{ tas_record.purpose }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Approval Actions (if Pending) -->
-{% if tas_record.status == 'Pending' %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Review Actions</h5>
+{% if tas_record.status in ['Approved', 'Rejected'] and tas_record.reviewed_at %}
+<!-- Review Info Card -->
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Review Information</h5>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <!-- Approve Form -->
-                <form method="POST" action="{{ url_for('admin.approve_tas', tas_id=tas_record.tas_id) }}" class="d-inline">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <button type="submit" class="btn btn-success btn-lg w-100" onclick="return confirm('Are you sure you want to approve this TAS?')">
-                        <i class="bi bi-check-circle"></i> Approve
-                    </button>
-                </form>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Reviewed Date</label>
+                    <p class="mb-0">
+                        {{ tas_record.reviewed_at.strftime('%d %b %Y, %H:%M') if tas_record.reviewed_at else 'N/A' }}
+                    </p>
+                </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <!-- Reject Form -->
-                <button type="button" class="btn btn-danger btn-lg w-100" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                    <i class="bi bi-x-circle"></i> Reject
-                </button>
+            <div class="col-md-6">
+                <div class="info-item">
+                    <label class="text-muted small mb-1">Reviewed By</label>
+                    <p class="mb-0">
+                        {% if reviewer_info %}
+                            {{ reviewer_info.name }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+                </div>
             </div>
+            {% if tas_record.status == 'Rejected' and tas_record.rejection_reason %}
+            <div class="col-12">
+                <div class="info-item">
+                    <label class="text-muted small mb-2">Rejection Reason</label>
+                    <div class="alert alert-danger mb-0">
+                        {{ tas_record.rejection_reason }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
 {% endif %}
 
-<!-- Approval Info Card (if approved or rejected) -->
-{% if tas_record.status in ['Approved', 'Rejected'] %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Approval Information</h5>
-    </div>
-    <div class="card-body">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong>Reviewed Date:</strong><br>
-                {{ tas_record.reviewed_at.strftime('%Y-%m-%d %H:%M:%S') if tas_record.reviewed_at else 'N/A' }}
-            </div>
-            <div class="col-md-6">
-                <strong>Reviewed By:</strong><br>
-                {% if reviewer_info %}
-                {{ reviewer_info.name }}
-                {% else %}
-                N/A
-                {% endif %}
-            </div>
-        </div>
-        {% if tas_record.status == 'Rejected' and tas_record.rejection_reason %}
-        <div class="row">
-            <div class="col-md-12">
-                <strong>Rejection Reason:</strong><br>
-                <div class="alert alert-danger">
-                    {{ tas_record.rejection_reason }}
-                </div>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-</div>
-{% endif %}
+<style>
+.info-item label {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+}
 
-<!-- Reject Modal -->
-<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="{{ url_for('admin.reject_tas', tas_id=tas_record.tas_id) }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="modal-header">
-                    <h5 class="modal-title" id="rejectModalLabel">Reject TAS Request</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="rejection_reason" class="form-label">Reason for Rejection <small class="text-muted">(optional)</small></label>
-                        <textarea name="rejection_reason" id="rejection_reason" class="form-control" rows="3" maxlength="500" placeholder="Enter reason for rejection..."></textarea>
-                        <div class="form-text">Maximum 500 characters</div>
-                    </div>
-                    <div class="alert alert-warning">
-                        <strong>Warning:</strong> This action cannot be undone. The employee will be notified of the rejection.
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Reject TAS</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+.info-item p {
+    font-size: 1rem;
+}
+</style>
 {% endblock %}

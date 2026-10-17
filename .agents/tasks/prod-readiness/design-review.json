@@ -1,0 +1,190 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "id": "HIGH-1",
+      "severity": "HIGH",
+      "section": "Section 14",
+      "title": "Export Fix References Non-Existent Model Fields",
+      "problem": "The 'fixed' export_tas query references four TASRecord fields that do not exist in the actual model: travel_from, travel_to, travel_date_end, estimated_cost. Verified that these columns were removed per auto_fix_database.py.",
+      "impact": "Implementation will fail with AttributeError at runtime when export_tas() executes.",
+      "fix": "Clarify actual schema, decide if fields need to be added back or forms updated, use only existing fields (tas_number, emp_id, emp_name, department, travel_type, travel_mode, travel_date_start, purpose, status, timestamps, rejection_reason)."
+    },
+    {
+      "id": "HIGH-2",
+      "severity": "HIGH",
+      "section": "Section 2.3",
+      "title": "Rejection Reason Validation Logic Incorrect",
+      "problem": "Design claims to validate length BEFORE truncating but the validation happens AFTER reading full input. Code comment is misleading about validation order.",
+      "impact": "Silent data loss if implementer follows comment instead of code, or confusion about intended behavior.",
+      "fix": "Validate on raw input FIRST before any assignment: rejection_reason_raw = request.form.get(...).strip(); validate length on raw input; then assign if valid."
+    },
+    {
+      "id": "HIGH-3",
+      "severity": "HIGH",
+      "section": "Section 11.2",
+      "title": "Migration Edit Instructions Dangerously Vague",
+      "problem": "Design says 'comment out CREATE TABLE' but provides no guidance on handling foreign keys, indexes, constraints, or what 'comment out' means. No decision tree for which operations to keep vs delete.",
+      "impact": "Implementer follows instructions, comments out CREATE TABLE but leaves dependent operations, migration fails with cryptic errors, database potentially corrupted.",
+      "fix": "Provide complete step-by-step workflow with decision tree for each operation type (create_table, create_index, create_foreign_key), explicit SQL commands to inventory existing tables, test-first approach with backup database."
+    },
+    {
+      "id": "HIGH-4",
+      "severity": "HIGH",
+      "section": "Section 1.1",
+      "title": "Config Pool Settings Applied After Engine Initialization",
+      "problem": "ProductionConfig.init_app() tries to remove pool settings for SQLite, but this runs AFTER create_app() loads config class. SQLAlchemy engine may already be initialized with pool settings.",
+      "impact": "SQLite users still get pool-related warnings/errors even with the 'fix'.",
+      "fix": "Apply pool settings conditionally in init_app() before engine initialization, not in class body. Set SQLALCHEMY_ENGINE_OPTIONS dynamically based on DATABASE_URL detection."
+    },
+    {
+      "id": "HIGH-5",
+      "severity": "HIGH",
+      "section": "Section 3.2",
+      "title": "Compression Error Handling Uses Wrong Exception Type",
+      "problem": "Raises RuntimeError instead of ImportError for missing Flask-Compress. Generic exception type makes it hard to distinguish from other failures.",
+      "impact": "Application crashes at startup with no graceful degradation, error message tells user to pip install but they may not have console access in container.",
+      "fix": "Use ImportError (actual error type), log error with actionable guidance, use sys.exit(1) to fail fast at startup."
+    },
+    {
+      "id": "HIGH-6",
+      "severity": "HIGH",
+      "section": "Section 2.2",
+      "title": "ProxyFix Configuration Has IP Spoofing Risk",
+      "problem": "Applies ProxyFix based on BEHIND_PROXY config but provides no validation that PROXY_COUNT matches actual deployment topology. If misconfigured, client can spoof X-Forwarded-For headers.",
+      "impact": "Rate limiting can be bypassed, security logs show wrong IPs, IP-based restrictions fail.",
+      "fix": "Add strong warnings when PROXY_COUNT uses default, provide clear examples in .env.example for different topologies (direct, nginx→app, LB→nginx→app, CloudFlare→LB→nginx→app)."
+    },
+    {
+      "id": "HIGH-7",
+      "severity": "HIGH",
+      "section": "Section 6",
+      "title": "Health Check Endpoint Exposes Information",
+      "problem": "The /health endpoint returns database status ('connected' or 'disconnected') which reveals internal architecture. Design says 'restrict via nginx' but also 'unauthenticated for Docker health checks', creating conflict.",
+      "impact": "If exposed externally, attackers learn database is down (DDoS confirmation). If restricted by IP, Docker health checks fail (container IP changes).",
+      "fix": "Use /ping for load balancers and Docker (returns 200 or 503 with no data), /health for internal monitoring only (restrict via nginx to internal IPs). Update Dockerfile HEALTHCHECK to use /ping."
+    },
+    {
+      "id": "HIGH-8",
+      "severity": "HIGH",
+      "section": "Section 2.3",
+      "title": "Missing Template Context for Rejection Form",
+      "problem": "Design says 'Template Change in app/templates/admin/tas_detail.html' but doesn't specify where textarea should be added, what form action it submits to, or whether form includes csrf_token (required per route code).",
+      "impact": "Implementer doesn't know where to add textarea, forgets csrf_token, rejection fails with 403.",
+      "fix": "Provide complete template fragment with form tag, csrf_token macro, textarea with proper attributes, and submit button."
+    },
+    {
+      "id": "MEDIUM-1",
+      "severity": "MEDIUM",
+      "section": "Section 7.1",
+      "title": "Gunicorn Pool Validation Is a Warning, Not Error",
+      "problem": "Design validates DB_POOL_SIZE >= workers but uses server.log.error() which may not halt startup depending on Gunicorn version/config.",
+      "impact": "Validation runs but doesn't reliably prevent startup with invalid config.",
+      "fix": "Use explicit exit mechanism: raise RuntimeError() which Gunicorn will catch and exit."
+    },
+    {
+      "id": "MEDIUM-2",
+      "severity": "MEDIUM",
+      "section": "Section 8.3",
+      "title": "Nginx Static Path Placeholder Too Generic",
+      "problem": "Nginx config has placeholder path '/var/www/erpportal/app/static/' but doesn't explain how to determine correct path for systemd vs Docker, or what happens if wrong.",
+      "impact": "Implementer copies config verbatim, static files 404, CSS broken.",
+      "fix": "Add decision tree in comments explaining Docker volume mounting vs systemd full path, with test instructions (check nginx error log for 'No such file or directory')."
+    },
+    {
+      "id": "MEDIUM-3",
+      "severity": "MEDIUM",
+      "section": "Section 8.1",
+      "title": "Dockerfile Health Check No Error Context",
+      "problem": "Health check command 'curl -f http://localhost:8000/ping || exit 1' silently fails. Docker marks container unhealthy but logs provide no context.",
+      "impact": "Container marked unhealthy, operator has no idea why (app crashed? slow startup? database down?).",
+      "fix": "Add logging to health check command or use shell script that logs HTTP status code before exiting."
+    },
+    {
+      "id": "MEDIUM-4",
+      "severity": "MEDIUM",
+      "section": "Section 4.1",
+      "title": "Console Logging Default Conflicts with Gunicorn",
+      "problem": "Design sets ENABLE_CONSOLE_LOGGING=true by default, but Gunicorn also logs to console. Creates duplicate log entries for every request.",
+      "impact": "Logs are cluttered, hard to parse, storage wasted.",
+      "fix": "Change default to False, document when to enable (running without Gunicorn, Gunicorn access logs disabled, centralized logging)."
+    },
+    {
+      "id": "MEDIUM-5",
+      "severity": "MEDIUM",
+      "section": "Section 13.1",
+      "title": "Verification Script Import Fails",
+      "problem": "Script does 'from app.models import ...' but scripts/ is not in Python path, imports will fail with 'No module named app'.",
+      "impact": "Verification script can't run, operator can't validate database before deployment.",
+      "fix": "Add path manipulation at top of script: sys.path.insert(0, project_root) before imports."
+    },
+    {
+      "id": "NIT-1",
+      "severity": "NIT",
+      "section": "Section 8.1",
+      "title": "Dockerfile start-period Too Short",
+      "problem": "Health check has --start-period=30s but first container start (migrations, cold MySQL connection) may take longer.",
+      "impact": "Container marked unhealthy during legitimate startup, orchestrator restarts prematurely.",
+      "fix": "Increase start-period to 60s or make configurable."
+    },
+    {
+      "id": "NIT-2",
+      "severity": "NIT",
+      "section": "Section 7.1",
+      "title": "Gunicorn Worker Formula Not Justified",
+      "problem": "Uses formula '(2*CPU)+1 for I/O-bound apps' without explaining why or when to use different formula.",
+      "impact": "Operator blindly uses formula, app is under-provisioned or over-provisioned.",
+      "fix": "Add context explaining CPU-bound vs I/O-bound vs mixed workload formulas with reasoning."
+    },
+    {
+      "id": "NIT-3",
+      "severity": "NIT",
+      "section": "Section 2.1",
+      "title": "CSP Allows unsafe-inline for Scripts",
+      "problem": "CSP includes 'unsafe-inline' in script-src which defeats most XSS protection. Unnecessary for CDN scripts.",
+      "impact": "Inline script XSS attacks still possible despite CSP.",
+      "fix": "Remove 'unsafe-inline' and add nonce-based inline scripts if needed, or keep unsafe-inline only for styles (lower risk)."
+    },
+    {
+      "id": "NIT-4",
+      "severity": "NIT",
+      "section": "Section 12.1",
+      "title": ".env.example Missing Actual Secret Examples",
+      "problem": "Example shows 'your-secret-key-here' but doesn't show what a REAL secret looks like (length, format, entropy).",
+      "impact": "Operator sets weak predictable SECRET_KEY.",
+      "fix": "Add example with actual format (64-char hex string) and explicit DO NOT USE THIS warning."
+    },
+    {
+      "id": "NIT-5",
+      "severity": "NIT",
+      "section": "Section 9",
+      "title": "requirements.txt Missing psycopg2 for PostgreSQL",
+      "problem": "Requirements include PyMySQL for MySQL but not psycopg2 for PostgreSQL, even though design says 'Support MySQL or PostgreSQL'.",
+      "impact": "PostgreSQL deployments fail with 'No module named psycopg2'.",
+      "fix": "Add both drivers or add comment explaining to install based on database type."
+    },
+    {
+      "id": "NIT-6",
+      "severity": "NIT",
+      "section": "Section 8.2",
+      "title": "Docker Compose Missing Restart Policy Explanation",
+      "problem": "Uses 'restart: unless-stopped' without explaining when to use different policies (no, on-failure, always, unless-stopped).",
+      "impact": "Operator uses wrong policy, container restarts when it shouldn't or doesn't restart when it should.",
+      "fix": "Add comment above restart policy explaining each option and when to use it."
+    }
+  ],
+  "reviewDoc": "c:\\Users\\AtulTrivedi\\erpportalflask\\.agents\\tasks\\prod-readiness\\design-review.md",
+  "summary": {
+    "totalFindings": 19,
+    "highSeverity": 8,
+    "mediumSeverity": 5,
+    "nitSeverity": 6,
+    "verifiedAssumptions": 10,
+    "wrongAssumptions": 7,
+    "primaryBlockers": [
+      "Section 14 export fix uses non-existent model fields",
+      "Migration workflow editing instructions incomplete",
+      "Config pool settings applied incorrectly to SQLite"
+    ]
+  }
+}
