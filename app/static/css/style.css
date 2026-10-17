@@ -54,13 +54,6 @@ body {
     line-height: 1.6;
 }
 
-/* Main Content Container */
-.main-content {
-    padding: 2rem 2.5rem;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
 /* Page Header Improvements */
 .page-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -207,7 +200,7 @@ body {
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
-    overflow: hidden;
+    overflow: hidden; /* Prevents stat-decoration from causing overflow */
     display: flex;
     align-items: center;
     gap: 1.25rem;
