@@ -102,8 +102,8 @@ def employee_list():
         search = request.args.get('search', '').strip()
         department = request.args.get('department', '').strip()
         
-        # Build query
-        query = Employee.query
+        # Build query with user relationship
+        query = Employee.query.options(db.joinedload(Employee.user))
         
         # Apply filters
         if search:
