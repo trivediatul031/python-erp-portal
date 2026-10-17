@@ -61,9 +61,8 @@
                     <tr>
                         <th>TAS Number</th>
                         <th>Employee Name</th>
-                        <th>Destination</th>
+                        <th>Designation</th>
                         <th>Travel Date</th>
-                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,22 +71,13 @@
                         <tr>
                             <td><a href="{{ url_for('admin.tas_detail', tas_id=tas.tas_id) }}">{{ tas.tas_number }}</a></td>
                             <td>{{ employee.name }}</td>
-                            <td>{{ tas.travel_to }}</td>
+                            <td>{{ employee.designation or 'N/A' }}</td>
                             <td>{{ tas.travel_date_start.strftime('%Y-%m-%d') }}</td>
-                            <td>
-                                {% if tas.status == 'Pending' %}
-                                <span class="badge bg-warning">Pending</span>
-                                {% elif tas.status == 'Approved' %}
-                                <span class="badge bg-success">Approved</span>
-                                {% elif tas.status == 'Rejected' %}
-                                <span class="badge bg-danger">Rejected</span>
-                                {% endif %}
-                            </td>
                         </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="5" class="text-center text-muted">No TAS records found</td>
+                            <td colspan="4" class="text-center text-muted">No TAS records found</td>
                         </tr>
                     {% endif %}
                 </tbody>
