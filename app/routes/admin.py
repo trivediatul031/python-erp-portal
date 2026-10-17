@@ -22,6 +22,9 @@ def dashboard():
         # Total TAS count
         total_tas = TASRecord.query.count()
         
+        # Total Employees count
+        total_employees = Employee.query.count()
+        
         # Pending count
         pending_count = TASRecord.query.filter_by(status='Pending').count()
         
@@ -65,6 +68,7 @@ def dashboard():
         
         return render_template('admin/dashboard.html',
                              total_tas=total_tas,
+                             total_employees=total_employees,
                              pending_count=pending_count,
                              approved_this_month=approved_this_month,
                              rejected_count=rejected_count,
@@ -78,6 +82,7 @@ def dashboard():
         flash('Error loading dashboard', 'error')
         return render_template('admin/dashboard.html',
                              total_tas=0,
+                             total_employees=0,
                              pending_count=0,
                              approved_this_month=0,
                              rejected_count=0,

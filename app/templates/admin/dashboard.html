@@ -2,7 +2,7 @@
 
 {% block title %}Admin Dashboard - TAS ERP{% endblock %}
 
-{% block content %}
+{% block authenticated_content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Admin Dashboard</h1>
 </div>
@@ -21,39 +21,14 @@
         </div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, var(--success-green) 0%, #059669 100%);">
-        <div class="card-body text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-white-50 mb-2">PENDING APPROVALS</h6>
-                    <h2 class="mb-0">{{ pending_count }}</h2>
-                </div>
-                <div class="fs-1">⏳</div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="stat-card" style="background: linear-gradient(135deg, var(--primary-blue) 0%, #4338ca 100%);">
-        <div class="card-body text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-white-50 mb-2">APPROVED THIS MONTH</h6>
-                    <h2 class="mb-0">{{ approved_this_month }}</h2>
-                </div>
-                <div class="fs-1">✅</div>
-            </div>
-        </div>
-    </div>
-    
     <div class="stat-card" style="background: linear-gradient(135deg, var(--warning-orange) 0%, #ea580c 100%);">
         <div class="card-body text-white">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="text-white-50 mb-2">REJECTED</h6>
-                    <h2 class="mb-0">{{ rejected_count }}</h2>
-                    <small class="text-white-50">{{ rejection_rate }}% rejection rate</small>
+                    <h6 class="text-white-50 mb-2">TOTAL EMPLOYEES</h6>
+                    <h2 class="mb-0">{{ total_employees }}</h2>
                 </div>
-                <div class="fs-1">❌</div>
+                <div class="fs-1">👥</div>
             </div>
         </div>
     </div>

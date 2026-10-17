@@ -113,7 +113,7 @@
                         {% endif %}
                     {% endwith %}
 
-                    {% block content %}{% endblock %}
+                    {% block authenticated_content %}{% endblock %}
                 </div>
 
                 <!-- Footer -->
@@ -140,7 +140,7 @@
             {% endif %}
         {% endwith %}
 
-        {% block content %}{% endblock %}
+        {% block unauthenticated_content %}{% endblock %}
     </div>
     {% endif %}
 
