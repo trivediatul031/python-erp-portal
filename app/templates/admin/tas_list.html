@@ -3,89 +3,91 @@
 {% block title %}All TAS Records - TAS ERP{% endblock %}
 
 {% block authenticated_content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>All TAS Records</h2>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-list-check me-2"></i>All TAS Records</h1>
 </div>
 
 <!-- Filter Form -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Filters</h5>
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Filters</h5>
     </div>
     <div class="card-body">
-        <form method="GET" action="{{ url_for('admin.tas_list') }}">
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <label for="status" class="form-label">Status</label>
-                    <select name="status" id="status" class="form-select">
-                        <option value="">All</option>
-                        <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
-                        <option value="Approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
-                        <option value="Rejected" {% if status_filter == 'Rejected' %}selected{% endif %}>Rejected</option>
-                    </select>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="date_from" class="form-label">Date From</label>
-                    <input type="date" name="date_from" id="date_from" class="form-control" value="{{ date_from }}">
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="date_to" class="form-label">Date To</label>
-                    <input type="date" name="date_to" id="date_to" class="form-control" value="{{ date_to }}">
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="department" class="form-label">Department</label>
-                    <input type="text" name="department" id="department" class="form-control" value="{{ department }}" placeholder="Enter department">
-                </div>
+        <form method="GET" action="{{ url_for('admin.tas_list') }}" class="row g-3">
+            <div class="col-md-6">
+                <label for="department" class="form-label">Department</label>
+                <input type="text" name="department" id="department" class="form-control" 
+                       value="{{ department }}" placeholder="Enter department name">
             </div>
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Apply Filters</button>
-                <a href="{{ url_for('admin.tas_list') }}" class="btn btn-outline-secondary">Reset</a>
+            <div class="col-md-6 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i>Apply Filters
+                </button>
+                <a href="{{ url_for('admin.tas_list') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i>Reset
+                </a>
             </div>
         </form>
     </div>
 </div>
 
 <!-- TAS Records Table -->
-<div class="card">
-    <div class="card-body">
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-table me-2"></i>TAS Records</h5>
+    </div>
+    <div class="card-body p-0">
         {% if results %}
         <div class="table-responsive">
-            <table class="table table-striped data-table">
-                <thead>
+            <table class="table table-hover mb-0 data-table">
+                <thead class="table-light">
                     <tr>
-                        <th>TAS Number</th>
-                        <th>Employee Name</th>
-                        <th>Department</th>
-                        <th>Destination</th>
-                        <th>Travel Start</th>
-                        <th>Status</th>
-                        <th>Submitted At</th>
-                        <th>Actions</th>
+                        <th class="ps-4 py-3">TAS Number</th>
+                        <th class="py-3">Employee Name</th>
+                        <th class="py-3">Department</th>
+                        <th class="py-3">Travel Start</th>
+                        <th class="py-3">Submitted At</th>
+                        <th class="pe-4 py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for tas_record, employee in results %}
                     <tr>
-                        <td><a href="{{ url_for('admin.tas_detail', tas_id=tas_record.tas_id) }}">{{ tas_record.tas_number }}</a></td>
-                        <td>{{ employee.name }}</td>
-                        <td>{{ employee.department or 'N/A' }}</td>
-                        <td>{{ tas_record.travel_to }}</td>
-                        <td>{{ tas_record.travel_date_start.strftime('%Y-%m-%d') }}</td>
-                        <td>
-                            {% if tas_record.status == 'Pending' %}
-                            <span class="badge bg-warning text-dark">Pending</span>
-                            {% elif tas_record.status == 'Approved' %}
-                            <span class="badge bg-success">Approved</span>
-                            {% elif tas_record.status == 'Rejected' %}
-                            <span class="badge bg-danger">Rejected</span>
+                        <td class="ps-4 py-3">
+                            <a href="{{ url_for('admin.tas_detail', tas_id=tas_record.tas_id) }}" 
+                               class="text-decoration-none fw-semibold">
+                                <i class="bi bi-file-earmark-text me-1"></i>{{ tas_record.tas_number }}
+                            </a>
+                        </td>
+                        <td class="py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                     style="width: 32px; height: 32px; font-size: 14px; font-weight: 600;">
+                                    {{ employee.name[0] }}
+                                </div>
+                                <span>{{ employee.name }}</span>
+                            </div>
+                        </td>
+                        <td class="py-3">
+                            {% if employee.department %}
+                                <span class="badge bg-info">{{ employee.department }}</span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
                             {% endif %}
                         </td>
-                        <td>{{ tas_record.submitted_at.strftime('%Y-%m-%d %H:%M') if tas_record.submitted_at else 'N/A' }}</td>
-                        <td>
-                            <a href="{{ url_for('admin.tas_detail', tas_id=tas_record.tas_id) }}" class="btn btn-sm btn-outline-primary">View</a>
-                            {% if tas_record.status == 'Pending' %}
-                            <span class="text-muted small">| Pending Review</span>
-                            {% endif %}
+                        <td class="py-3">
+                            <i class="bi bi-calendar3 me-1 text-muted"></i>
+                            {{ tas_record.travel_date_start.strftime('%d %b %Y') }}
+                        </td>
+                        <td class="py-3">
+                            <i class="bi bi-clock me-1 text-muted"></i>
+                            {{ tas_record.submitted_at.strftime('%d %b %Y, %H:%M') if tas_record.submitted_at else 'N/A' }}
+                        </td>
+                        <td class="pe-4 py-3">
+                            <a href="{{ url_for('admin.tas_detail', tas_id=tas_record.tas_id) }}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>View
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -94,6 +96,7 @@
         </div>
         {% else %}
         <div class="text-center py-5">
+            <i class="bi bi-inbox fs-1 d-block mb-3 text-muted opacity-25"></i>
             <p class="text-muted mb-0">No TAS records found</p>
         </div>
         {% endif %}
