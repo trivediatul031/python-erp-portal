@@ -93,6 +93,54 @@ def dashboard():
                              recent_tas=[])
 
 
+@admin_bp.route('/employee_list')
+@admin_required
+def employee_list():
+    """View all employees with search and filter."""
+    try:
+        # Parse query params
+        search = request.args.get('search', '').strip()
+        department = request.args.get('department', '').strip()
+        
+        # Build query
+        query = Employee.query
+        
+        # Apply filters
+        if search:
+            search_pattern = f'%{search}%'
+            query = query.filter(
+                (Employee.emp_id.like(search_pattern)) |
+                (Employee.name.like(search_pattern)) |
+                (Employee.email.like(search_pattern))
+            )
+        
+        if department:
+            query = query.filter(Employee.department == department)
+        
+        # Get all employees
+        employees = query.order_by(Employee.emp_id).all()
+        
+        # Get unique departments for filter dropdown
+        departments = db.session.query(Employee.department).distinct().filter(
+            Employee.department.isnot(None)
+        ).order_by(Employee.department).all()
+        departments = [d[0] for d in departments]
+        
+        return render_template('admin/employee_list.html',
+                             employees=employees,
+                             departments=departments,
+                             search=search,
+                             department_filter=department)
+    except Exception as e:
+        logger.error(f"Error loading employee list: {str(e)}", exc_info=True)
+        flash('Error loading employee list', 'error')
+        return render_template('admin/employee_list.html',
+                             employees=[],
+                             departments=[],
+                             search='',
+                             department_filter='')
+
+
 @admin_bp.route('/import_employees', methods=['GET', 'POST'])
 @admin_required
 def import_employees():
