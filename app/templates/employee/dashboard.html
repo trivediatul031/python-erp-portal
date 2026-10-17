@@ -3,97 +3,89 @@
 {% block title %}Employee Dashboard - TAS ERP{% endblock %}
 
 {% block authenticated_content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Employee Dashboard</h2>
+<div class="mb-4">
+    <h2 class="dashboard-title">Employee Dashboard</h2>
 </div>
 
 <!-- Welcome Card -->
-<div class="card mb-4">
-    <div class="card-body">
-        <h5 class="card-title">Welcome, {{ current_user.employee_profile.name }}</h5>
-        <p class="text-muted mb-0">Employee ID: {{ current_user.emp_id }}</p>
-    </div>
+<div class="welcome-card mb-4">
+    <h5 class="welcome-title">Welcome, {{ current_user.employee_profile.name }}</h5>
+    <p class="welcome-subtitle">Employee ID: {{ current_user.emp_id }}</p>
 </div>
 
-<!-- Quick Actions Card -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Quick Actions</h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <a href="{{ url_for('employee.submit_tas') }}" class="btn btn-primary btn-lg w-100">
-                    <i class="bi bi-plus-circle"></i> Submit New TAS
-                </a>
-            </div>
-            <div class="col-md-6 mb-3">
-                <a href="{{ url_for('employee.tas_history') }}" class="btn btn-outline-primary btn-lg w-100">
-                    <i class="bi bi-clock-history"></i> View TAS History
-                </a>
-            </div>
+<!-- Quick Actions -->
+<div class="quick-actions-section mb-4">
+    <h6 class="section-label">Quick Actions</h6>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <a href="{{ url_for('employee.submit_tas') }}" class="action-btn action-btn-primary">
+                <i class="bi bi-plus-circle"></i>
+                <span>Submit New TAS</span>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ url_for('employee.tas_history') }}" class="action-btn action-btn-outline">
+                <i class="bi bi-clock-history"></i>
+                <span>View TAS History</span>
+            </a>
         </div>
     </div>
 </div>
 
 <!-- Summary Statistics -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card bg-gradient-primary text-white shadow-lg">
-            <div class="card-body p-4">
-                <div class="row align-items-center">
-                    <div class="col-auto">
-                        <div class="bg-white bg-opacity-25 rounded-circle p-3">
-                            <i class="bi bi-file-earmark-text-fill" style="font-size: 3rem;"></i>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <h2 class="mb-1 fw-bold">{{ total_tas }}</h2>
-                        <h5 class="mb-0 opacity-90">Total TAS Submissions</h5>
-                        <p class="mb-0 mt-2 opacity-75"><i class="bi bi-info-circle"></i> All your travel approval requests</p>
-                    </div>
-                </div>
-            </div>
+<div class="stats-section mb-4">
+    <div class="stat-card-modern">
+        <div class="stat-icon">
+            <i class="bi bi-file-earmark-text-fill"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-number">{{ total_tas }}</div>
+            <div class="stat-label">Total TAS Submissions</div>
+            <div class="stat-description">All your travel approval requests</div>
         </div>
     </div>
 </div>
 
 <!-- Recent Submissions -->
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Recent Submissions</h5>
-        <a href="{{ url_for('employee.tas_history') }}" class="btn btn-sm btn-outline-primary">View All</a>
+<div class="recent-section">
+    <div class="section-header">
+        <h6 class="section-label">Recent Submissions</h6>
+        <a href="{{ url_for('employee.tas_history') }}" class="view-all-link">View All →</a>
     </div>
-    <div class="card-body">
+    <div class="table-container">
         {% if recent_tas %}
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
+            <table class="modern-table">
+                <thead>
                     <tr>
-                        <th><i class="bi bi-hash"></i> TAS Number</th>
-                        <th><i class="bi bi-airplane"></i> Travel Type</th>
-                        <th><i class="bi bi-calendar-event"></i> Travel Date</th>
-                        <th><i class="bi bi-briefcase"></i> Purpose</th>
-                        <th><i class="bi bi-clock"></i> Submitted</th>
-                        <th class="text-center"><i class="bi bi-eye"></i> Actions</th>
+                        <th>TAS Number</th>
+                        <th>Travel Type</th>
+                        <th>Travel Date</th>
+                        <th>Purpose</th>
+                        <th>Submitted</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for tas in recent_tas %}
                     <tr>
-                        <td class="fw-bold text-primary">{{ tas.tas_number }}</td>
+                        <td class="fw-medium text-primary">{{ tas.tas_number }}</td>
                         <td>
                             {% if tas.travel_type == 'Domestic' %}
-                            <span class="badge bg-info"><i class="bi bi-geo-alt-fill"></i> Domestic</span>
+                            <span class="badge-modern badge-info">
+                                <i class="bi bi-geo-alt-fill"></i> Domestic
+                            </span>
                             {% else %}
-                            <span class="badge bg-primary"><i class="bi bi-globe"></i> International</span>
+                            <span class="badge-modern badge-primary">
+                                <i class="bi bi-globe"></i> International
+                            </span>
                             {% endif %}
                         </td>
                         <td>{{ tas.travel_date_start.strftime('%d %b %Y') }}</td>
                         <td>{{ tas.purpose }}</td>
                         <td class="text-muted">{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}</td>
-                        <td class="text-center">
-                            <a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}" class="btn btn-sm btn-outline-primary">
+                        <td>
+                            <a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}" class="btn-modern btn-modern-sm">
                                 <i class="bi bi-eye"></i> View
                             </a>
                         </td>
@@ -103,7 +95,11 @@
             </table>
         </div>
         {% else %}
-        <p class="text-muted mb-0">No TAS submissions yet. <a href="{{ url_for('employee.submit_tas') }}">Submit your first TAS</a></p>
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <p>No TAS submissions yet</p>
+            <a href="{{ url_for('employee.submit_tas') }}" class="btn btn-primary">Submit your first TAS</a>
+        </div>
         {% endif %}
     </div>
 </div>
