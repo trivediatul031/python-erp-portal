@@ -9,26 +9,38 @@
 
 <!-- Statistics Cards -->
 <div class="stats-grid mb-4">
-    <div class="stat-card" style="background: linear-gradient(135deg, var(--purple) 0%, #9333ea 100%);">
+    <div class="stat-card stat-card-modern" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
         <div class="card-body text-white">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h6 class="text-white-50 mb-2">TOTAL TAS</h6>
-                    <h2 class="mb-0">{{ total_tas }}</h2>
+                    <div class="stat-icon-bg mb-3">
+                        <i class="bi bi-file-earmark-text fs-2"></i>
+                    </div>
+                    <h6 class="text-white-50 mb-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.75rem;">Total TAS</h6>
+                    <h1 class="mb-0 fw-bold" style="font-size: 2.5rem;">{{ total_tas }}</h1>
+                    <p class="text-white-50 mb-0 mt-2" style="font-size: 0.875rem;">Travel Approval Requests</p>
                 </div>
-                <div class="fs-1">📊</div>
+                <div class="stat-icon-circle">
+                    📊
+                </div>
             </div>
         </div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, var(--warning-orange) 0%, #ea580c 100%);">
+    <div class="stat-card stat-card-modern" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
         <div class="card-body text-white">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h6 class="text-white-50 mb-2">TOTAL EMPLOYEES</h6>
-                    <h2 class="mb-0">{{ total_employees }}</h2>
+                    <div class="stat-icon-bg mb-3">
+                        <i class="bi bi-people-fill fs-2"></i>
+                    </div>
+                    <h6 class="text-white-50 mb-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.75rem;">Total Employees</h6>
+                    <h1 class="mb-0 fw-bold" style="font-size: 2.5rem;">{{ total_employees }}</h1>
+                    <p class="text-white-50 mb-0 mt-2" style="font-size: 0.875rem;">Active Staff Members</p>
                 </div>
-                <div class="fs-1">👥</div>
+                <div class="stat-icon-circle">
+                    👥
+                </div>
             </div>
         </div>
     </div>
