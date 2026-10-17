@@ -353,38 +353,48 @@ All template files (`base.html`, `admin/dashboard.html`, `employee/dashboard.htm
 
 ## Verification Instructions
 
+**Server Status**: ✅ Running on http://localhost:5000 (confirmed via netstat)
 **Server Command**: `python run.py` (from repository root `c:\Users\AtulTrivedi\erpportalflask`)
 
 **URLs to Test**:
 - Login: `http://localhost:5000/login` (admin/admin123)
 - Admin Dashboard: `http://localhost:5000/admin`
-- Employee Dashboard: `http://localhost:5000/employee` (create employee user if needed)
+- Employee Dashboard: `http://localhost:5000/employee`
 - TAS List: `http://localhost:5000/admin/tas_list`
 - TAS History: `http://localhost:5000/employee/tas_history`
 
-**Browser DevTools Testing**:
-1. Press **Ctrl+0** to reset zoom to 100%
-2. Open DevTools (F12), enable Responsive Design Mode
-3. Test at these widths: **1920px, 1366px, 1024px, 768px, 375px**
-4. For each width:
-   - Verify sidebar is 280px wide on desktop (>768px) OR hidden on mobile (≤768px)
-   - Verify page header text starts at ~312px from left edge (280px sidebar + 32px padding) on desktop
-   - Verify stat cards align with page header text, no left cutoff
-   - Verify NO horizontal scrollbar appears (`document.body.scrollWidth === document.body.clientWidth` in console)
-   - Verify all tables are fully contained or scroll internally within `.table-responsive`
-   - Verify chart scales to container width
-5. Test zoom levels: 90%, 100%, 110% (Ctrl+minus, Ctrl+0, Ctrl+plus)
-6. Verify layout remains intact at all zoom levels
+**CSS Verification Completed**: ✅ All layout contract rules implemented correctly
+- ✅ `.sidebar`: position fixed, width 280px, top 56px, z-index 1000, #fafbfc background
+- ✅ `.main-content`: margin-left 280px on desktop (>768px), 0 on mobile (≤768px)
+- ✅ `.content-area`: padding 2rem, max-width 100%, overflow-x hidden
+- ✅ `.content-area .row`: margin-left/right 0 (no negative margin bleed)
+- ✅ `.stats-grid`: display grid, gap 1.5rem, width 100%, padding 0
+- ✅ `.stat-card`: overflow hidden, padding 1.5rem, margin 0, box-sizing border-box
+- ✅ `.page-header` and `.page-header-modern`: gradient headers for pages that use them
+- ✅ `.table-responsive`: max-width 100%, overflow-x auto
+- ✅ `canvas#tasChart`: max-width 100%, height auto
+- ✅ Global: html, body max-width 100%, overflow-x hidden
+- ✅ Responsive breakpoints: @media (min-width: 769px) and @media (max-width: 768px)
 
-**Pass Criteria**:
+**Template Verification Completed**: ✅ Templates match b5f8d39 (known good state)
+- ✅ Dashboard pages use simple border-bottom header (NOT gradient - gradient is for other pages)
+- ✅ Stat cards have inline gradient backgrounds (purple, green, blue, orange)
+- ✅ Tables wrapped in `.table-responsive` divs
+- ✅ No application logic changes, no new features added
+
+**Visual Browser Testing Required**: ⚠️ Manual verification needed
+A comprehensive checklist has been created at `.agents/tasks/visual-verification-checklist.md` with detailed instructions for manual browser testing at multiple viewport widths (1920px, 1366px, 1024px, 768px, 375px) and zoom levels (90%, 100%, 110%).
+
+**Pass Criteria** (to be verified manually):
 - ✅ Zero horizontal scrolling at any tested width/zoom
 - ✅ All text fully visible, no cutoff on left or right
 - ✅ Sidebar and main content properly separated, no overlap
-- ✅ Content starts at correct position (280px + padding on desktop)
+- ✅ Content starts at correct position (280px sidebar + 2rem padding = ~312px from left on desktop)
 - ✅ Consistent spacing matching the layout contract
 - ✅ Professional appearance: clean, aligned, properly spaced
 
 **Known Behavior**:
-- Page headers with gradient background extend to content area edges (using negative margins equal to content padding)
-- Text within headers respects the 2rem content padding
+- Dashboard pages use simple header with border-bottom (matching b5f8d39 original design)
+- Stat cards have gradient backgrounds with inline styles (present since b5f8d39)
+- Gradient `.page-header` classes exist for OTHER pages (employee_list, etc.) but NOT used on dashboards
 - Mobile layout (<= 768px) shows full-width content with sidebar off-canvas
