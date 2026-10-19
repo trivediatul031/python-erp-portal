@@ -3,50 +3,552 @@
 {% block title %}Login - TAS ERP System{% endblock %}
 
 {% block unauthenticated_content %}
-<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body p-5">
-                <h2 class="text-center mb-4" style="color: var(--primary-blue);">
-                    <strong>TAS ERP Login</strong>
-                </h2>
+<div class="login-page-wrapper">
+    <div class="login-container">
+        <!-- Left Side - Branding -->
+        <div class="login-left-panel">
+            <div class="brand-content">
+                <div class="brand-logo-large">
+                    <div class="logo-circle">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                </div>
+                <h1 class="brand-title">TAS ERP System</h1>
+                <p class="brand-subtitle">Travel Approval System - Enterprise Resource Planning</p>
                 
-                <form method="POST" action="{{ url_for('auth.login') }}">
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Fast Approvals</h4>
+                            <p>Streamlined travel request processing</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Secure Platform</h4>
+                            <p>Enterprise-grade security standards</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h4>Real-time Tracking</h4>
+                            <p>Monitor all requests instantly</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-right-panel">
+            <div class="login-form-wrapper">
+                <div class="login-header">
+                    <div class="login-icon">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <h2 class="login-title">Welcome Back</h2>
+                    <p class="login-subtitle">Sign in to access your TAS ERP account</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.login') }}" class="login-form-modern">
                     {{ form.hidden_tag() }}
                     
-                    <div class="mb-3">
-                        {{ form.username.label(class="form-label") }}
-                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), 
-                           placeholder="Enter username") }}
+                    <div class="form-group-login">
+                        <label class="login-label">
+                            <i class="bi bi-person-fill"></i>
+                            {{ form.username.label.text }}
+                        </label>
+                        <div class="input-wrapper-login">
+                            {{ form.username(class="login-input" + (" input-error" if form.username.errors else ""), 
+                               placeholder="Enter username") }}
+                            <i class="bi bi-person input-icon-login"></i>
+                        </div>
                         {% if form.username.errors %}
-                            <div class="invalid-feedback">
+                            <div class="error-message-login">
+                                <i class="bi bi-exclamation-circle"></i>
                                 {% for error in form.username.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
                     </div>
                     
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), 
-                           placeholder="Enter password") }}
+                    <div class="form-group-login">
+                        <label class="login-label">
+                            <i class="bi bi-lock-fill"></i>
+                            {{ form.password.label.text }}
+                        </label>
+                        <div class="input-wrapper-login">
+                            {{ form.password(class="login-input" + (" input-error" if form.password.errors else ""), 
+                               placeholder="Enter password") }}
+                            <i class="bi bi-lock input-icon-login"></i>
+                        </div>
                         {% if form.password.errors %}
-                            <div class="invalid-feedback">
+                            <div class="error-message-login">
+                                <i class="bi bi-exclamation-circle"></i>
                                 {% for error in form.password.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
                     </div>
                     
-                    <div class="d-grid">
-                        {{ form.submit(class="btn btn-primary btn-lg", 
-                           style="background-color: var(--primary-blue); border: none;") }}
-                    </div>
+                    <button type="submit" class="btn-login-submit">
+                        <span class="btn-text-login">Sign In</span>
+                        <i class="bi bi-arrow-right btn-arrow-login"></i>
+                    </button>
                 </form>
                 
-                <div class="text-center mt-3">
-                    <small class="text-muted">Contact IT support for login issues</small>
+                <div class="login-footer">
+                    <div class="support-info">
+                        <i class="bi bi-headset"></i>
+                        <span>Contact IT support for login issues</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+/* Login Page Wrapper */
+.login-page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-page-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 20s infinite ease-in-out;
+}
+
+.login-page-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 15s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(30px, -30px) scale(1.1);
+    }
+}
+
+/* Login Container */
+.login-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    max-width: 1200px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+/* Left Panel - Branding */
+.login-left-panel {
+    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+    padding: 4rem 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-left-panel::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.login-left-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -150px;
+    right: -150px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.brand-content {
+    position: relative;
+    z-index: 1;
+}
+
+.brand-logo-large {
+    margin-bottom: 2rem;
+}
+
+.logo-circle {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    animation: pulse 3s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.logo-circle i {
+    font-size: 3.5rem;
+    color: #ffffff;
+}
+
+.brand-title {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.5px;
+}
+
+.brand-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.05rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+}
+
+/* Feature List */
+.feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(8px);
+}
+
+.feature-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.feature-icon i {
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+.feature-text h4 {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+}
+
+.feature-text p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Right Panel - Login Form */
+.login-right-panel {
+    background: #ffffff;
+    padding: 4rem 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Login Header */
+.login-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.login-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.login-icon i {
+    font-size: 2.5rem;
+    color: #5b5fff;
+}
+
+.login-title {
+    color: #1f2937;
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+}
+
+.login-subtitle {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Login Form */
+.login-form-modern {
+    margin-bottom: 2rem;
+}
+
+.form-group-login {
+    margin-bottom: 1.75rem;
+}
+
+.login-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.login-label i {
+    color: #5b5fff;
+    font-size: 1rem;
+}
+
+.input-wrapper-login {
+    position: relative;
+}
+
+.login-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: #374151;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: #5b5fff;
+    box-shadow: 0 0 0 4px rgba(91, 95, 255, 0.1);
+}
+
+.login-input::placeholder {
+    color: #9ca3af;
+}
+
+.input-icon-login {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 1.1rem;
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.login-input:focus ~ .input-icon-login {
+    color: #5b5fff;
+}
+
+.input-error {
+    border-color: #ef4444 !important;
+}
+
+.input-error:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+}
+
+.error-message-login {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #fef2f2;
+    border-radius: 8px;
+    border-left: 3px solid #ef4444;
+}
+
+/* Submit Button */
+.btn-login-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+    border: none;
+    color: #ffffff;
+    padding: 1.15rem 2rem;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: 0 8px 24px rgba(91, 95, 255, 0.3);
+    margin-top: 2rem;
+}
+
+.btn-login-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(91, 95, 255, 0.4);
+}
+
+.btn-login-submit:active {
+    transform: translateY(-1px);
+}
+
+.btn-text-login {
+    flex: 1;
+}
+
+.btn-arrow-login {
+    font-size: 1.25rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-login-submit:hover .btn-arrow-login {
+    transform: translateX(4px);
+}
+
+/* Login Footer */
+.login-footer {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 2px solid #f3f4f6;
+}
+
+.support-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.support-info i {
+    color: #5b5fff;
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .login-container {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+    }
+
+    .login-left-panel {
+        display: none;
+    }
+
+    .login-right-panel {
+        padding: 3rem 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-page-wrapper {
+        padding: 1rem;
+    }
+
+    .login-container {
+        border-radius: 20px;
+    }
+
+    .login-right-panel {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .login-title {
+        font-size: 1.75rem;
+    }
+
+    .brand-title {
+        font-size: 2rem;
+    }
+}
+</style>
 {% endblock %}
