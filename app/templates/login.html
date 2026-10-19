@@ -17,7 +17,7 @@
                     <div class="form-field">
                         <label class="field-label">{{ form.username.label.text }}</label>
                         {{ form.username(class="field-input" + (" input-error" if form.username.errors else ""), 
-                           placeholder="you@gov.in") }}
+                           placeholder="username") }}
                         {% if form.username.errors %}
                             <div class="field-error">
                                 {% for error in form.username.errors %}{{ error }}{% endfor %}
