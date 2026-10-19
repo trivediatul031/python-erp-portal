@@ -13,14 +13,14 @@
         
         <!-- Global Search Bar -->
         <div class="global-search-wrapper">
-            <form action="{{ url_for('admin.search') }}" method="GET" class="global-search-form">
+            <form action="{{ url_for('admin.employee_list') }}" method="GET" class="global-search-form">
                 <div class="search-input-group">
                     <i class="bi bi-search search-icon"></i>
                     <input type="text" 
-                           name="q" 
+                           name="search" 
                            class="global-search-input" 
-                           placeholder="Search employees, TAS records, departments..."
-                           value="{{ request.args.get('q', '') }}">
+                           placeholder="Search employees, departments..."
+                           value="{{ request.args.get('search', '') }}">
                     <button type="submit" class="search-submit-btn">
                         <i class="bi bi-arrow-right"></i>
                     </button>
