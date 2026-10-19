@@ -1017,3 +1017,230 @@ body {
 .sidebar-modern::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
 }
+
+
+/* ========================================
+   Modern Header/Navbar Styles
+   ======================================== */
+
+.navbar-modern {
+    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+    box-shadow: 0 2px 12px rgba(91, 95, 255, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.875rem 1.5rem;
+    max-width: 100%;
+}
+
+/* Brand Section */
+.navbar-brand-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.brand-icon {
+    font-size: 1.75rem;
+    color: #fbbf24;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.brand-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+.brand-badge {
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* User Profile Section */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-profile-dropdown {
+    position: relative;
+}
+
+.user-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.user-profile-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: white;
+    color: #5b5fff;
+    border-radius: 50%;
+}
+
+.user-avatar i {
+    font-size: 1.5rem;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.125rem;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.dropdown-arrow {
+    font-size: 0.875rem;
+    transition: transform 0.3s ease;
+}
+
+.user-profile-btn[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Modern Dropdown Menu */
+.dropdown-menu-modern {
+    min-width: 240px;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-header {
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.dropdown-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.dropdown-user-info strong {
+    color: #1a202c;
+    font-size: 1rem;
+}
+
+.dropdown-user-info small {
+    font-size: 0.875rem;
+}
+
+.dropdown-item-modern {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #4a5568;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item-modern i {
+    font-size: 1.125rem;
+    color: #718096;
+}
+
+.dropdown-item-modern:hover {
+    background: #f7fafc;
+    color: #5b5fff;
+}
+
+.dropdown-item-modern:hover i {
+    color: #5b5fff;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .navbar-container {
+        padding: 0.75rem 1rem;
+    }
+    
+    .brand-text {
+        font-size: 1.25rem;
+    }
+    
+    .brand-badge {
+        display: none;
+    }
+    
+    .user-info {
+        display: none;
+    }
+    
+    .user-profile-btn {
+        padding: 0.5rem;
+        border-radius: 50%;
+    }
+    
+    .dropdown-arrow {
+        display: none;
+    }
+}
+
+/* Adjust sidebar for new header height */
+.sidebar-modern {
+    min-height: calc(100vh - 64px);
+}

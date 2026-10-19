@@ -21,27 +21,43 @@
 </head>
 <body>
     {% if current_user.is_authenticated %}
-    <!-- Top Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-blue);">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <strong>TAS ERP</strong>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle"></i> {{ current_user.username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
+    <!-- Modern Top Navigation Bar -->
+    <nav class="navbar-modern">
+        <div class="navbar-container">
+            <div class="navbar-brand-section">
+                <i class="bi bi-lightning-charge-fill brand-icon"></i>
+                <span class="brand-text">TAS ERP</span>
+                <span class="brand-badge">Portal</span>
+            </div>
+            
+            <div class="navbar-actions">
+                <div class="user-profile-dropdown">
+                    <button class="user-profile-btn" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-avatar">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">{{ current_user.username }}</span>
+                            <span class="user-role">{{ current_user.role|capitalize }}</span>
+                        </div>
+                        <i class="bi bi-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-modern dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li class="dropdown-header">
+                            <div class="dropdown-user-info">
+                                <strong>{{ current_user.username }}</strong>
+                                <small class="text-muted">{{ current_user.role|capitalize }}</small>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item-modern" href="{{ url_for('auth.logout') }}">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
