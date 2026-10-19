@@ -3,59 +3,80 @@
 {% block title %}Employee Dashboard - TAS ERP{% endblock %}
 
 {% block authenticated_content %}
-<div class="mb-4">
-    <h2 class="dashboard-title">Employee Dashboard</h2>
-</div>
-
-<!-- Welcome Card -->
-<div class="welcome-card mb-4">
-    <h5 class="welcome-title">Welcome, {{ current_user.employee_profile.name }}</h5>
-    <p class="welcome-subtitle">Employee ID: {{ current_user.emp_id }}</p>
-</div>
-
-<!-- Quick Actions -->
-<div class="quick-actions-section mb-4">
-    <h6 class="section-label">Quick Actions</h6>
-    <div class="row g-3">
-        <div class="col-md-6">
-            <a href="{{ url_for('employee.submit_tas') }}" class="action-btn action-btn-primary">
-                <i class="bi bi-plus-circle"></i>
-                <span>Submit New TAS</span>
-            </a>
+<div class="employee-dashboard-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="welcome-content">
+            <h2 class="welcome-greeting">Welcome, {{ current_user.employee_profile.name }}</h2>
+            <p class="welcome-subtitle">
+                <i class="bi bi-person-badge"></i>
+                <span>Employee ID: {{ current_user.emp_id }}</span>
+                <span class="separator">•</span>
+                <i class="bi bi-building"></i>
+                <span>{{ current_user.employee_profile.department }}</span>
+            </p>
         </div>
-        <div class="col-md-6">
-            <a href="{{ url_for('employee.tas_history') }}" class="action-btn action-btn-outline">
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-header">
+        <h6 class="section-label">QUICK ACTIONS</h6>
+    </div>
+    <div class="quick-actions-grid">
+        <a href="{{ url_for('employee.submit_tas') }}" class="action-card action-card-primary">
+            <div class="action-card-icon">
+                <i class="bi bi-plus-circle-fill"></i>
+            </div>
+            <div class="action-card-content">
+                <span class="action-card-title">Submit New TAS</span>
+                <span class="action-card-subtitle">Create travel approval request</span>
+            </div>
+            <i class="bi bi-arrow-right action-card-arrow"></i>
+        </a>
+        
+        <a href="{{ url_for('employee.tas_history') }}" class="action-card action-card-secondary">
+            <div class="action-card-icon">
                 <i class="bi bi-clock-history"></i>
-                <span>View TAS History</span>
+            </div>
+            <div class="action-card-content">
+                <span class="action-card-title">View TAS History</span>
+                <span class="action-card-subtitle">Track your submissions</span>
+            </div>
+            <i class="bi bi-arrow-right action-card-arrow"></i>
+        </a>
+    </div>
+
+    <!-- Statistics Card -->
+    <div class="stats-card-dashboard">
+        <div class="stats-card-header">
+            <div class="stats-icon-wrapper">
+                <i class="bi bi-file-earmark-text-fill"></i>
+            </div>
+            <div class="stats-info">
+                <div class="stats-number">{{ total_tas }}</div>
+                <div class="stats-label">Total TAS Submissions</div>
+            </div>
+        </div>
+        <div class="stats-card-footer">
+            <i class="bi bi-info-circle"></i>
+            <span>All your travel approval requests</span>
+        </div>
+    </div>
+
+    <!-- Recent Submissions -->
+    <div class="recent-submissions-section">
+        <div class="section-header-dashboard">
+            <div>
+                <h6 class="section-label">RECENT SUBMISSIONS</h6>
+            </div>
+            <a href="{{ url_for('employee.tas_history') }}" class="view-all-link-dashboard">
+                View All <i class="bi bi-arrow-right"></i>
             </a>
         </div>
-    </div>
-</div>
 
-<!-- Summary Statistics -->
-<div class="stats-section mb-4">
-    <div class="stat-card-modern">
-        <div class="stat-icon">
-            <i class="bi bi-file-earmark-text-fill"></i>
-        </div>
-        <div class="stat-content">
-            <div class="stat-number">{{ total_tas }}</div>
-            <div class="stat-label">Total TAS Submissions</div>
-            <div class="stat-description">All your travel approval requests</div>
-        </div>
-    </div>
-</div>
-
-<!-- Recent Submissions -->
-<div class="recent-section">
-    <div class="section-header">
-        <h6 class="section-label">Recent Submissions</h6>
-        <a href="{{ url_for('employee.tas_history') }}" class="view-all-link">View All →</a>
-    </div>
-    <div class="table-container">
         {% if recent_tas %}
-        <div class="table-responsive">
-            <table class="modern-table">
+        <div class="submissions-table-wrapper">
+            <table class="submissions-table">
                 <thead>
                     <tr>
                         <th>TAS Number</th>
@@ -69,24 +90,36 @@
                 <tbody>
                     {% for tas in recent_tas %}
                     <tr>
-                        <td class="fw-medium text-primary">{{ tas.tas_number }}</td>
+                        <td>
+                            <span class="tas-number-link">{{ tas.tas_number }}</span>
+                        </td>
                         <td>
                             {% if tas.travel_type == 'Domestic' %}
-                            <span class="badge-modern badge-info">
-                                <i class="bi bi-geo-alt-fill"></i> Domestic
-                            </span>
+                                <span class="type-badge type-domestic">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    Domestic
+                                </span>
                             {% else %}
-                            <span class="badge-modern badge-primary">
-                                <i class="bi bi-globe"></i> International
-                            </span>
+                                <span class="type-badge type-international">
+                                    <i class="bi bi-globe"></i>
+                                    International
+                                </span>
                             {% endif %}
                         </td>
-                        <td>{{ tas.travel_date_start.strftime('%d %b %Y') }}</td>
-                        <td>{{ tas.purpose }}</td>
-                        <td class="text-muted">{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}</td>
                         <td>
-                            <a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}" class="btn-modern btn-modern-sm">
-                                <i class="bi bi-eye"></i> View
+                            <span class="date-text">
+                                <i class="bi bi-calendar-event"></i>
+                                {{ tas.travel_date_start.strftime('%d %b %Y') }}
+                            </span>
+                        </td>
+                        <td>{{ tas.purpose }}</td>
+                        <td>
+                            <span class="submitted-date">{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}" class="view-btn-table">
+                                <i class="bi bi-eye"></i>
+                                View
                             </a>
                         </td>
                     </tr>
@@ -95,10 +128,15 @@
             </table>
         </div>
         {% else %}
-        <div class="empty-state">
-            <i class="bi bi-inbox"></i>
-            <p>No TAS submissions yet</p>
-            <a href="{{ url_for('employee.submit_tas') }}" class="btn btn-primary">Submit your first TAS</a>
+        <div class="empty-state-dashboard">
+            <div class="empty-icon">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <p class="empty-text">No TAS submissions yet</p>
+            <a href="{{ url_for('employee.submit_tas') }}" class="empty-action-btn">
+                <i class="bi bi-plus-circle"></i>
+                Submit your first TAS
+            </a>
         </div>
         {% endif %}
     </div>

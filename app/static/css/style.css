@@ -1650,3 +1650,410 @@ body {
         font-size: 1.5rem;
     }
 }
+
+
+/* ========================================
+   Enhanced Employee Dashboard
+   ======================================== */
+
+.employee-dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Welcome Section */
+.welcome-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+
+.welcome-greeting {
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.welcome-subtitle {
+    color: white;
+    font-size: 1rem;
+    opacity: 0.95;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.welcome-subtitle i {
+    font-size: 1.1rem;
+}
+
+.separator {
+    opacity: 0.6;
+}
+
+/* Quick Actions Header */
+.quick-actions-header {
+    margin-bottom: 1rem;
+}
+
+/* Quick Actions Grid */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.action-card {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #5b5fff 0%, #7c3aed 100%);
+    transition: width 0.3s ease;
+}
+
+.action-card:hover {
+    border-color: #5b5fff;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(91, 95, 255, 0.15);
+}
+
+.action-card:hover::before {
+    width: 100%;
+    opacity: 0.05;
+}
+
+.action-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.action-card-primary .action-card-icon {
+    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+    color: white;
+}
+
+.action-card-secondary .action-card-icon {
+    background: #f7fafc;
+    color: #5b5fff;
+    border: 2px solid #e2e8f0;
+}
+
+.action-card-icon i {
+    font-size: 1.75rem;
+}
+
+.action-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.action-card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.action-card-subtitle {
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+.action-card-arrow {
+    font-size: 1.5rem;
+    color: #cbd5e0;
+    transition: all 0.3s ease;
+}
+
+.action-card:hover .action-card-arrow {
+    color: #5b5fff;
+    transform: translateX(4px);
+}
+
+/* Stats Card Dashboard */
+.stats-card-dashboard {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.stats-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.stats-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+    border-radius: 16px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.stats-icon-wrapper i {
+    font-size: 2.5rem;
+}
+
+.stats-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stats-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1a202c;
+    line-height: 1;
+}
+
+.stats-label {
+    font-size: 1.125rem;
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.stats-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    color: #718096;
+    font-size: 0.875rem;
+}
+
+.stats-card-footer i {
+    font-size: 1rem;
+}
+
+/* Recent Submissions Section */
+.recent-submissions-section {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-header-dashboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.view-all-link-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #5b5fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.view-all-link-dashboard:hover {
+    color: #4845ff;
+    gap: 0.75rem;
+}
+
+/* Submissions Table */
+.submissions-table-wrapper {
+    overflow-x: auto;
+}
+
+.submissions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.submissions-table thead th {
+    background: #f7fafc;
+    color: #4a5568;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.submissions-table tbody td {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+    color: #2d3748;
+    font-size: 0.95rem;
+}
+
+.submissions-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.submissions-table tbody tr:hover {
+    background: #f7fafc;
+}
+
+.tas-number-link {
+    font-weight: 700;
+    color: #5b5fff;
+}
+
+.type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.875rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.type-domestic {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.type-international {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.date-text {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #4a5568;
+}
+
+.date-text i {
+    color: #718096;
+}
+
+.submitted-date {
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.view-btn-table {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    color: #5b5fff;
+    border: 1px solid #5b5fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.view-btn-table:hover {
+    background: #5b5fff;
+    color: white;
+}
+
+/* Empty State Dashboard */
+.empty-state-dashboard {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #cbd5e0;
+    margin-bottom: 1.5rem;
+}
+
+.empty-text {
+    font-size: 1.125rem;
+    color: #718096;
+    margin-bottom: 2rem;
+}
+
+.empty-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.empty-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(91, 95, 255, 0.3);
+    color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .welcome-section {
+        padding: 1.5rem;
+    }
+    
+    .welcome-greeting {
+        font-size: 1.5rem;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stats-number {
+        font-size: 2.5rem;
+    }
+}
