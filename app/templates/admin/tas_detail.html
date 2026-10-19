@@ -3,194 +3,163 @@
 {% block title %}TAS Details - {{ tas_record.tas_number }} - TAS ERP{% endblock %}
 
 {% block authenticated_content %}
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2"><i class="bi bi-file-earmark-text me-2"></i>TAS Details - {{ tas_record.tas_number }}</h1>
-    <a href="{{ url_for('admin.tas_list') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i>Back to List
-    </a>
-</div>
-
-<!-- Employee Info Card -->
-<div class="card mb-4 shadow-sm">
-    <div class="card-header bg-white">
-        <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Employee Information</h5>
+<div class="tas-detail-container">
+    <!-- Header -->
+    <div class="detail-header">
+        <div class="header-left">
+            <h2 class="detail-title">TAS Details</h2>
+            <span class="tas-number-badge">{{ tas_record.tas_number }}</span>
+        </div>
+        <a href="{{ url_for('admin.tas_list') }}" class="btn-back-detail">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
     </div>
-    <div class="card-body">
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Name</label>
-                    <p class="fw-semibold mb-0">{{ employee.name }}</p>
-                </div>
+
+    <!-- Employee Information Section -->
+    <div class="detail-section">
+        <div class="section-header-modern">
+            <i class="bi bi-person-badge-fill"></i>
+            <h3>Employee Information</h3>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">NAME</span>
+                <span class="detail-value">{{ employee.name }}</span>
             </div>
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Email</label>
-                    <p class="mb-0">{{ employee.email }}</p>
-                </div>
+            <div class="detail-item">
+                <span class="detail-label">EMAIL</span>
+                <span class="detail-value">{{ employee.email }}</span>
             </div>
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Department</label>
-                    <p class="mb-0">{{ employee.department or 'N/A' }}</p>
-                </div>
+            <div class="detail-item">
+                <span class="detail-label">DEPARTMENT</span>
+                <span class="detail-value">{{ employee.department or 'N/A' }}</span>
             </div>
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Designation</label>
-                    <p class="mb-0">{{ employee.designation or 'N/A' }}</p>
-                </div>
+            <div class="detail-item">
+                <span class="detail-label">DESIGNATION</span>
+                <span class="detail-value">{{ employee.designation or 'N/A' }}</span>
             </div>
         </div>
     </div>
-</div>
 
-<!-- TAS Info Card -->
-<div class="card mb-4 shadow-sm">
-    <div class="card-header bg-white">
-        <h5 class="mb-0"><i class="bi bi-airplane me-2"></i>Travel Information</h5>
-    </div>
-    <div class="card-body">
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">TAS Number</label>
-                    <p class="fw-bold fs-5 mb-0 text-primary">{{ tas_record.tas_number }}</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Submitted Date</label>
-                    <p class="mb-0">
-                        <i class="bi bi-clock me-1 text-muted"></i>
-                        {{ tas_record.submitted_at.strftime('%d %b %Y, %H:%M') if tas_record.submitted_at else 'N/A' }}
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Travel Date</label>
-                    <p class="mb-0">
-                        <i class="bi bi-calendar3 me-1 text-muted"></i>
-                        {{ tas_record.travel_date_start.strftime('%d %b %Y') }}
-                    </p>
-                </div>
-            </div>
+    <!-- Travel Information Section -->
+    <div class="detail-section">
+        <div class="section-header-modern">
+            <i class="bi bi-airplane-fill"></i>
+            <h3>Travel Information</h3>
         </div>
         
-        <div class="row g-4 mb-4">
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Employee Name</label>
-                    <p class="mb-0">{{ tas_record.emp_name }}</p>
+        <!-- Key Info Row -->
+        <div class="key-info-row">
+            <div class="key-info-card">
+                <span class="key-info-label">TAS NUMBER</span>
+                <span class="key-info-value text-primary">{{ tas_record.tas_number }}</span>
+            </div>
+            <div class="key-info-card">
+                <i class="bi bi-clock"></i>
+                <div>
+                    <span class="key-info-label">SUBMITTED DATE</span>
+                    <span class="key-info-value">{{ tas_record.submitted_at.strftime('%d %b %Y, %I:%M %p') if tas_record.submitted_at else 'N/A' }}</span>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Department</label>
-                    <p class="mb-0">{{ tas_record.department }}</p>
+            <div class="key-info-card">
+                <i class="bi bi-calendar-event"></i>
+                <div>
+                    <span class="key-info-label">TRAVEL DATE</span>
+                    <span class="key-info-value">{{ tas_record.travel_date_start.strftime('%d %b %Y') }}</span>
                 </div>
             </div>
         </div>
-        
-        <div class="row g-4 mb-4">
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Travel Type</label>
-                    <p class="mb-0">
-                        {% if tas_record.travel_type == 'Domestic' %}
-                            <span class="badge rounded-pill bg-success">
-                                <i class="bi bi-house-door me-1"></i>Domestic
-                            </span>
-                        {% elif tas_record.travel_type == 'International' %}
-                            <span class="badge rounded-pill bg-info">
-                                <i class="bi bi-globe me-1"></i>International
-                            </span>
-                        {% else %}
-                            {{ tas_record.travel_type or 'N/A' }}
-                        {% endif %}
-                    </p>
-                </div>
+
+        <!-- Travel Details Grid -->
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">EMPLOYEE NAME</span>
+                <span class="detail-value">{{ tas_record.emp_name }}</span>
             </div>
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Travel Mode</label>
-                    <p class="mb-0">
-                        <span class="badge rounded-pill bg-secondary">
-                            <i class="bi bi-{{ 'airplane' if tas_record.travel_mode == 'Air' else 'train-front' if tas_record.travel_mode == 'Rail' else 'bus-front' }} me-1"></i>
-                            {{ tas_record.travel_mode or 'N/A' }}
+            <div class="detail-item">
+                <span class="detail-label">DEPARTMENT</span>
+                <span class="detail-value">{{ tas_record.department }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">TRAVEL TYPE</span>
+                <div class="detail-value">
+                    {% if tas_record.travel_type == 'Domestic' %}
+                        <span class="badge-pill badge-success">
+                            <i class="bi bi-geo-alt-fill"></i> Domestic
                         </span>
-                    </p>
+                    {% else %}
+                        <span class="badge-pill badge-primary">
+                            <i class="bi bi-globe"></i> International
+                        </span>
+                    {% endif %}
                 </div>
             </div>
-        </div>
-        
-        <div class="row g-4">
-            <div class="col-12">
-                <div class="info-item">
-                    <label class="text-muted small mb-2"><i class="bi bi-chat-left-text me-1"></i>Purpose</label>
-                    <div class="border rounded p-3 bg-light">
-                        {{ tas_record.purpose }}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% if tas_record.status in ['Approved', 'Rejected'] and tas_record.reviewed_at %}
-<!-- Review Info Card -->
-<div class="card shadow-sm">
-    <div class="card-header bg-white">
-        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Review Information</h5>
-    </div>
-    <div class="card-body">
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Reviewed Date</label>
-                    <p class="mb-0">
-                        {{ tas_record.reviewed_at.strftime('%d %b %Y, %H:%M') if tas_record.reviewed_at else 'N/A' }}
-                    </p>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="info-item">
-                    <label class="text-muted small mb-1">Reviewed By</label>
-                    <p class="mb-0">
-                        {% if reviewer_info %}
-                            {{ reviewer_info.name }}
+            <div class="detail-item">
+                <span class="detail-label">TRAVEL MODE</span>
+                <div class="detail-value">
+                    <span class="badge-pill badge-secondary">
+                        {% if tas_record.travel_mode == 'Air' %}
+                            <i class="bi bi-airplane-fill"></i>
+                        {% elif tas_record.travel_mode == 'Rail' %}
+                            <i class="bi bi-train-front-fill"></i>
+                        {% elif tas_record.travel_mode == 'Bus' %}
+                            <i class="bi bi-bus-front-fill"></i>
                         {% else %}
-                            N/A
+                            <i class="bi bi-car-front-fill"></i>
                         {% endif %}
-                    </p>
+                        {{ tas_record.travel_mode or 'N/A' }}
+                    </span>
                 </div>
             </div>
-            {% if tas_record.status == 'Rejected' and tas_record.rejection_reason %}
-            <div class="col-12">
-                <div class="info-item">
-                    <label class="text-muted small mb-2">Rejection Reason</label>
-                    <div class="alert alert-danger mb-0">
-                        {{ tas_record.rejection_reason }}
-                    </div>
-                </div>
+        </div>
+
+        <!-- Purpose Box -->
+        <div class="purpose-box">
+            <div class="purpose-header">
+                <i class="bi bi-briefcase-fill"></i>
+                <span>PURPOSE</span>
             </div>
-            {% endif %}
+            <div class="purpose-content">
+                {{ tas_record.purpose }}
+            </div>
         </div>
     </div>
+
+    {% if tas_record.status in ['Approved', 'Rejected'] and tas_record.reviewed_at %}
+    <!-- Review Information Section -->
+    <div class="detail-section">
+        <div class="section-header-modern">
+            <i class="bi bi-check-circle-fill"></i>
+            <h3>Review Information</h3>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">REVIEWED DATE</span>
+                <span class="detail-value">{{ tas_record.reviewed_at.strftime('%d %b %Y, %I:%M %p') if tas_record.reviewed_at else 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">REVIEWED BY</span>
+                <span class="detail-value">
+                    {% if reviewer_info %}
+                        {{ reviewer_info.name }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        {% if tas_record.status == 'Rejected' and tas_record.rejection_reason %}
+        <div class="rejection-box">
+            <div class="rejection-header">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>REJECTION REASON</span>
+            </div>
+            <div class="rejection-content">
+                {{ tas_record.rejection_reason }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
-{% endif %}
-
-<style>
-.info-item label {
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 0.75rem;
-}
-
-.info-item p {
-    font-size: 1rem;
-}
-</style>
 {% endblock %}
