@@ -885,3 +885,135 @@ body {
     outline: 2px solid #5b5fff;
     outline-offset: 2px;
 }
+
+
+/* ========================================
+   Modern Sidebar Styles
+   ======================================== */
+
+.sidebar-modern {
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    border-right: 1px solid #e2e8f0;
+    min-height: calc(100vh - 56px);
+    padding: 0;
+}
+
+.sidebar-nav {
+    padding: 1rem 0.75rem;
+    gap: 0.5rem;
+}
+
+.sidebar-nav .nav-item {
+    margin-bottom: 0.25rem;
+}
+
+.nav-link-modern {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.875rem 1rem;
+    color: #4a5568;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link-modern i {
+    font-size: 1.25rem;
+    width: 24px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.nav-link-modern span {
+    flex: 1;
+    transition: all 0.2s ease;
+}
+
+/* Hover state */
+.nav-link-modern:hover {
+    background: rgba(91, 95, 255, 0.08);
+    color: #5b5fff;
+    transform: translateX(4px);
+}
+
+.nav-link-modern:hover i {
+    transform: scale(1.1);
+}
+
+/* Active state */
+.nav-link-modern.active {
+    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(91, 95, 255, 0.3);
+}
+
+.nav-link-modern.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 70%;
+    background: white;
+    border-radius: 0 4px 4px 0;
+}
+
+.nav-link-modern.active i {
+    color: white;
+}
+
+/* Focus state for accessibility */
+.nav-link-modern:focus-visible {
+    outline: 2px solid #5b5fff;
+    outline-offset: 2px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 767px) {
+    .sidebar-modern {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        min-height: auto;
+    }
+    
+    .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0.75rem;
+    }
+    
+    .sidebar-nav .nav-item {
+        margin-bottom: 0;
+        margin-right: 0.5rem;
+    }
+    
+    .nav-link-modern {
+        white-space: nowrap;
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Scrollbar styling for sidebar */
+.sidebar-modern::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-modern::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-modern::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+}
+
+.sidebar-modern::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}

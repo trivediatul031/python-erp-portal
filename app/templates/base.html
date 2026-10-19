@@ -49,57 +49,65 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar-modern">
                 <div class="position-sticky pt-3">
-                    <ul class="nav flex-column">
+                    <ul class="nav flex-column sidebar-nav">
                         {% if current_user.role == 'admin' %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" 
+                            <a class="nav-link-modern {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" 
                                href="{{ url_for('admin.dashboard') }}">
-                                Dashboard
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Dashboard</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'admin.employee_list' %}active{% endif %}" 
+                            <a class="nav-link-modern {% if request.endpoint == 'admin.employee_list' %}active{% endif %}" 
                                href="{{ url_for('admin.employee_list') }}">
-                                Employee List
+                                <i class="bi bi-people-fill"></i>
+                                <span>Employee List</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'admin.import_employees' %}active{% endif %}" 
+                            <a class="nav-link-modern {% if request.endpoint == 'admin.import_employees' %}active{% endif %}" 
                                href="{{ url_for('admin.import_employees') }}">
-                                Import Employees
+                                <i class="bi bi-upload"></i>
+                                <span>Import Employees</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'admin.tas_list' %}active{% endif %}" 
+                            <a class="nav-link-modern {% if request.endpoint == 'admin.tas_list' %}active{% endif %}" 
                                href="{{ url_for('admin.tas_list') }}">
-                                TAS Records
+                                <i class="bi bi-file-earmark-text"></i>
+                                <span>TAS Records</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'admin.user_management' %}active{% endif %}" 
+                            <a class="nav-link-modern {% if request.endpoint == 'admin.user_management' %}active{% endif %}" 
                                href="{{ url_for('admin.user_management') }}">
-                                User Management
+                                <i class="bi bi-gear-fill"></i>
+                                <span>User Management</span>
                             </a>
                         </li>
                         {% elif current_user.role == 'employee' %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'employee.dashboard' %}active{% endif %}" 
+                            <a class="nav-link-modern {% if request.endpoint == 'employee.dashboard' %}active{% endif %}" 
                                href="{{ url_for('employee.dashboard') }}">
-                                Dashboard
+                                <i class="bi bi-house-door-fill"></i>
+                                <span>Dashboard</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'employee.submit_tas' %}active{% endif %}" 
+                            <a class="nav-link-modern {% if request.endpoint == 'employee.submit_tas' %}active{% endif %}" 
                                href="{{ url_for('employee.submit_tas') }}">
-                                Submit TAS
+                                <i class="bi bi-plus-circle-fill"></i>
+                                <span>Submit TAS</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'employee.tas_history' %}active{% endif %}" 
+                            <a class="nav-link-modern {% if request.endpoint == 'employee.tas_history' %}active{% endif %}" 
                                href="{{ url_for('employee.tas_history') }}">
-                                My TAS History
+                                <i class="bi bi-clock-history"></i>
+                                <span>My TAS History</span>
                             </a>
                         </li>
                         {% endif %}
