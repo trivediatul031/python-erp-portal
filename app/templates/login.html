@@ -3,431 +3,164 @@
 {% block title %}Login - TAS ERP System{% endblock %}
 
 {% block unauthenticated_content %}
-<div class="login-page-wrapper">
-    <div class="login-container">
-        <!-- Left Side - Branding -->
-        <div class="login-left-panel">
-            <div class="brand-content">
-                <div class="brand-logo-large">
-                    <div class="logo-circle">
-                        <i class="bi bi-lightning-charge-fill"></i>
-                    </div>
-                </div>
-                <h1 class="brand-title">TAS ERP System</h1>
-                <p class="brand-subtitle">Travel Approval System - Enterprise Resource Planning</p>
+<div class="simple-login-wrapper">
+    <div class="simple-login-container">
+        <!-- Left Side - Login Form -->
+        <div class="login-form-side">
+            <div class="login-box">
+                <h1 class="login-heading">Login</h1>
+                <p class="login-desc">Sign in to continue.</p>
                 
-                <div class="feature-list">
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="bi bi-check-circle-fill"></i>
-                        </div>
-                        <div class="feature-text">
-                            <h4>Fast Approvals</h4>
-                            <p>Streamlined travel request processing</p>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="bi bi-shield-check"></i>
-                        </div>
-                        <div class="feature-text">
-                            <h4>Secure Platform</h4>
-                            <p>Enterprise-grade security standards</p>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="bi bi-graph-up-arrow"></i>
-                        </div>
-                        <div class="feature-text">
-                            <h4>Real-time Tracking</h4>
-                            <p>Monitor all requests instantly</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Side - Login Form -->
-        <div class="login-right-panel">
-            <div class="login-form-wrapper">
-                <div class="login-header">
-                    <div class="login-icon">
-                        <i class="bi bi-person-circle"></i>
-                    </div>
-                    <h2 class="login-title">Welcome Back</h2>
-                    <p class="login-subtitle">Sign in to access your TAS ERP account</p>
-                </div>
-
-                <form method="POST" action="{{ url_for('auth.login') }}" class="login-form-modern">
+                <form method="POST" action="{{ url_for('auth.login') }}" class="simple-login-form">
                     {{ form.hidden_tag() }}
                     
-                    <div class="form-group-login">
-                        <label class="login-label">
-                            <i class="bi bi-person-fill"></i>
-                            {{ form.username.label.text }}
-                        </label>
-                        <div class="input-wrapper-login">
-                            {{ form.username(class="login-input" + (" input-error" if form.username.errors else ""), 
-                               placeholder="Enter username") }}
-                            <i class="bi bi-person input-icon-login"></i>
-                        </div>
+                    <div class="form-field">
+                        <label class="field-label">{{ form.username.label.text }}</label>
+                        {{ form.username(class="field-input" + (" input-error" if form.username.errors else ""), 
+                           placeholder="you@gov.in") }}
                         {% if form.username.errors %}
-                            <div class="error-message-login">
-                                <i class="bi bi-exclamation-circle"></i>
+                            <div class="field-error">
                                 {% for error in form.username.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
                     </div>
                     
-                    <div class="form-group-login">
-                        <label class="login-label">
-                            <i class="bi bi-lock-fill"></i>
-                            {{ form.password.label.text }}
-                        </label>
-                        <div class="input-wrapper-login">
-                            {{ form.password(class="login-input" + (" input-error" if form.password.errors else ""), 
-                               placeholder="Enter password") }}
-                            <i class="bi bi-lock input-icon-login"></i>
-                        </div>
+                    <div class="form-field">
+                        <label class="field-label">{{ form.password.label.text }}</label>
+                        {{ form.password(class="field-input" + (" input-error" if form.password.errors else ""), 
+                           placeholder="••••••••") }}
                         {% if form.password.errors %}
-                            <div class="error-message-login">
-                                <i class="bi bi-exclamation-circle"></i>
+                            <div class="field-error">
                                 {% for error in form.password.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
                     </div>
                     
-                    <button type="submit" class="btn-login-submit">
-                        <span class="btn-text-login">Sign In</span>
-                        <i class="bi bi-arrow-right btn-arrow-login"></i>
-                    </button>
+                    <button type="submit" class="login-button">Login</button>
                 </form>
                 
-                <div class="login-footer">
-                    <div class="support-info">
-                        <i class="bi bi-headset"></i>
-                        <span>Contact IT support for login issues</span>
-                    </div>
+                <div class="login-links">
+                    <span class="link-text">Need help? </span>
+                    <a href="#" class="help-link">Contact IT support</a>
                 </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Branding -->
+        <div class="branding-side">
+            <div class="branding-header">
+                <div class="govt-logo">
+                    <i class="bi bi-building"></i>
+                </div>
+                <div class="govt-text">
+                    <div class="org-name">Government Organization</div>
+                    <div class="dept-name">Travel Approval System</div>
+                </div>
+            </div>
+            
+            <div class="branding-content">
+                <h2 class="platform-title">TAS Platform</h2>
+                <p class="platform-subtitle">with the Power of</p>
+                <h1 class="platform-highlight">
+                    Smart <span class="highlight-orange">Approvals</span>
+                </h1>
+                <p class="platform-desc">Employee workspace & Travel request management</p>
+            </div>
+            
+            <div class="decorative-circles">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-/* Login Page Wrapper */
-.login-page-wrapper {
+/* Simple Login Wrapper */
+.simple-login-wrapper {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #f5f5f5;
     padding: 2rem;
-    position: relative;
-    overflow: hidden;
 }
 
-.login-page-wrapper::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: float 20s infinite ease-in-out;
-}
-
-.login-page-wrapper::after {
-    content: '';
-    position: absolute;
-    bottom: -30%;
-    left: -10%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: float 15s infinite ease-in-out reverse;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translate(0, 0) scale(1);
-    }
-    50% {
-        transform: translate(30px, -30px) scale(1.1);
-    }
-}
-
-/* Login Container */
-.login-container {
+.simple-login-container {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    max-width: 1200px;
+    grid-template-columns: 400px 1fr;
+    max-width: 1100px;
     width: 100%;
     background: #ffffff;
-    border-radius: 30px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    position: relative;
-    z-index: 1;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* Left Panel - Branding */
-.login-left-panel {
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
-    padding: 4rem 3.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.login-left-panel::before {
-    content: '';
-    position: absolute;
-    top: -100px;
-    left: -100px;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-}
-
-.login-left-panel::after {
-    content: '';
-    position: absolute;
-    bottom: -150px;
-    right: -150px;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
-    border-radius: 50%;
-}
-
-.brand-content {
-    position: relative;
-    z-index: 1;
-}
-
-.brand-logo-large {
-    margin-bottom: 2rem;
-}
-
-.logo-circle {
-    width: 100px;
-    height: 100px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-radius: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    animation: pulse 3s infinite ease-in-out;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-.logo-circle i {
-    font-size: 3.5rem;
-    color: #ffffff;
-}
-
-.brand-title {
-    color: #ffffff;
-    font-size: 2.5rem;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.5px;
-}
-
-.brand-subtitle {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.05rem;
-    text-align: center;
-    margin-bottom: 3rem;
-    line-height: 1.6;
-}
-
-/* Feature List */
-.feature-list {
+/* Login Form Side */
+.login-form-side {
+    padding: 3rem 2.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.75rem;
-}
-
-.feature-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.25rem;
-    padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-}
-
-.feature-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(8px);
-}
-
-.feature-icon {
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-}
-
-.feature-icon i {
-    font-size: 1.5rem;
-    color: #ffffff;
-}
-
-.feature-text h4 {
-    color: #ffffff;
-    font-size: 1.15rem;
-    font-weight: 700;
-    margin: 0 0 0.35rem 0;
-}
-
-.feature-text p {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.9rem;
-    margin: 0;
-    line-height: 1.5;
-}
-
-/* Right Panel - Login Form */
-.login-right-panel {
     background: #ffffff;
-    padding: 4rem 3.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.login-form-wrapper {
+.login-box {
     width: 100%;
-    max-width: 400px;
 }
 
-/* Login Header */
-.login-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-}
-
-.login-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-}
-
-.login-icon i {
-    font-size: 2.5rem;
-    color: #5b5fff;
-}
-
-.login-title {
-    color: #1f2937;
+.login-heading {
+    color: #1a1a1a;
     font-size: 2rem;
-    font-weight: 800;
+    font-weight: 600;
     margin: 0 0 0.5rem 0;
 }
 
-.login-subtitle {
-    color: #6b7280;
+.login-desc {
+    color: #666666;
     font-size: 0.95rem;
-    margin: 0;
+    margin: 0 0 2.5rem 0;
 }
 
-/* Login Form */
-.login-form-modern {
-    margin-bottom: 2rem;
+/* Form Styling */
+.simple-login-form {
+    margin-bottom: 1.5rem;
 }
 
-.form-group-login {
-    margin-bottom: 1.75rem;
+.form-field {
+    margin-bottom: 1.5rem;
 }
 
-.login-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #374151;
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 0.75rem;
+.field-label {
+    display: block;
+    color: #333333;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
 }
 
-.login-label i {
-    color: #5b5fff;
-    font-size: 1rem;
-}
-
-.input-wrapper-login {
-    position: relative;
-}
-
-.login-input {
+.field-input {
     width: 100%;
-    padding: 1rem 1rem 1rem 3rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
     font-size: 0.95rem;
-    color: #374151;
+    color: #1a1a1a;
     background: #ffffff;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     font-family: inherit;
 }
 
-.login-input:focus {
+.field-input:focus {
     outline: none;
-    border-color: #5b5fff;
-    box-shadow: 0 0 0 4px rgba(91, 95, 255, 0.1);
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.login-input::placeholder {
+.field-input::placeholder {
     color: #9ca3af;
-}
-
-.input-icon-login {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca3af;
-    font-size: 1.1rem;
-    pointer-events: none;
-    transition: color 0.3s ease;
-}
-
-.login-input:focus ~ .input-icon-login {
-    color: #5b5fff;
 }
 
 .input-error {
@@ -435,119 +168,224 @@
 }
 
 .input-error:focus {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
 }
 
-.error-message-login {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.field-error {
     color: #ef4444;
     font-size: 0.85rem;
-    margin-top: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: #fef2f2;
-    border-radius: 8px;
-    border-left: 3px solid #ef4444;
+    margin-top: 0.4rem;
 }
 
-/* Submit Button */
-.btn-login-submit {
+/* Login Button */
+.login-button {
     width: 100%;
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
+    background: #4f46e5;
     border: none;
     color: #ffffff;
-    padding: 1.15rem 2rem;
-    border-radius: 12px;
-    font-size: 1.05rem;
-    font-weight: 700;
+    padding: 0.95rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    box-shadow: 0 8px 24px rgba(91, 95, 255, 0.3);
-    margin-top: 2rem;
+    transition: all 0.2s ease;
+    margin-top: 0.5rem;
 }
 
-.btn-login-submit:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(91, 95, 255, 0.4);
+.login-button:hover {
+    background: #4338ca;
 }
 
-.btn-login-submit:active {
-    transform: translateY(-1px);
+.login-button:active {
+    transform: scale(0.98);
 }
 
-.btn-text-login {
-    flex: 1;
-}
-
-.btn-arrow-login {
-    font-size: 1.25rem;
-    transition: transform 0.3s ease;
-}
-
-.btn-login-submit:hover .btn-arrow-login {
-    transform: translateX(4px);
-}
-
-/* Login Footer */
-.login-footer {
+/* Login Links */
+.login-links {
     text-align: center;
+    margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 2px solid #f3f4f6;
+    border-top: 1px solid #e5e7eb;
 }
 
-.support-info {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #6b7280;
+.link-text {
+    color: #666666;
     font-size: 0.9rem;
 }
 
-.support-info i {
-    color: #5b5fff;
-    font-size: 1.1rem;
+.help-link {
+    color: #4f46e5;
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.help-link:hover {
+    text-decoration: underline;
+}
+
+/* Branding Side */
+.branding-side {
+    background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 50%, #fce7f3 100%);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.branding-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.govt-logo {
+    width: 50px;
+    height: 50px;
+    background: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.govt-logo i {
+    font-size: 1.75rem;
+    color: #4f46e5;
+}
+
+.govt-text {
+    flex: 1;
+}
+
+.org-name {
+    color: #1a1a1a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.dept-name {
+    color: #4b5563;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+/* Branding Content */
+.branding-content {
+    position: relative;
+    z-index: 2;
+}
+
+.platform-title {
+    color: #1e40af;
+    font-size: 2.75rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.2;
+}
+
+.platform-subtitle {
+    color: #1e40af;
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0 0 0.5rem 0;
+}
+
+.platform-highlight {
+    color: #1e40af;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.highlight-orange {
+    color: #ea580c;
+}
+
+.platform-desc {
+    color: #1e40af;
+    font-size: 1rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Decorative Circles */
+.decorative-circles {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.3;
+}
+
+.circle-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(165, 180, 252, 0.4) 0%, transparent 70%);
+    bottom: -150px;
+    right: -150px;
+}
+
+.circle-2 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(196, 181, 253, 0.4) 0%, transparent 70%);
+    bottom: -50px;
+    right: -50px;
+}
+
+.circle-3 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(251, 207, 232, 0.4) 0%, transparent 70%);
+    bottom: 50px;
+    right: 50px;
 }
 
 /* Responsive Design */
 @media (max-width: 992px) {
-    .login-container {
+    .simple-login-container {
         grid-template-columns: 1fr;
-        max-width: 500px;
+        max-width: 450px;
     }
 
-    .login-left-panel {
+    .branding-side {
         display: none;
     }
 
-    .login-right-panel {
-        padding: 3rem 2rem;
+    .login-form-side {
+        padding: 2.5rem 2rem;
     }
 }
 
 @media (max-width: 576px) {
-    .login-page-wrapper {
+    .simple-login-wrapper {
         padding: 1rem;
     }
 
-    .login-container {
-        border-radius: 20px;
+    .simple-login-container {
+        border-radius: 12px;
     }
 
-    .login-right-panel {
-        padding: 2.5rem 1.5rem;
+    .login-form-side {
+        padding: 2rem 1.5rem;
     }
 
-    .login-title {
+    .login-heading {
         font-size: 1.75rem;
-    }
-
-    .brand-title {
-        font-size: 2rem;
     }
 }
 </style>
