@@ -101,7 +101,8 @@ def submit_tas():
                 travel_mode=travel_mode,
                 travel_date_start=form.travel_date_start.data,
                 purpose=purpose,
-                status='Pending'
+                status='Pending',
+                submitted_at=datetime.now()
             )
             
             db.session.add(tas)
