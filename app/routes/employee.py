@@ -109,13 +109,13 @@ def submit_tas():
             # Commit both sequence update and TAS record atomically
             db.session.commit()
             
-            flash(f'TAS submitted successfully. Your TAS number is {tas_number}', 'success')
+            flash(f'TR submitted successfully. Your TR number is {tas_number}', 'success')
             return redirect(url_for('employee.tas_history'))
         
         except Exception as e:
             db.session.rollback()
             current_app.logger.error(f'Error submitting TAS: {str(e)}', exc_info=True)
-            flash('Failed to submit TAS. Please try again.', 'error')
+            flash('Failed to submit TR. Please try again.', 'error')
             return redirect(url_for('employee.submit_tas'))
     
     return render_template('employee/submit_tas.html', form=form)
@@ -160,7 +160,7 @@ def tas_detail(tas_id):
     
     # Validate ownership
     if tas_record.emp_id != current_user.emp_id:
-        abort(403, 'You do not have permission to view this TAS')
+        abort(403, 'You do not have permission to view this TR')
     
     # Query reviewer info if reviewed
     reviewer_info = None

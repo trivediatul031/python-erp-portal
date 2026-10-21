@@ -1,4 +1,4 @@
-"""Utility functions for the TAS ERP application."""
+"""Utility functions for the TR Portal application."""
 from app.models import db, TASSequence
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def generate_tas_number(emp_id):
     """
-    Generate unique TAS number for given employee ID in format TR-{EMPID}-{SEQUENCE}.
+    Generate unique TR number for given employee ID in format TR-{EMPID}-{SEQUENCE}.
     Example: TR-1987-0001
     
     Uses row-level locking (SELECT FOR UPDATE) to prevent race conditions.
@@ -24,10 +24,10 @@ def generate_tas_number(emp_id):
         emp_id: Employee ID string
         
     Returns:
-        str: TAS number in format TR-{EMPID}-{SEQUENCE}
+        str: TR number in format TR-{EMPID}-{SEQUENCE}
         
     Raises:
-        RuntimeError: If TAS number generation fails after max retries
+        RuntimeError: If TR number generation fails after max retries
     """
     max_retries = 3
     
@@ -57,7 +57,7 @@ def generate_tas_number(emp_id):
             else:
                 continue
     
-    raise RuntimeError('Failed to generate TAS number after retries')
+    raise RuntimeError('Failed to generate TR number after retries')
 
 
 def cleanup_old_exports(upload_folder, hours=24):

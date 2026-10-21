@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}TAS Details - {{ tas_record.tas_number }} - TAS ERP{% endblock %}
+{% block title %}TR Details - {{ tas_record.tas_number }} - TR Portal{% endblock %}
 
 {% block authenticated_content %}
 <div class="tas-detail-container">
     <!-- Header -->
     <div class="detail-header">
         <div class="header-left">
-            <h2 class="detail-title">TAS Details</h2>
+            <h2 class="detail-title">TR Details</h2>
             <span class="tas-number-badge">{{ tas_record.tas_number }}</span>
         </div>
         <a href="{{ url_for('admin.tas_list') }}" class="btn-back-detail">
@@ -51,7 +51,7 @@
         <!-- Key Info Row -->
         <div class="key-info-row">
             <div class="key-info-card">
-                <span class="key-info-label">TAS NUMBER</span>
+                <span class="key-info-label">TR NUMBER</span>
                 <span class="key-info-value text-primary">{{ tas_record.tas_number }}</span>
             </div>
             <div class="key-info-card">

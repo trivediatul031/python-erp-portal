@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Search Results - TAS ERP{% endblock %}
+{% block title %}Search Results - TR Portal{% endblock %}
 
 {% block authenticated_content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -20,7 +20,7 @@
                     <input type="text" 
                            class="form-control border-start-0 ps-0" 
                            name="q" 
-                           placeholder="Search TAS records, employees, or TAS numbers..."
+                           placeholder="Search TR records, employees, or TR numbers..."
                            value="{{ query }}"
                            autofocus>
                 </div>
@@ -34,10 +34,10 @@
     </div>
 </div>
 
-<!-- TAS Records Results -->
+<!-- TR Records Results -->
 <div class="card mb-4">
     <div class="card-header bg-white">
-        <h5 class="mb-0">TAS Records ({{ tas_results|length }} results)</h5>
+        <h5 class="mb-0">TR Records ({{ tas_results|length }} results)</h5>
     </div>
     <div class="card-body">
         {% if tas_results %}
@@ -45,7 +45,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>TAS Number</th>
+                        <th>TR Number</th>
                         <th>Employee Name</th>
                         <th>Department</th>
                         <th>Travel Type</th>
@@ -84,7 +84,7 @@
             </table>
         </div>
         {% else %}
-        <p class="text-muted mb-0">No TAS records found matching "{{ query }}"</p>
+        <p class="text-muted mb-0">No TR records found matching "{{ query }}"</p>
         {% endif %}
     </div>
 </div>
@@ -139,7 +139,7 @@
     <h5 class="alert-heading">No results found</h5>
     <p class="mb-0">Try searching with different keywords like:</p>
     <ul class="mb-0 mt-2">
-        <li>TAS number (e.g., TAS-1987-0001)</li>
+        <li>TR number (e.g., TR-1987-0001)</li>
         <li>Employee name</li>
         <li>Department name</li>
         <li>Travel type (Domestic/International)</li>

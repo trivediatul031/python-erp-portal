@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}My TAS History - TAS ERP{% endblock %}
+{% block title %}My TR History - TR Portal{% endblock %}
 
 {% block authenticated_content %}
 <!-- Page Header -->
@@ -8,12 +8,12 @@
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h2 class="page-title-modern">
-                <i class="bi bi-clock-history me-2"></i>My TAS History
+                <i class="bi bi-clock-history me-2"></i>My TR History
             </h2>
-            <p class="page-subtitle-modern">Track and manage all your travel approval submissions</p>
+            <p class="page-subtitle-modern">Track and manage all your travel request submissions</p>
         </div>
         <a href="{{ url_for('employee.submit_tas') }}" class="btn-submit-new">
-            <i class="bi bi-plus-circle me-2"></i>Submit New TAS
+            <i class="bi bi-plus-circle me-2"></i>Submit New TR
         </a>
     </div>
 </div>
@@ -50,7 +50,7 @@
                     <th>
                         <div class="th-content">
                             <i class="bi bi-hash"></i>
-                            <span>TAS NUMBER</span>
+                            <span>TR NUMBER</span>
                             <i class="bi bi-chevron-expand sort-icon"></i>
                         </div>
                     </th>
@@ -187,10 +187,10 @@
         <div class="empty-icon">
             <i class="bi bi-inbox"></i>
         </div>
-        <h3 class="empty-title">No TAS Submissions Yet</h3>
-        <p class="empty-subtitle">Start by submitting your first Travel Approval System request</p>
+        <h3 class="empty-title">No TR Submissions Yet</h3>
+        <p class="empty-subtitle">Start by submitting your first Travel Request</p>
         <a href="{{ url_for('employee.submit_tas') }}" class="btn-empty-action">
-            <i class="bi bi-plus-circle me-2"></i>Submit Your First TAS
+            <i class="bi bi-plus-circle me-2"></i>Submit Your First TR
         </a>
     </div>
     {% endif %}

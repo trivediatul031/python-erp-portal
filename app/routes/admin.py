@@ -624,7 +624,7 @@ def approve_tas(tas_id):
         
         # Check if already processed
         if tas_record.status != 'Pending':
-            flash('TAS has already been processed', 'warning')
+            flash('TR has already been processed', 'warning')
             return redirect(url_for('admin.tas_detail', tas_id=tas_id))
         
         # Update TAS record
@@ -634,13 +634,13 @@ def approve_tas(tas_id):
         
         db.session.commit()
         
-        flash('TAS approved successfully', 'success')
+        flash('TR approved successfully', 'success')
         return redirect(url_for('admin.tas_detail', tas_id=tas_id))
         
     except Exception as e:
         db.session.rollback()
         logger.error(f'Error approving TAS: {str(e)}', exc_info=True)
-        flash('Error updating TAS status', 'error')
+        flash('Error updating TR status', 'error')
         return redirect(url_for('admin.tas_detail', tas_id=tas_id))
 
 
@@ -667,7 +667,7 @@ def reject_tas(tas_id):
         
         # Check if already processed
         if tas_record.status != 'Pending':
-            flash('TAS has already been processed', 'warning')
+            flash('TR has already been processed', 'warning')
             return redirect(url_for('admin.tas_detail', tas_id=tas_id))
         
         # Get rejection reason (limit to 500 chars)
@@ -681,11 +681,11 @@ def reject_tas(tas_id):
         
         db.session.commit()
         
-        flash('TAS rejected', 'success')
+        flash('TR rejected', 'success')
         return redirect(url_for('admin.tas_detail', tas_id=tas_id))
         
     except Exception as e:
         db.session.rollback()
         logger.error(f'Error rejecting TAS: {str(e)}', exc_info=True)
-        flash('Error updating TAS status', 'error')
+        flash('Error updating TR status', 'error')
         return redirect(url_for('admin.tas_detail', tas_id=tas_id))

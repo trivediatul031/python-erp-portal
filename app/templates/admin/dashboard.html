@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Dashboard - TAS ERP{% endblock %}
+{% block title %}Admin Dashboard - TR Portal{% endblock %}
 
 {% block authenticated_content %}
 <!-- Page Header with Global Search -->
@@ -8,7 +8,7 @@
     <div class="header-top">
         <div class="header-title-section">
             <h1 class="dashboard-title">Admin Dashboard</h1>
-            <p class="dashboard-subtitle">Manage and monitor all TAS submissions</p>
+            <p class="dashboard-subtitle">Manage and monitor all TR submissions</p>
         </div>
         
         <!-- Global Search Bar -->
@@ -39,9 +39,9 @@
                     <i class="bi bi-file-earmark-text-fill"></i>
                 </div>
                 <div class="stat-details">
-                    <p class="stat-label">Total TAS</p>
+                    <p class="stat-label">Total TR</p>
                     <h2 class="stat-value">{{ total_tas }}</h2>
-                    <p class="stat-desc">Travel Approval Requests</p>
+                    <p class="stat-desc">Travel Requests</p>
                 </div>
             </div>
             <div class="stat-icon-bg">
@@ -74,7 +74,7 @@
     <div class="chart-card">
         <div class="chart-header">
             <div>
-                <h3 class="chart-title">TAS Submissions Over Time</h3>
+                <h3 class="chart-title">TR Submissions Over Time</h3>
                 <p class="chart-subtitle">Monthly submission trends</p>
             </div>
             <div class="chart-actions">
@@ -94,7 +94,7 @@
         <div class="table-title-group">
             <h3 class="table-title">
                 <i class="bi bi-clock-history"></i>
-                Recent TAS Submissions
+                Recent TR Submissions
             </h3>
             <span class="table-count">{{ recent_tas|length }} records</span>
         </div>
@@ -111,7 +111,7 @@
                     <th>
                         <div class="th-content">
                             <i class="bi bi-hash"></i>
-                            <span>TAS NUMBER</span>
+                            <span>TR NUMBER</span>
                         </div>
                     </th>
                     <th>
@@ -239,7 +239,7 @@
                             <div class="empty-icon">
                                 <i class="bi bi-inbox"></i>
                             </div>
-                            <p class="empty-text">No TAS records found</p>
+                            <p class="empty-text">No TR records found</p>
                         </td>
                     </tr>
                 {% endif %}

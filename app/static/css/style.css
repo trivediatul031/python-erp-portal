@@ -1,4 +1,4 @@
-/* TAS ERP Portal - Custom Styles */
+/* TR Portal - Custom Styles */
 
 :root {
     --primary-blue: #4F46E5;
@@ -360,7 +360,7 @@ body {
 }
 
 
-/* TAS Detail Info Items */
+/* TR Detail Info Items */
 .info-item {
     padding: 1rem;
     border-left: 4px solid #e9ecef;
@@ -693,7 +693,7 @@ body {
 
 
 /* ========================================
-   Modern Form Styles - Submit TAS
+   Modern Form Styles - Submit TR
    ======================================== */
 
 .submit-tas-container {
@@ -1247,7 +1247,7 @@ body {
 
 
 /* ========================================
-   TAS Detail Page - Modern UI
+   TR Detail Page - Modern UI
    ======================================== */
 
 .tas-detail-container {
@@ -1535,7 +1535,7 @@ body {
 
 
 /* ========================================
-   Travel Cards - TAS Detail Page
+   Travel Cards - TR Detail Page
    ======================================== */
 
 .travel-cards-row {

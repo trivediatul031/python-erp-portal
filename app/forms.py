@@ -21,16 +21,16 @@ class ImportEmployeesForm(FlaskForm):
 
 
 class RejectTASForm(FlaskForm):
-    """Form for rejecting TAS with reason."""
+    """Form for rejecting TR with reason."""
     rejection_reason = TextAreaField('Rejection Reason', validators=[
         DataRequired(),
         Length(min=10, max=500, message='Reason must be between 10 and 500 characters')
     ])
-    submit = SubmitField('Reject TAS')
+    submit = SubmitField('Reject TR')
 
 
 class TASForm(FlaskForm):
-    """Form for employees to submit TAS requests."""
+    """Form for employees to submit TR requests."""
     travel_type = SelectField('Travel Type', choices=[
         ('Domestic', 'Domestic'),
         ('International', 'International')
@@ -55,7 +55,7 @@ class TASForm(FlaskForm):
     
     travel_date_start = DateField('Travel Date', validators=[DataRequired()])
     
-    submit = SubmitField('Submit TAS Request')
+    submit = SubmitField('Submit TR Request')
     
     def validate_travel_date_start(self, field):
         """Validate that travel date is not in the past."""
