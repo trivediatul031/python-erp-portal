@@ -14,7 +14,7 @@
         </a>
     </div>
 
-    <!-- TAS Information Section -->
+    <!-- TR Information Section -->
     <div class="detail-section">
         <div class="section-header-modern">
             <i class="bi bi-file-earmark-text-fill"></i>
@@ -46,76 +46,20 @@
             </div>
         </div>
 
-        <div class="detail-grid">
-            <div class="detail-item">
-                <span class="detail-label">SUBMITTED DATE</span>
-                <span class="detail-value">
-                    <i class="bi bi-clock"></i>
-                    {{ tas_record.submitted_at.strftime('%d %B %Y') if tas_record.submitted_at else 'N/A' }}
-                </span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Travel Details Section -->
-    <div class="detail-section">
-        <div class="section-header-modern">
-            <i class="bi bi-airplane-fill"></i>
-            <h3>Travel Details</h3>
-        </div>
-        
-        <div class="travel-cards-row">
-            <div class="travel-card travel-type-card">
-                <div class="travel-card-icon">
-                    <i class="bi bi-{{ 'geo-alt-fill' if tas_record.travel_type == 'Domestic' else 'globe' }}"></i>
-                </div>
-                <div class="travel-card-content">
-                    <span class="travel-card-label">TRAVEL TYPE</span>
-                    <span class="travel-card-badge badge-{{ 'cyan' if tas_record.travel_type == 'Domestic' else 'blue' }}">
-                        {{ tas_record.travel_type }}
-                    </span>
+        <div class="key-info-row">
+            <div class="key-info-card">
+                <i class="bi bi-calendar-event"></i>
+                <div>
+                    <span class="key-info-label">TRAVEL DATE</span>
+                    <span class="key-info-value">{{ tas_record.travel_date_start.strftime('%d %B %Y') }}</span>
                 </div>
             </div>
-
-            <div class="travel-card travel-mode-card">
-                <div class="travel-card-icon">
-                    {% if tas_record.travel_mode == 'Air' %}
-                        <i class="bi bi-airplane-fill"></i>
-                    {% elif tas_record.travel_mode == 'Rail' %}
-                        <i class="bi bi-train-front-fill"></i>
-                    {% elif tas_record.travel_mode == 'Bus' %}
-                        <i class="bi bi-bus-front-fill"></i>
-                    {% else %}
-                        <i class="bi bi-car-front-fill"></i>
-                    {% endif %}
+            <div class="key-info-card">
+                <i class="bi bi-clock"></i>
+                <div>
+                    <span class="key-info-label">SUBMITTED DATE</span>
+                    <span class="key-info-value">{{ tas_record.submitted_at.strftime('%d %B %Y') if tas_record.submitted_at else 'N/A' }}</span>
                 </div>
-                <div class="travel-card-content">
-                    <span class="travel-card-label">TRAVEL MODE</span>
-                    <span class="travel-card-badge badge-gray">
-                        {{ tas_record.travel_mode }}
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <div class="detail-grid mt-4">
-            <div class="detail-item">
-                <span class="detail-label">TRAVEL DATE</span>
-                <span class="detail-value">
-                    <i class="bi bi-calendar-event"></i>
-                    {{ tas_record.travel_date_start.strftime('%d %B %Y') }}
-                </span>
-            </div>
-        </div>
-
-        <!-- Purpose Box -->
-        <div class="purpose-box">
-            <div class="purpose-header">
-                <i class="bi bi-briefcase-fill"></i>
-                <span>PURPOSE OF TRAVEL</span>
-            </div>
-            <div class="purpose-content">
-                {{ tas_record.purpose }}
             </div>
         </div>
     </div>

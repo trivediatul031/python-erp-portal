@@ -41,26 +41,39 @@
         </div>
     </div>
 
-    <!-- Travel Information Section -->
+    <!-- TR Information Section -->
     <div class="detail-section">
         <div class="section-header-modern">
-            <i class="bi bi-airplane-fill"></i>
-            <h3>Travel Information</h3>
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <h3>TR Information</h3>
         </div>
         
         <!-- Key Info Row -->
         <div class="key-info-row">
             <div class="key-info-card">
-                <span class="key-info-label">TR NUMBER</span>
-                <span class="key-info-value text-primary">{{ tas_record.tas_number }}</span>
-            </div>
-            <div class="key-info-card">
-                <i class="bi bi-clock"></i>
+                <i class="bi bi-hash"></i>
                 <div>
-                    <span class="key-info-label">SUBMITTED DATE</span>
-                    <span class="key-info-value">{{ tas_record.submitted_at.strftime('%d %b %Y') if tas_record.submitted_at else 'N/A' }}</span>
+                    <span class="key-info-label">TR NUMBER</span>
+                    <span class="key-info-value text-primary">{{ tas_record.tas_number }}</span>
                 </div>
             </div>
+            <div class="key-info-card">
+                <i class="bi bi-person-fill"></i>
+                <div>
+                    <span class="key-info-label">EMPLOYEE</span>
+                    <span class="key-info-value">{{ employee.name }}</span>
+                </div>
+            </div>
+            <div class="key-info-card">
+                <i class="bi bi-building"></i>
+                <div>
+                    <span class="key-info-label">DEPARTMENT</span>
+                    <span class="key-info-value">{{ tas_record.department }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="key-info-row">
             <div class="key-info-card">
                 <i class="bi bi-calendar-event"></i>
                 <div>
@@ -68,59 +81,12 @@
                     <span class="key-info-value">{{ tas_record.travel_date_start.strftime('%d %b %Y') }}</span>
                 </div>
             </div>
-        </div>
-
-        <!-- Travel Details Grid -->
-        <div class="detail-grid">
-            <div class="detail-item">
-                <span class="detail-label">EMPLOYEE NAME</span>
-                <span class="detail-value">{{ tas_record.emp_name }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">DEPARTMENT</span>
-                <span class="detail-value">{{ tas_record.department }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">TRAVEL TYPE</span>
-                <div class="detail-value">
-                    {% if tas_record.travel_type == 'Domestic' %}
-                        <span class="badge-pill badge-success">
-                            <i class="bi bi-geo-alt-fill"></i> Domestic
-                        </span>
-                    {% else %}
-                        <span class="badge-pill badge-primary">
-                            <i class="bi bi-globe"></i> International
-                        </span>
-                    {% endif %}
+            <div class="key-info-card">
+                <i class="bi bi-clock"></i>
+                <div>
+                    <span class="key-info-label">SUBMITTED DATE</span>
+                    <span class="key-info-value">{{ tas_record.submitted_at.strftime('%d %b %Y') if tas_record.submitted_at else 'N/A' }}</span>
                 </div>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">TRAVEL MODE</span>
-                <div class="detail-value">
-                    <span class="badge-pill badge-secondary">
-                        {% if tas_record.travel_mode == 'Air' %}
-                            <i class="bi bi-airplane-fill"></i>
-                        {% elif tas_record.travel_mode == 'Rail' %}
-                            <i class="bi bi-train-front-fill"></i>
-                        {% elif tas_record.travel_mode == 'Bus' %}
-                            <i class="bi bi-bus-front-fill"></i>
-                        {% else %}
-                            <i class="bi bi-car-front-fill"></i>
-                        {% endif %}
-                        {{ tas_record.travel_mode or 'N/A' }}
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Purpose Box -->
-        <div class="purpose-box">
-            <div class="purpose-header">
-                <i class="bi bi-briefcase-fill"></i>
-                <span>PURPOSE</span>
-            </div>
-            <div class="purpose-content">
-                {{ tas_record.purpose }}
             </div>
         </div>
     </div>
