@@ -34,14 +34,14 @@ class TASForm(FlaskForm):
     travel_type = SelectField('Travel Type', choices=[
         ('Domestic', 'Domestic'),
         ('International', 'International')
-    ], validators=[DataRequired()])
+    ], validators=[Optional()], default='Domestic')
     
     travel_mode = SelectField('Travel Mode', choices=[
         ('Air', 'Air'),
         ('Rail', 'Rail'),
         ('Road', 'Road'),
         ('Bus', 'Bus')
-    ], validators=[DataRequired()])
+    ], validators=[Optional()], default='Air')
     
     purpose = SelectField('Purpose of Travel', choices=[
         ('Road Show', 'Road Show'),
@@ -51,7 +51,7 @@ class TASForm(FlaskForm):
         ('Site Visit', 'Site Visit'),
         ('Business Development', 'Business Development'),
         ('Other', 'Other')
-    ], validators=[DataRequired()])
+    ], validators=[Optional()], default='Road Show')
     
     travel_date_start = DateField('Travel Date', validators=[DataRequired()])
     

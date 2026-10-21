@@ -86,16 +86,21 @@ def submit_tas():
             # Generate TAS number (does not commit internally)
             tas_number = generate_tas_number(current_user.emp_id)
             
+            # Use default values if fields are not provided
+            travel_type = form.travel_type.data or 'Domestic'
+            travel_mode = form.travel_mode.data or 'Air'
+            purpose = form.purpose.data or 'Road Show'
+            
             # Create TAS record
             tas = TASRecord(
                 tas_number=tas_number,
                 emp_id=current_user.emp_id,
                 emp_name=employee.name,
                 department=employee.department,
-                travel_type=form.travel_type.data,
-                travel_mode=form.travel_mode.data,
+                travel_type=travel_type,
+                travel_mode=travel_mode,
                 travel_date_start=form.travel_date_start.data,
-                purpose=form.purpose.data,
+                purpose=purpose,
                 status='Pending'
             )
             

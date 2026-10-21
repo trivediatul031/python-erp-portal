@@ -74,67 +74,11 @@
                 </div>
                 <div class="section-title-group">
                     <h3 class="section-title">Travel Details</h3>
-                    <p class="section-subtitle">Specify your travel requirements</p>
+                    <p class="section-subtitle">Specify your travel date</p>
                 </div>
             </div>
 
             <div class="form-grid">
-                <div class="form-field-wrapper">
-                    <label class="form-label-premium">
-                        <i class="bi bi-geo-alt-fill label-icon"></i>
-                        <span>{{ form.travel_type.label.text }}</span>
-                        <span class="required-star">*</span>
-                    </label>
-                    <div class="select-wrapper">
-                        {{ form.travel_type(class="form-select-premium" + (" is-invalid" if form.travel_type.errors else "")) }}
-                        <i class="bi bi-chevron-down select-arrow"></i>
-                    </div>
-                    {% if form.travel_type.errors %}
-                        <div class="error-message-premium">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.travel_type.errors %}{{ error }}{% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <div class="form-field-wrapper">
-                    <label class="form-label-premium">
-                        <i class="bi bi-airplane-fill label-icon"></i>
-                        <span>{{ form.travel_mode.label.text }}</span>
-                        <span class="required-star">*</span>
-                    </label>
-                    <div class="select-wrapper">
-                        {{ form.travel_mode(class="form-select-premium" + (" is-invalid" if form.travel_mode.errors else "")) }}
-                        <i class="bi bi-chevron-down select-arrow"></i>
-                    </div>
-                    {% if form.travel_mode.errors %}
-                        <div class="error-message-premium">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.travel_mode.errors %}{{ error }}{% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-field-wrapper">
-                    <label class="form-label-premium">
-                        <i class="bi bi-briefcase-fill label-icon"></i>
-                        <span>{{ form.purpose.label.text }}</span>
-                        <span class="required-star">*</span>
-                    </label>
-                    <div class="select-wrapper">
-                        {{ form.purpose(class="form-select-premium" + (" is-invalid" if form.purpose.errors else "")) }}
-                        <i class="bi bi-chevron-down select-arrow"></i>
-                    </div>
-                    {% if form.purpose.errors %}
-                        <div class="error-message-premium">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.purpose.errors %}{{ error }}{% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                
                 <div class="form-field-wrapper">
                     <label class="form-label-premium">
                         <i class="bi bi-calendar-event label-icon"></i>
