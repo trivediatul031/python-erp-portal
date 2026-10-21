@@ -69,17 +69,61 @@
                             <td>
                                 {% if employee.department %}
                                     {% set dept_colors = {
-                                        'Technology': 'primary',
-                                        'Europe & UK': 'success',
-                                        'State Facilitation': 'warning',
-                                        'Asia & MENA': 'danger',
-                                        'Industrial': 'info',
-                                        'Finance & Accounts': 'purple',
-                                        'IT Infrastructure Support': 'dark',
-                                        'Company Ops': 'secondary'
+                                        'Admin': 'admin',
+                                        'Americas': 'americas',
+                                        'Asia & MENA': 'asia-mena',
+                                        'Company Ops': 'company-ops',
+                                        'Company Secretary': 'company-secretary',
+                                        'Country': 'country',
+                                        'Desk': 'desk',
+                                        'Europe & UK': 'europe-uk',
+                                        'Finance & Accounts': 'finance',
+                                        'Global Marketing': 'marketing',
+                                        'Human Resources': 'hr',
+                                        'I Cube': 'icube',
+                                        'Industrial': 'industrial',
+                                        'IT': 'it',
+                                        'IT Infrastructure Support': 'it-infra',
+                                        'Legal': 'legal',
+                                        'MD office': 'md-office',
+                                        'Procurement': 'procurement',
+                                        'Special Programs': 'special-programs',
+                                        'Startup India': 'startup-india',
+                                        'State Facilitation': 'state-facilitation',
+                                        'Technology': 'technology',
+                                        'Travel': 'travel'
                                     } %}
-                                    {% set color = dept_colors.get(employee.department, 'info') %}
-                                    <span class="badge bg-{{ color }}">{{ employee.department }}</span>
+                                    {% set dept_icons = {
+                                        'Admin': 'bi-person-gear',
+                                        'Americas': 'bi-globe-americas',
+                                        'Asia & MENA': 'bi-globe-asia-australia',
+                                        'Company Ops': 'bi-briefcase-fill',
+                                        'Company Secretary': 'bi-file-earmark-text',
+                                        'Country': 'bi-flag-fill',
+                                        'Desk': 'bi-display',
+                                        'Europe & UK': 'bi-globe-europe-africa',
+                                        'Finance & Accounts': 'bi-cash-coin',
+                                        'Global Marketing': 'bi-megaphone-fill',
+                                        'Human Resources': 'bi-people-fill',
+                                        'I Cube': 'bi-box-seam',
+                                        'Industrial': 'bi-gear-fill',
+                                        'IT': 'bi-laptop',
+                                        'IT Infrastructure Support': 'bi-server',
+                                        'Legal': 'bi-shield-check',
+                                        'MD office': 'bi-star-fill',
+                                        'Procurement': 'bi-cart-check-fill',
+                                        'Special Programs': 'bi-award-fill',
+                                        'Startup India': 'bi-rocket-takeoff-fill',
+                                        'State Facilitation': 'bi-building',
+                                        'Technology': 'bi-code-slash',
+                                        'Travel': 'bi-airplane-fill'
+                                    } %}
+                                    {% set color = dept_colors.get(employee.department, 'default') %}
+                                    {% set icon = dept_icons.get(employee.department, 'bi-tag-fill') %}
+                                    <span class="badge badge-dept-{{ color }}">
+                                        <i class="{{ icon }}"></i>
+                                        {{ employee.department }}
+                                    </span>
                                 {% else %}
                                     <span class="text-muted">N/A</span>
                                 {% endif %}
@@ -102,3 +146,319 @@
 </div>
 
 {% endblock %}
+
+
+<style>
+/* Enhanced Department Badges - Comprehensive Color Scheme */
+.badge-dept-admin {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.badge-dept-americas {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+}
+
+.badge-dept-asia-mena {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.badge-dept-company-ops {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+}
+
+.badge-dept-company-secretary {
+    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+}
+
+.badge-dept-country {
+    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(132, 204, 22, 0.3);
+}
+
+.badge-dept-desk {
+    background: linear-gradient(135deg, #78716c 0%, #57534e 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(120, 113, 108, 0.3);
+}
+
+.badge-dept-europe-uk {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.badge-dept-finance {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.badge-dept-marketing {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(244, 63, 94, 0.3);
+}
+
+.badge-dept-hr {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+.badge-dept-icube {
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(34, 211, 238, 0.3);
+}
+
+.badge-dept-industrial {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3);
+}
+
+.badge-dept-it {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.badge-dept-it-infra {
+    background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
+}
+
+.badge-dept-legal {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.badge-dept-md-office {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+}
+
+.badge-dept-procurement {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+}
+
+.badge-dept-special-programs {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+}
+
+.badge-dept-startup-india {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+}
+
+.badge-dept-state-facilitation {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.badge-dept-technology {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.badge-dept-travel {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.badge-dept-default {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(148, 163, 184, 0.3);
+}
+</style>

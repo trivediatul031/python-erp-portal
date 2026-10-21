@@ -9,7 +9,7 @@ auth_bp = Blueprint('auth', __name__)
 logger = logging.getLogger(__name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
-@limiter.limit("5 per minute")  # Rate limit: 5 login attempts per minute
+@limiter.limit("30 per minute")  # Rate limit: 30 login attempts per minute
 def login():
     """Login route for user authentication."""
     if current_user.is_authenticated:
