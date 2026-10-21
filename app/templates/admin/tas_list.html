@@ -77,11 +77,27 @@
                                     'Asia & MENA': 'danger',
                                     'Industrial': 'info',
                                     'Finance & Accounts': 'purple',
-                                    'IT Infrastructure Support': 'dark',
-                                    'Company Ops': 'secondary'
+                                    'IT Infrastructure Support': 'orange',
+                                    'Company Ops': 'secondary',
+                                    'Startup India': 'teal'
+                                } %}
+                                {% set dept_icons = {
+                                    'Technology': 'bi-code-slash',
+                                    'Europe & UK': 'bi-globe-europe-africa',
+                                    'State Facilitation': 'bi-building',
+                                    'Asia & MENA': 'bi-globe-asia-australia',
+                                    'Industrial': 'bi-gear-fill',
+                                    'Finance & Accounts': 'bi-cash-coin',
+                                    'IT Infrastructure Support': 'bi-server',
+                                    'Company Ops': 'bi-briefcase-fill',
+                                    'Startup India': 'bi-rocket-takeoff-fill'
                                 } %}
                                 {% set color = dept_colors.get(employee.department, 'info') %}
-                                <span class="badge bg-{{ color }}">{{ employee.department }}</span>
+                                {% set icon = dept_icons.get(employee.department, 'bi-tag-fill') %}
+                                <span class="badge badge-dept-{{ color }}">
+                                    <i class="{{ icon }}"></i>
+                                    {{ employee.department }}
+                                </span>
                             {% else %}
                                 <span class="text-muted">N/A</span>
                             {% endif %}
@@ -113,4 +129,124 @@
         {% endif %}
     </div>
 </div>
+
+<style>
+/* Enhanced Department Badges */
+.badge-dept-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.badge-dept-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.badge-dept-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.badge-dept-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.badge-dept-info {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+.badge-dept-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.badge-dept-orange {
+    background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
+}
+
+.badge-dept-secondary {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+}
+
+.badge-dept-teal {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+}
+</style>
 {% endblock %}
