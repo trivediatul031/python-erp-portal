@@ -58,7 +58,7 @@
                 <i class="bi bi-clock"></i>
                 <div>
                     <span class="key-info-label">SUBMITTED DATE</span>
-                    <span class="key-info-value">{{ tas_record.submitted_at.strftime('%d %b %Y, %I:%M %p') if tas_record.submitted_at else 'N/A' }}</span>
+                    <span class="key-info-value">{{ tas_record.submitted_at.strftime('%d %b %Y') if tas_record.submitted_at else 'N/A' }}</span>
                 </div>
             </div>
             <div class="key-info-card">

@@ -51,7 +51,7 @@
                 <span class="detail-label">SUBMITTED DATE</span>
                 <span class="detail-value">
                     <i class="bi bi-clock"></i>
-                    {{ tas_record.submitted_at.strftime('%d %B %Y at %I:%M %p') if tas_record.submitted_at else 'N/A' }}
+                    {{ tas_record.submitted_at.strftime('%d %B %Y') if tas_record.submitted_at else 'N/A' }}
                 </span>
             </div>
         </div>
