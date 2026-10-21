@@ -80,9 +80,7 @@
                 <thead>
                     <tr>
                         <th>TAS Number</th>
-                        <th>Travel Type</th>
                         <th>Travel Date</th>
-                        <th>Purpose</th>
                         <th>Submitted</th>
                         <th>Actions</th>
                     </tr>
@@ -94,25 +92,11 @@
                             <span class="tas-number-link">{{ tas.tas_number }}</span>
                         </td>
                         <td>
-                            {% if tas.travel_type == 'Domestic' %}
-                                <span class="type-badge type-domestic">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                    Domestic
-                                </span>
-                            {% else %}
-                                <span class="type-badge type-international">
-                                    <i class="bi bi-globe"></i>
-                                    International
-                                </span>
-                            {% endif %}
-                        </td>
-                        <td>
                             <span class="date-text">
                                 <i class="bi bi-calendar-event"></i>
                                 {{ tas.travel_date_start.strftime('%d %b %Y') }}
                             </span>
                         </td>
-                        <td>{{ tas.purpose }}</td>
                         <td>
                             <span class="submitted-date">{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}</span>
                         </td>
