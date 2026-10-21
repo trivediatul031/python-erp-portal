@@ -56,15 +56,8 @@
                     </th>
                     <th>
                         <div class="th-content">
-                            <i class="bi bi-airplane"></i>
-                            <span>TRAVEL TYPE</span>
-                            <i class="bi bi-chevron-expand sort-icon"></i>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="th-content">
-                            <i class="bi bi-bus-front"></i>
-                            <span>TRAVEL MODE</span>
+                            <i class="bi bi-building"></i>
+                            <span>DEPARTMENT</span>
                             <i class="bi bi-chevron-expand sort-icon"></i>
                         </div>
                     </th>
@@ -73,12 +66,6 @@
                             <i class="bi bi-calendar-event"></i>
                             <span>TRAVEL DATE</span>
                             <i class="bi bi-chevron-expand sort-icon"></i>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="th-content">
-                            <i class="bi bi-briefcase"></i>
-                            <span>PURPOSE</span>
                         </div>
                     </th>
                     <th>
@@ -103,50 +90,69 @@
                         <span class="tas-number-badge">{{ tas.tas_number }}</span>
                     </td>
                     <td>
-                        {% if tas.travel_type == 'Domestic' %}
-                        <span class="type-badge type-domestic">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            Domestic
-                        </span>
+                        {% if tas.department %}
+                            {% set dept_colors = {
+                                'Admin': 'admin',
+                                'Americas': 'americas',
+                                'Asia & MENA': 'asia-mena',
+                                'Company Ops': 'company-ops',
+                                'Company Secretary': 'company-secretary',
+                                'Country': 'country',
+                                'Desk': 'desk',
+                                'Europe & UK': 'europe-uk',
+                                'Finance & Accounts': 'finance',
+                                'Global Marketing': 'marketing',
+                                'Human Resources': 'hr',
+                                'I Cube': 'icube',
+                                'Industrial': 'industrial',
+                                'IT': 'it',
+                                'IT Infrastructure Support': 'it-infra',
+                                'Legal': 'legal',
+                                'MD office': 'md-office',
+                                'Procurement': 'procurement',
+                                'Special Programs': 'special-programs',
+                                'Startup India': 'startup-india',
+                                'State Facilitation': 'state-facilitation',
+                                'Technology': 'technology',
+                                'Travel': 'travel'
+                            } %}
+                            {% set dept_icons = {
+                                'Admin': 'bi-person-gear',
+                                'Americas': 'bi-globe-americas',
+                                'Asia & MENA': 'bi-globe-asia-australia',
+                                'Company Ops': 'bi-briefcase-fill',
+                                'Company Secretary': 'bi-file-earmark-text',
+                                'Country': 'bi-flag-fill',
+                                'Desk': 'bi-display',
+                                'Europe & UK': 'bi-globe-europe-africa',
+                                'Finance & Accounts': 'bi-cash-coin',
+                                'Global Marketing': 'bi-megaphone-fill',
+                                'Human Resources': 'bi-people-fill',
+                                'I Cube': 'bi-box-seam',
+                                'Industrial': 'bi-gear-fill',
+                                'IT': 'bi-laptop',
+                                'IT Infrastructure Support': 'bi-server',
+                                'Legal': 'bi-shield-check',
+                                'MD office': 'bi-star-fill',
+                                'Procurement': 'bi-cart-check-fill',
+                                'Special Programs': 'bi-award-fill',
+                                'Startup India': 'bi-rocket-takeoff-fill',
+                                'State Facilitation': 'bi-building',
+                                'Technology': 'bi-code-slash',
+                                'Travel': 'bi-airplane-fill'
+                            } %}
+                            {% set color = dept_colors.get(tas.department, 'default') %}
+                            {% set icon = dept_icons.get(tas.department, 'bi-tag-fill') %}
+                            <span class="badge badge-dept-{{ color }}">
+                                <i class="{{ icon }}"></i>
+                                {{ tas.department }}
+                            </span>
                         {% else %}
-                        <span class="type-badge type-international">
-                            <i class="bi bi-globe"></i>
-                            International
-                        </span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if tas.travel_mode == 'Air' %}
-                        <span class="mode-badge mode-air">
-                            <i class="bi bi-airplane-fill"></i>
-                            {{ tas.travel_mode }}
-                        </span>
-                        {% elif tas.travel_mode == 'Rail' %}
-                        <span class="mode-badge mode-rail">
-                            <i class="bi bi-train-front-fill"></i>
-                            {{ tas.travel_mode }}
-                        </span>
-                        {% elif tas.travel_mode == 'Road' %}
-                        <span class="mode-badge mode-road">
-                            <i class="bi bi-car-front-fill"></i>
-                            {{ tas.travel_mode }}
-                        </span>
-                        {% elif tas.travel_mode == 'Bus' %}
-                        <span class="mode-badge mode-bus">
-                            <i class="bi bi-bus-front-fill"></i>
-                            {{ tas.travel_mode }}
-                        </span>
-                        {% else %}
-                        <span class="mode-badge">
-                            {{ tas.travel_mode }}
-                        </span>
+                            <span class="text-muted">N/A</span>
                         {% endif %}
                     </td>
                     <td>
                         <span class="date-text">{{ tas.travel_date_start.strftime('%d %b %Y') }}</span>
-                    </td>
-                    <td>
-                        <span class="purpose-text">{{ tas.purpose[:50] }}{% if tas.purpose|length > 50 %}...{% endif %}</span>
                     </td>
                     <td>
                         <span class="submitted-text">{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}</span>
@@ -385,60 +391,9 @@
     letter-spacing: 0.02em;
 }
 
-.type-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.85rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.type-domestic {
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-    color: #ffffff;
-}
-
-.type-international {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    color: #ffffff;
-}
-
-.mode-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.85rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #ffffff;
-}
-
-.mode-air {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-}
-
-.mode-rail {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
-
-.mode-road {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.mode-bus {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-}
-
 .date-text {
     color: #374151;
     font-weight: 500;
-}
-
-.purpose-text {
-    color: #6b7280;
 }
 
 .submitted-text {
