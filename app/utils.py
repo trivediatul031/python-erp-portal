@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 def generate_tas_number(emp_id):
     """
-    Generate unique TAS number for given employee ID in format TAS-{EMPID}-{SEQUENCE}.
-    Example: TAS-1987-0001
+    Generate unique TAS number for given employee ID in format TR-{EMPID}-{SEQUENCE}.
+    Example: TR-1987-0001
     
     Uses row-level locking (SELECT FOR UPDATE) to prevent race conditions.
     
@@ -24,7 +24,7 @@ def generate_tas_number(emp_id):
         emp_id: Employee ID string
         
     Returns:
-        str: TAS number in format TAS-{EMPID}-{SEQUENCE}
+        str: TAS number in format TR-{EMPID}-{SEQUENCE}
         
     Raises:
         RuntimeError: If TAS number generation fails after max retries
@@ -45,8 +45,8 @@ def generate_tas_number(emp_id):
                 # Increment sequence
                 seq_record.last_sequence += 1
             
-            # Format: TAS-EMPID-0001
-            tas_number = f"TAS-{emp_id}-{seq_record.last_sequence:04d}"
+            # Format: TR-EMPID-0001
+            tas_number = f"TR-{emp_id}-{seq_record.last_sequence:04d}"
             return tas_number
             
         except IntegrityError:
