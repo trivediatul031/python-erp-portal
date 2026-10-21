@@ -550,7 +550,7 @@ def tas_list():
                              department=department)
     except Exception as e:
         logger.error(f"Error loading TAS list: {str(e)}", exc_info=True)
-        flash('Error loading TAS list', 'error')
+        flash('Error loading TR list', 'error')
         return render_template('admin/tas_list.html',
                              results=[],
                              status_filter='',
@@ -597,7 +597,7 @@ def tas_detail(tas_id):
                              reviewer_info=reviewer_info)
     except Exception as e:
         logger.error(f"Error loading TAS detail: {str(e)}", exc_info=True)
-        flash('Error loading TAS detail', 'error')
+        flash('Error loading TR detail', 'error')
         return redirect(url_for('admin.tas_list'))
 
 
