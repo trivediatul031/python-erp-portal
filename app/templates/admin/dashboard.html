@@ -122,20 +122,20 @@
                     </th>
                     <th>
                         <div class="th-content">
-                            <i class="bi bi-briefcase"></i>
-                            <span>DESIGNATION</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="th-content">
-                            <i class="bi bi-airplane"></i>
-                            <span>TRAVEL TYPE</span>
+                            <i class="bi bi-building"></i>
+                            <span>DEPARTMENT</span>
                         </div>
                     </th>
                     <th>
                         <div class="th-content">
                             <i class="bi bi-calendar-event"></i>
                             <span>TRAVEL DATE</span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="th-content">
+                            <i class="bi bi-clock"></i>
+                            <span>SUBMITTED</span>
                         </div>
                     </th>
                 </tr>
@@ -158,27 +158,77 @@
                             </div>
                         </td>
                         <td>
-                            <span class="designation-text">{{ employee.designation or 'N/A' }}</span>
-                        </td>
-                        <td>
-                            {% if tas.travel_type == 'Domestic' %}
-                                <span class="travel-badge badge-domestic">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                    Domestic
-                                </span>
-                            {% elif tas.travel_type == 'International' %}
-                                <span class="travel-badge badge-international">
-                                    <i class="bi bi-globe"></i>
-                                    International
+                            {% if employee.department %}
+                                {% set dept_colors = {
+                                    'Admin': 'admin',
+                                    'Americas': 'americas',
+                                    'Asia & MENA': 'asia-mena',
+                                    'Company Ops': 'company-ops',
+                                    'Company Secretary': 'company-secretary',
+                                    'Country': 'country',
+                                    'Desk': 'desk',
+                                    'Europe & UK': 'europe-uk',
+                                    'Finance & Accounts': 'finance',
+                                    'Global Marketing': 'marketing',
+                                    'Human Resources': 'hr',
+                                    'I Cube': 'icube',
+                                    'Industrial': 'industrial',
+                                    'IT': 'it',
+                                    'IT Infrastructure Support': 'it-infra',
+                                    'Legal': 'legal',
+                                    'MD office': 'md-office',
+                                    'Procurement': 'procurement',
+                                    'Special Programs': 'special-programs',
+                                    'Startup India': 'startup-india',
+                                    'State Facilitation': 'state-facilitation',
+                                    'Technology': 'technology',
+                                    'Travel': 'travel'
+                                } %}
+                                {% set dept_icons = {
+                                    'Admin': 'bi-person-gear',
+                                    'Americas': 'bi-globe-americas',
+                                    'Asia & MENA': 'bi-globe-asia-australia',
+                                    'Company Ops': 'bi-briefcase-fill',
+                                    'Company Secretary': 'bi-file-earmark-text',
+                                    'Country': 'bi-flag-fill',
+                                    'Desk': 'bi-display',
+                                    'Europe & UK': 'bi-globe-europe-africa',
+                                    'Finance & Accounts': 'bi-cash-coin',
+                                    'Global Marketing': 'bi-megaphone-fill',
+                                    'Human Resources': 'bi-people-fill',
+                                    'I Cube': 'bi-box-seam',
+                                    'Industrial': 'bi-gear-fill',
+                                    'IT': 'bi-laptop',
+                                    'IT Infrastructure Support': 'bi-server',
+                                    'Legal': 'bi-shield-check',
+                                    'MD office': 'bi-star-fill',
+                                    'Procurement': 'bi-cart-check-fill',
+                                    'Special Programs': 'bi-award-fill',
+                                    'Startup India': 'bi-rocket-takeoff-fill',
+                                    'State Facilitation': 'bi-building',
+                                    'Technology': 'bi-code-slash',
+                                    'Travel': 'bi-airplane-fill'
+                                } %}
+                                {% set color = dept_colors.get(employee.department, 'default') %}
+                                {% set icon = dept_icons.get(employee.department, 'bi-tag-fill') %}
+                                <span class="badge badge-dept-{{ color }}">
+                                    <i class="{{ icon }}"></i>
+                                    {{ employee.department }}
                                 </span>
                             {% else %}
-                                <span class="travel-badge badge-default">{{ tas.travel_type or 'N/A' }}</span>
+                                <span class="text-muted">N/A</span>
                             {% endif %}
                         </td>
                         <td>
                             <span class="date-text">
                                 <i class="bi bi-calendar3"></i>
                                 {{ tas.travel_date_start.strftime('%d %b %Y') }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="date-text">
+                                <i class="bi bi-clock"></i>
+                                {{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}
                             </span>
                         </td>
                     </tr>
