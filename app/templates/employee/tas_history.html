@@ -116,18 +116,31 @@
                         {% endif %}
                     </td>
                     <td>
-                        <span class="mode-badge">
-                            {% if tas.travel_mode == 'Air' %}
+                        {% if tas.travel_mode == 'Air' %}
+                        <span class="mode-badge mode-air">
                             <i class="bi bi-airplane-fill"></i>
-                            {% elif tas.travel_mode == 'Rail' %}
-                            <i class="bi bi-train-front-fill"></i>
-                            {% elif tas.travel_mode == 'Road' %}
-                            <i class="bi bi-car-front-fill"></i>
-                            {% elif tas.travel_mode == 'Bus' %}
-                            <i class="bi bi-bus-front-fill"></i>
-                            {% endif %}
                             {{ tas.travel_mode }}
                         </span>
+                        {% elif tas.travel_mode == 'Rail' %}
+                        <span class="mode-badge mode-rail">
+                            <i class="bi bi-train-front-fill"></i>
+                            {{ tas.travel_mode }}
+                        </span>
+                        {% elif tas.travel_mode == 'Road' %}
+                        <span class="mode-badge mode-road">
+                            <i class="bi bi-car-front-fill"></i>
+                            {{ tas.travel_mode }}
+                        </span>
+                        {% elif tas.travel_mode == 'Bus' %}
+                        <span class="mode-badge mode-bus">
+                            <i class="bi bi-bus-front-fill"></i>
+                            {{ tas.travel_mode }}
+                        </span>
+                        {% else %}
+                        <span class="mode-badge">
+                            {{ tas.travel_mode }}
+                        </span>
+                        {% endif %}
                     </td>
                     <td>
                         <span class="date-text">{{ tas.travel_date_start.strftime('%d %b %Y') }}</span>
@@ -136,7 +149,7 @@
                         <span class="purpose-text">{{ tas.purpose[:50] }}{% if tas.purpose|length > 50 %}...{% endif %}</span>
                     </td>
                     <td>
-                        <span class="submitted-text">{{ tas.submitted_at.strftime('%d %b %Y, %I:%M %p') if tas.submitted_at else 'N/A' }}</span>
+                        <span class="submitted-text">{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}</span>
                     </td>
                     <td class="text-center">
                         <a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}" class="btn-view-details">
@@ -396,12 +409,27 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    background: #f3f4f6;
-    color: #374151;
     padding: 0.4rem 0.85rem;
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 600;
+    color: #ffffff;
+}
+
+.mode-air {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.mode-rail {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.mode-road {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.mode-bus {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
 }
 
 .date-text {
