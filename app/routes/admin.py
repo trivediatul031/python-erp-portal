@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file, jsonify, current_app
 from flask_login import current_user
-from flask_wtf.csrf import csrf_exempt
 from app.auth import admin_required
 from app.models import db, Employee, TASRecord
 from app.forms import ImportEmployeesForm
@@ -838,7 +837,6 @@ def demote_employee(emp_code):
 
 
 @admin_bp.route('/update_role/<emp_code>', methods=['POST'])
-@csrf_exempt
 @admin_required
 def update_role(emp_code):
     """Update employee role via AJAX."""

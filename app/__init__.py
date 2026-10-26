@@ -53,7 +53,8 @@ def create_app(config_name='default'):
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    csrf.init_app(app)
+    # Temporarily disable CSRF for AJAX endpoints
+    # csrf.init_app(app)
     limiter.init_app(app)
     
     # Configure production logging
