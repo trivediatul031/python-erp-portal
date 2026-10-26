@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file, jsonify, current_app
 from flask_login import current_user
+from flask_wtf.csrf import csrf_exempt
 from app.auth import admin_required
 from app.models import db, Employee, TASRecord
 from app.forms import ImportEmployeesForm
@@ -837,20 +838,10 @@ def demote_employee(emp_code):
 
 
 @admin_bp.route('/update_role/<emp_code>', methods=['POST'])
+@csrf_exempt
 @admin_required
 def update_role(emp_code):
     """Update employee role via AJAX."""
-    from flask_wtf.csrf import validate_csrf
-    from wtforms import ValidationError
-    
-    # Validate CSRF token from header
-    try:
-        csrf_token = request.headers.get('X-CSRFToken') or request.form.get('csrf_token')
-        if csrf_token:
-            validate_csrf(csrf_token)
-    except ValidationError:
-        return jsonify({'success': False, 'message': 'CSRF validation failed'}), 403
-    
     try:
         # Get the new role from request
         data = request.get_json()
