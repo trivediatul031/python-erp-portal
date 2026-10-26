@@ -1,315 +1,40 @@
 {% extends "base.html" %}
 
-{% block title %}Login - TR Portal System{% endblock %}
+{% block title %}Login - TR Portal{% endblock %}
 
 {% block unauthenticated_content %}
-<div class="simple-login-wrapper">
-    <div class="simple-login-container">
-        <!-- Left Side - Login Form -->
-        <div class="login-form-side">
-            <div class="login-box">
-                <h1 class="login-heading">Login</h1>
-                <p class="login-desc">Sign in to continue.</p>
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4" style="color: #0066cc;">
+                    <strong>TR Portal Login</strong>
+                </h2>
                 
-                <form method="POST" action="{{ url_for('auth.login') }}" class="simple-login-form">
-                    {{ form.hidden_tag() }}
-                    
-                    <div class="form-field">
-                        <label class="field-label">{{ form.username.label.text }}</label>
-                        {{ form.username(class="field-input" + (" input-error" if form.username.errors else ""), 
-                           placeholder="username") }}
-                        {% if form.username.errors %}
-                            <div class="field-error">
-                                {% for error in form.username.errors %}{{ error }}{% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="form-field">
-                        <label class="field-label">{{ form.password.label.text }}</label>
-                        {{ form.password(class="field-input" + (" input-error" if form.password.errors else ""), 
-                           placeholder="••••••••") }}
-                        {% if form.password.errors %}
-                            <div class="field-error">
-                                {% for error in form.password.errors %}{{ error }}{% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <button type="submit" class="login-button">Login</button>
-                </form>
-                
-                <div class="login-links">
-                    <span class="link-text">Need help? </span>
-                    <a href="#" class="help-link">Contact IT support</a>
+                <!-- Microsoft Sign-In Button -->
+                <div class="d-grid mb-3">
+                    <a href="{{ url_for('auth.microsoft_auth') }}" 
+                       class="btn btn-lg d-flex align-items-center justify-content-center"
+                       style="background-color: #ffffff; border: 1px solid #8c8c8c; color: #5e5e5e; font-weight: 500;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" style="margin-right: 12px;">
+                            <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+                            <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+                            <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+                            <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+                        </svg>
+                        Sign in with Microsoft
+                    </a>
                 </div>
-            </div>
-        </div>
-
-        <!-- Right Side - Branding -->
-        <div class="branding-side">
-            <div class="branding-content">
-                <h2 class="platform-title">TR <span class="highlight-orange">Platform</span></h2>
-            </div>
-            
-            <div class="decorative-circles">
-                <div class="circle circle-1"></div>
-                <div class="circle circle-2"></div>
-                <div class="circle circle-3"></div>
+                
+                <div class="text-center mt-4">
+                    <small class="text-muted">Use your company Microsoft account to sign in</small>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <small class="text-muted">Contact IT support for login issues</small>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-/* Simple Login Wrapper */
-.simple-login-wrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-}
-
-.simple-login-container {
-    display: grid;
-    grid-template-columns: 400px 1fr;
-    max-width: 1100px;
-    width: 100%;
-    background: #ffffff;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-}
-
-/* Login Form Side */
-.login-form-side {
-    padding: 3rem 2.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background: #ffffff;
-}
-
-.login-box {
-    width: 100%;
-}
-
-.login-heading {
-    color: #1a1a1a;
-    font-size: 2rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
-}
-
-.login-desc {
-    color: #666666;
-    font-size: 0.95rem;
-    margin: 0 0 2.5rem 0;
-}
-
-/* Form Styling */
-.simple-login-form {
-    margin-bottom: 1.5rem;
-}
-
-.form-field {
-    margin-bottom: 1.5rem;
-}
-
-.field-label {
-    display: block;
-    color: #333333;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.field-input {
-    width: 100%;
-    padding: 0.85rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    color: #1a1a1a;
-    background: #ffffff;
-    transition: all 0.2s ease;
-    font-family: inherit;
-}
-
-.field-input:focus {
-    outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.field-input::placeholder {
-    color: #9ca3af;
-}
-
-.input-error {
-    border-color: #ef4444 !important;
-}
-
-.input-error:focus {
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
-}
-
-.field-error {
-    color: #ef4444;
-    font-size: 0.85rem;
-    margin-top: 0.4rem;
-}
-
-/* Login Button */
-.login-button {
-    width: 100%;
-    background: #4f46e5;
-    border: none;
-    color: #ffffff;
-    padding: 0.95rem 1.5rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 0.5rem;
-}
-
-.login-button:hover {
-    background: #4338ca;
-}
-
-.login-button:active {
-    transform: scale(0.98);
-}
-
-/* Login Links */
-.login-links {
-    text-align: center;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
-}
-
-.link-text {
-    color: #666666;
-    font-size: 0.9rem;
-}
-
-.help-link {
-    color: #4f46e5;
-    font-size: 0.9rem;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.help-link:hover {
-    text-decoration: underline;
-}
-
-/* Branding Side */
-.branding-side {
-    background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 50%, #fce7f3 100%);
-    padding: 3rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Branding Content */
-.branding-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-}
-
-.platform-title {
-    color: #1e40af;
-    font-size: 3.5rem;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.2;
-}
-
-.highlight-orange {
-    color: #ea580c;
-}
-
-/* Decorative Circles */
-.decorative-circles {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
-
-.circle {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.3;
-}
-
-.circle-1 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(165, 180, 252, 0.4) 0%, transparent 70%);
-    bottom: -150px;
-    right: -150px;
-}
-
-.circle-2 {
-    width: 350px;
-    height: 350px;
-    background: radial-gradient(circle, rgba(196, 181, 253, 0.4) 0%, transparent 70%);
-    bottom: -50px;
-    right: -50px;
-}
-
-.circle-3 {
-    width: 250px;
-    height: 250px;
-    background: radial-gradient(circle, rgba(251, 207, 232, 0.4) 0%, transparent 70%);
-    bottom: 50px;
-    right: 50px;
-}
-
-/* Responsive Design */
-@media (max-width: 992px) {
-    .simple-login-container {
-        grid-template-columns: 1fr;
-        max-width: 450px;
-    }
-
-    .branding-side {
-        display: none;
-    }
-
-    .login-form-side {
-        padding: 2.5rem 2rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .simple-login-wrapper {
-        padding: 1rem;
-    }
-
-    .simple-login-container {
-        border-radius: 12px;
-    }
-
-    .login-form-side {
-        padding: 2rem 1.5rem;
-    }
-
-    .login-heading {
-        font-size: 1.75rem;
-    }
-}
-</style>
 {% endblock %}

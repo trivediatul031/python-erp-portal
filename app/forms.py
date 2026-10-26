@@ -21,41 +21,18 @@ class ImportEmployeesForm(FlaskForm):
 
 
 class RejectTASForm(FlaskForm):
-    """Form for rejecting TR with reason."""
+    """Form for rejecting TAS with reason."""
     rejection_reason = TextAreaField('Rejection Reason', validators=[
         DataRequired(),
         Length(min=10, max=500, message='Reason must be between 10 and 500 characters')
     ])
-    submit = SubmitField('Reject TR')
+    submit = SubmitField('Reject TAS')
 
 
 class TASForm(FlaskForm):
-    """Form for employees to submit TR requests."""
-    travel_type = SelectField('Travel Type', choices=[
-        ('Domestic', 'Domestic'),
-        ('International', 'International')
-    ], validators=[Optional()], default='Domestic')
-    
-    travel_mode = SelectField('Travel Mode', choices=[
-        ('Air', 'Air'),
-        ('Rail', 'Rail'),
-        ('Road', 'Road'),
-        ('Bus', 'Bus')
-    ], validators=[Optional()], default='Air')
-    
-    purpose = SelectField('Purpose of Travel', choices=[
-        ('Road Show', 'Road Show'),
-        ('Client Meeting', 'Client Meeting'),
-        ('Conference', 'Conference'),
-        ('Training', 'Training'),
-        ('Site Visit', 'Site Visit'),
-        ('Business Development', 'Business Development'),
-        ('Other', 'Other')
-    ], validators=[Optional()], default='Road Show')
-    
+    """Form for employees to submit TR requests (simplified)."""
     travel_date_start = DateField('Travel Date', validators=[DataRequired()])
-    
-    submit = SubmitField('Submit TR Request')
+    submit = SubmitField('Submit TR')
     
     def validate_travel_date_start(self, field):
         """Validate that travel date is not in the past."""

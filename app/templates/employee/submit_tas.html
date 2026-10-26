@@ -1,578 +1,105 @@
 {% extends "base.html" %}
 
-{% block title %}Submit TR Request - TR Portal{% endblock %}
+{% block title %}Submit Travel Request - TR ERP{% endblock %}
 
 {% block authenticated_content %}
-<div class="submit-tas-page">
-    <!-- Page Header -->
-    <div class="page-header-submit">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="page-icon">
-                    <i class="bi bi-send-fill"></i>
-                </div>
-                <div class="header-text">
-                    <h1 class="page-title-submit">Submit Travel Request</h1>
-                    <p class="page-subtitle-submit">Complete the form below to submit your travel request</p>
-                </div>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">Submit Travel Request</h2>
+                <p class="text-muted mb-0">Create a new TR for your upcoming travel</p>
             </div>
-            <a href="{{ url_for('employee.dashboard') }}" class="btn-back-dashboard">
-                <i class="bi bi-arrow-left"></i>
-                <span>Back to Dashboard</span>
+            <a href="{{ url_for('employee.dashboard') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
             </a>
         </div>
-    </div>
 
-    <!-- Form Container -->
-    <div class="form-container-premium">
-        <form method="POST" action="{{ url_for('employee.submit_tas') }}" class="tas-form-premium">
-            {{ form.hidden_tag() }}
-            
-            <!-- Employee Information Section -->
-            <div class="form-section-header">
-                <div class="section-icon">
-                    <i class="bi bi-person-badge"></i>
-                </div>
-                <div class="section-title-group">
-                    <h3 class="section-title">Employee Information</h3>
-                    <p class="section-subtitle">Your personal details (auto-filled)</p>
-                </div>
-            </div>
+        <!-- Form Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4 p-md-5">
+                <form method="POST" action="{{ url_for('employee.submit_tas') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Employee Information Section -->
+                    <div class="mb-5">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                <i class="bi bi-person-fill text-primary fs-5"></i>
+                            </div>
+                            <h5 class="mb-0">Employee Information</h5>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="emp_name" class="form-label fw-medium text-muted small">Employee Name</label>
+                                <input type="text" class="form-control form-control-lg bg-light border-0" id="emp_name" value="{{ current_user.name }}" readonly>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="department" class="form-label fw-medium text-muted small">Department</label>
+                                <input type="text" class="form-control form-control-lg bg-light border-0" id="department" value="{{ current_user.organisation_unit }}" readonly>
+                            </div>
 
-            <div class="form-grid">
-                <div class="form-field-wrapper">
-                    <label class="form-label-premium">
-                        <i class="bi bi-person-fill label-icon"></i>
-                        <span>Employee Name</span>
-                    </label>
-                    <div class="input-wrapper readonly-wrapper">
-                        <input type="text" class="form-input-premium readonly-input" value="{{ current_user.employee_profile.name }}" readonly>
-                        <div class="readonly-badge">
-                            <i class="bi bi-lock-fill"></i>
+                            <div class="col-md-6">
+                                <label for="emp_code" class="form-label fw-medium text-muted small">Employee Code</label>
+                                <input type="text" class="form-control form-control-lg bg-light border-0" id="emp_code" value="{{ current_user.emp_code }}" readonly>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="designation" class="form-label fw-medium text-muted small">Designation</label>
+                                <input type="text" class="form-control form-control-lg bg-light border-0" id="designation" value="{{ current_user.designation or 'N/A' }}" readonly>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="form-field-wrapper">
-                    <label class="form-label-premium">
-                        <i class="bi bi-building label-icon"></i>
-                        <span>Department</span>
-                    </label>
-                    <div class="input-wrapper readonly-wrapper">
-                        <input type="text" class="form-input-premium readonly-input" value="{{ current_user.employee_profile.department }}" readonly>
-                        <div class="readonly-badge">
-                            <i class="bi bi-lock-fill"></i>
+
+                    <!-- TR Information Section -->
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                <i class="bi bi-calendar-event text-success fs-5"></i>
+                            </div>
+                            <h5 class="mb-0">TR Information</h5>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="travel_date_start" class="form-label fw-medium">Travel Date <span class="text-danger">*</span></label>
+                                {{ form.travel_date_start(class="form-control form-control-lg" + (" is-invalid" if form.travel_date_start.errors else ""), type="date") }}
+                                {% if form.travel_date_start.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.travel_date_start.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="text-muted">Select your travel date</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Travel Details Section -->
-            <div class="form-section-header mt-section">
-                <div class="section-icon">
-                    <i class="bi bi-airplane"></i>
-                </div>
-                <div class="section-title-group">
-                    <h3 class="section-title">Travel Details</h3>
-                    <p class="section-subtitle">Specify your travel date</p>
-                </div>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-field-wrapper">
-                    <label class="form-label-premium">
-                        <i class="bi bi-calendar-event label-icon"></i>
-                        <span>{{ form.travel_date_start.label.text }}</span>
-                        <span class="required-star">*</span>
-                    </label>
-                    <div class="date-wrapper">
-                        {{ form.travel_date_start(class="form-input-premium date-input-premium" + (" is-invalid" if form.travel_date_start.errors else ""), type="date") }}
-                        <i class="bi bi-calendar3 date-icon"></i>
-                    </div>
-                    {% if form.travel_date_start.errors %}
-                        <div class="error-message-premium">
-                            <i class="bi bi-exclamation-circle"></i>
-                            {% for error in form.travel_date_start.errors %}{{ error }}{% endfor %}
+                    <!-- Info Alert -->
+                    <div class="alert alert-info bg-info bg-opacity-10 border-0 d-flex align-items-start mb-4">
+                        <i class="bi bi-info-circle-fill text-info me-3 mt-1"></i>
+                        <div class="small">
+                            <strong>Important:</strong> Your TR number will be automatically generated after submission. You can track your request status from the dashboard.
                         </div>
-                    {% endif %}
-                </div>
-            </div>
+                    </div>
 
-            <!-- Submit Button -->
-            <div class="form-actions-premium">
-                <button type="submit" class="btn-submit-premium">
-                    <span class="btn-icon">
-                        <i class="bi bi-check-circle-fill"></i>
-                    </span>
-                    <span class="btn-text">Submit TR Request</span>
-                    <span class="btn-arrow">
-                        <i class="bi bi-arrow-right"></i>
-                    </span>
-                </button>
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2 pt-3">
+                        {{ form.submit(class="btn btn-primary btn-lg py-3") }}
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+
+        <!-- Help Text -->
+        <div class="text-center mt-4">
+            <p class="text-muted small mb-0">
+                <i class="bi bi-question-circle me-1"></i>
+                Need help? Contact your administrator
+            </p>
+        </div>
     </div>
 </div>
-
-<style>
-/* Page Layout */
-.submit-tas-page {
-    padding: 0;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Page Header */
-.page-header-submit {
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
-    border-radius: 24px;
-    padding: 2.5rem 3rem;
-    margin-bottom: 2.5rem;
-    box-shadow: 0 10px 40px rgba(91, 95, 255, 0.25);
-    position: relative;
-    overflow: hidden;
-}
-
-.page-header-submit::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-    border-radius: 50%;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.page-icon {
-    width: 70px;
-    height: 70px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.page-icon i {
-    font-size: 2rem;
-    color: #ffffff;
-}
-
-.header-text {
-    flex: 1;
-}
-
-.page-title-submit {
-    color: #ffffff;
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
-    line-height: 1.2;
-}
-
-.page-subtitle-submit {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1rem;
-    margin: 0;
-}
-
-.btn-back-dashboard {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: #ffffff;
-    padding: 0.85rem 1.75rem;
-    border-radius: 14px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.btn-back-dashboard:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    color: #ffffff;
-    transform: translateX(-4px);
-}
-
-/* Form Container */
-.form-container-premium {
-    background: #ffffff;
-    border-radius: 24px;
-    padding: 3rem;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-    border: 1px solid #f0f0f0;
-}
-
-/* Section Headers */
-.form-section-header {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #f3f4f6;
-}
-
-.mt-section {
-    margin-top: 3rem;
-}
-
-.section-icon {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.section-icon i {
-    font-size: 1.5rem;
-    color: #ffffff;
-}
-
-.section-title-group {
-    flex: 1;
-}
-
-.section-title {
-    color: #1f2937;
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin: 0 0 0.25rem 0;
-}
-
-.section-subtitle {
-    color: #6b7280;
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-/* Form Grid */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-/* Form Fields */
-.form-field-wrapper {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-label-premium {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #374151;
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 0.75rem;
-}
-
-.label-icon {
-    color: #5b5fff;
-    font-size: 1.1rem;
-}
-
-.required-star {
-    color: #ef4444;
-    font-size: 1.1rem;
-    margin-left: 0.125rem;
-}
-
-/* Input Wrapper */
-.input-wrapper {
-    position: relative;
-}
-
-.readonly-wrapper {
-    position: relative;
-}
-
-.form-input-premium {
-    width: 100%;
-    padding: 0.95rem 1.25rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    color: #374151;
-    background: #ffffff;
-    transition: all 0.3s ease;
-    font-family: inherit;
-}
-
-.form-input-premium:focus {
-    outline: none;
-    border-color: #5b5fff;
-    box-shadow: 0 0 0 4px rgba(91, 95, 255, 0.1);
-}
-
-.readonly-input {
-    background: #f9fafb;
-    color: #6b7280;
-    cursor: not-allowed;
-    padding-right: 3.5rem;
-}
-
-.readonly-badge {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #e5e7eb;
-    color: #6b7280;
-    padding: 0.35rem 0.65rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-/* Select Wrapper */
-.select-wrapper {
-    position: relative;
-}
-
-.form-select-premium {
-    width: 100%;
-    padding: 0.95rem 3rem 0.95rem 1.25rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    color: #374151;
-    background: #ffffff;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    appearance: none;
-    font-family: inherit;
-}
-
-.form-select-premium:focus {
-    outline: none;
-    border-color: #5b5fff;
-    box-shadow: 0 0 0 4px rgba(91, 95, 255, 0.1);
-}
-
-.select-arrow {
-    position: absolute;
-    right: 1.25rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 1.1rem;
-    pointer-events: none;
-    transition: transform 0.3s ease;
-}
-
-.form-select-premium:focus + .select-arrow {
-    transform: translateY(-50%) rotate(180deg);
-    color: #5b5fff;
-}
-
-/* Date Input */
-.date-wrapper {
-    position: relative;
-}
-
-.date-input-premium {
-    padding-right: 3rem;
-}
-
-.date-icon {
-    position: absolute;
-    right: 1.25rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 1.1rem;
-    pointer-events: none;
-}
-
-.date-input-premium:focus ~ .date-icon {
-    color: #5b5fff;
-}
-
-/* Error Messages */
-.error-message-premium {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #ef4444;
-    font-size: 0.85rem;
-    margin-top: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: #fef2f2;
-    border-radius: 8px;
-    border-left: 3px solid #ef4444;
-}
-
-.is-invalid {
-    border-color: #ef4444 !important;
-}
-
-.is-invalid:focus {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
-}
-
-/* Submit Button */
-.form-actions-premium {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 2px solid #f3f4f6;
-}
-
-.btn-submit-premium {
-    width: 100%;
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
-    border: none;
-    color: #ffffff;
-    padding: 1.25rem 2rem;
-    border-radius: 14px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    box-shadow: 0 10px 30px rgba(91, 95, 255, 0.3);
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-submit-premium::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.btn-submit-premium:hover::before {
-    left: 100%;
-}
-
-.btn-submit-premium:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(91, 95, 255, 0.4);
-}
-
-.btn-submit-premium:active {
-    transform: translateY(-1px);
-}
-
-.btn-icon {
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-}
-
-.btn-text {
-    flex: 1;
-}
-
-.btn-arrow {
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    transition: transform 0.3s ease;
-}
-
-.btn-submit-premium:hover .btn-arrow {
-    transform: translateX(4px);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .page-header-submit {
-        padding: 2rem 1.5rem;
-        border-radius: 20px;
-    }
-
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.5rem;
-    }
-
-    .header-left {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .page-icon {
-        width: 60px;
-        height: 60px;
-    }
-
-    .page-icon i {
-        font-size: 1.75rem;
-    }
-
-    .page-title-submit {
-        font-size: 1.5rem;
-    }
-
-    .btn-back-dashboard {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .form-container-premium {
-        padding: 2rem 1.5rem;
-        border-radius: 20px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .section-icon {
-        width: 45px;
-        height: 45px;
-    }
-
-    .section-icon i {
-        font-size: 1.25rem;
-    }
-
-    .section-title {
-        font-size: 1.15rem;
-    }
-}
-</style>
 {% endblock %}

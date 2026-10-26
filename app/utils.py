@@ -1,6 +1,7 @@
-"""Utility functions for the TR Portal application."""
-from app.models import db, TASSequence
+"""Utility functions for the TAS ERP application."""
+from app.models import db
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import text
 from datetime import datetime, timedelta
 import os
 import logging
@@ -8,56 +9,66 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def generate_tas_number(emp_id):
+def generate_tas_number(emp_code):
     """
-    Generate unique TR number for given employee ID in format TR-{EMPID}-{SEQUENCE}.
-    Example: TR-1987-0001
+    Generate unique TR (Travel Request) number for given employee code in format TR-{emp_code}-{seq}.
+    Example: TR-1943-0001
     
-    Uses row-level locking (SELECT FOR UPDATE) to prevent race conditions.
+    Uses database query to find the highest sequence number for the employee globally (not per-date),
+    then increments it. This approach works without requiring a separate sequences table.
     
     IMPORTANT: Must be called within active transaction. Does NOT commit internally - 
-    caller must commit. IntegrityError during first-time sequence creation is retried 
-    up to 3 times with db.session.rollback() between retries. After 3 failures raises 
-    RuntimeError.
+    caller must commit. The uniqueness constraint on tas_records.tas_number ensures no duplicates.
     
     Args:
-        emp_id: Employee ID string
+        emp_code: Employee code string
         
     Returns:
-        str: TR number in format TR-{EMPID}-{SEQUENCE}
+        str: TR number in format TR-{emp_code}-{seq:04d}
         
     Raises:
         RuntimeError: If TR number generation fails after max retries
     """
-    max_retries = 3
+    max_retries = 5
+    prefix = "TR-" + str(emp_code) + "-"
+    prefix_length = len(prefix)
     
     for attempt in range(max_retries):
         try:
-            # Lock the sequence record for this employee (row-level lock)
-            seq_record = TASSequence.query.filter_by(emp_id=emp_id).with_for_update().first()
+            # Get the highest sequence number for this employee (all time, not just today)
+            # Using LIKE with % to match all sequences for this emp_code
+            # Extract numeric part after prefix and find MAX
+            result = db.session.execute(
+                text("""
+                    SELECT COALESCE(MAX(
+                        CAST(SUBSTRING(tas_number, :prefix_len + 1) AS UNSIGNED)
+                    ), 0) as max_seq
+                    FROM tas_records 
+                    WHERE tas_number LIKE :pattern
+                """),
+                {
+                    "prefix_len": prefix_length,
+                    "pattern": prefix + "%"
+                }
+            ).fetchone()
             
-            if seq_record is None:
-                # Create new sequence record for this employee
-                seq_record = TASSequence(emp_id=emp_id, last_sequence=1)
-                db.session.add(seq_record)
-                db.session.flush()  # Detect IntegrityError immediately without committing
-            else:
-                # Increment sequence
-                seq_record.last_sequence += 1
+            # Get next sequence number
+            last_seq = result[0] if result and result[0] is not None else 0
+            sequence = last_seq + 1
             
-            # Format: TR-EMPID-0001
-            tas_number = f"TR-{emp_id}-{seq_record.last_sequence:04d}"
+            # Format: TR-{emp_code}-{seq:04d}
+            tas_number = prefix + str(sequence).zfill(4)
+            
             return tas_number
             
-        except IntegrityError:
-            # Race condition: another transaction created the record
-            db.session.rollback()
+        except Exception as e:
             if attempt == max_retries - 1:
-                raise
-            else:
-                continue
+                raise RuntimeError('Failed to generate TR number after ' + str(max_retries) + ' retries: ' + str(e))
+            # Wait a bit before retry to avoid race conditions
+            import time
+            time.sleep(0.1 * (attempt + 1))
     
-    raise RuntimeError('Failed to generate TR number after retries')
+    raise RuntimeError('Failed to generate TR number after ' + str(max_retries) + ' retries')
 
 
 def cleanup_old_exports(upload_folder, hours=24):

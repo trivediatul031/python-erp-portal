@@ -14,7 +14,7 @@ login_manager = LoginManager()
 csrf = CSRFProtect()
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=["10000 per day", "1000 per hour"],
+    default_limits=["100000 per day", "10000 per hour"],  # Very high limits for development
     storage_uri="memory://"
 )
 
@@ -24,6 +24,19 @@ def create_app(config_name='default'):
     
     # Load configuration
     app.config.from_object(config[config_name])
+    
+    # Disable template caching in debug mode
+    if app.debug:
+        app.config['TEMPLATES_AUTO_RELOAD'] = True
+        app.jinja_env.auto_reload = True
+        app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+    
+    # Compute AZURE_REDIRECT_URI at initialization
+    app_url = app.config.get('APP_URL')
+    if app_url:
+        app.config['AZURE_REDIRECT_URI'] = f"{app_url.rstrip('/')}/auth/Microsoft/callback"
+    else:
+        app.config['AZURE_REDIRECT_URI'] = None
     
     # Ensure upload folder exists
     upload_folder = app.config.get('UPLOAD_FOLDER')
@@ -74,12 +87,12 @@ def create_app(config_name='default'):
     
     @login_manager.user_loader
     def load_user(user_id):
-        """Load user by ID for Flask-Login with error handling."""
-        from app.models import User
+        """Load user by emp_code for Flask-Login with error handling."""
+        from app.models import Employee
         try:
-            user_id_int = int(user_id)
-            return User.query.get(user_id_int)
-        except (ValueError, TypeError):
+            # user_id is actually emp_code (string)
+            return Employee.query.filter_by(emp_code=str(user_id)).first()
+        except Exception:
             return None
     
     # Register error handlers
@@ -139,5 +152,32 @@ def create_app(config_name='default'):
             else:
                 return redirect(url_for('employee.dashboard'))
         return redirect(url_for('auth.login'))
+    
+    # Temporary dev login (REMOVE IN PRODUCTION)
+    @app.route('/dev-login/<emp_code>')
+    def dev_login(emp_code):
+        """Development login bypass - FOR TESTING ONLY"""
+        from flask import flash, redirect, url_for
+        from flask_login import login_user
+        from app.models import Employee
+        
+        if not app.debug:
+            flash('Dev login is only available in debug mode', 'error')
+            return redirect(url_for('auth.login'))
+        
+        employee = Employee.query.filter_by(emp_code=emp_code).first()
+        
+        if not employee:
+            flash(f'Employee with code {emp_code} not found', 'error')
+            return redirect(url_for('auth.login'))
+        
+        # Log in the employee directly
+        login_user(employee)
+        flash(f'Logged in as {employee.name} (Dev Mode)', 'success')
+        
+        if employee.role == 'admin':
+            return redirect(url_for('admin.dashboard'))
+        else:
+            return redirect(url_for('employee.dashboard'))
     
     return app

@@ -1,5 +1,9 @@
 import os
+from dotenv import load_dotenv
 from app import create_app
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Get environment from FLASK_ENV variable, default to development
 config_name = os.environ.get('FLASK_ENV', 'development')

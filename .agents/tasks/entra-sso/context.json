@@ -1,0 +1,25 @@
+{
+  "project_type": "Flask web application with SQLite database, Bootstrap frontend, Flask-Login authentication",
+  "language": "Python 3.9+",
+  "build_system": "pip with requirements.txt; no compile step required",
+  "test_framework": "Manual testing only (no automated test suite found in codebase)",
+  "build_command": "pip install -r requirements.txt",
+  "test_command": "flask run (manual verification required)",
+  "verification_instructions": "Start Flask dev server with 'flask run', navigate to http://localhost:5000/login, verify Microsoft SSO button appears, test OAuth2 flow with valid Microsoft account, confirm authentication logs written to logs/erpportal.log with [AUTH] tag, test role-based dashboard access, test logout clears session",
+  "snapshot_or_generated_files": "None - no build artifacts or generated code to commit",
+  "environment_constraints": "SQLite database at tas_erp.db in worktree root; requires Azure AD app registration with redirect URI configured; requires .env file with Azure credentials; logs directory must exist and be writable; FLASK_ENV controls dev vs prod behavior",
+  "contribution_requirements": "No CONTRIBUTING.md found. Follow existing code style: 4-space indentation, docstrings on functions, structured logging with app.logger, Blueprint pattern for routes, Flask-Login for sessions, WTForms for CSRF protection (OAuth callback exempt), rate limiting with Flask-Limiter",
+  "key_patterns": "Config loaded from environment via config.py classes (Config, DevelopmentConfig, ProductionConfig); app factory pattern in app/__init__.py create_app(); blueprints registered in create_app (auth_bp, admin_bp, employee_bp); models use Flask-SQLAlchemy db instance; User model implements Flask-Login UserMixin with get_id() returning string; role-based decorators @admin_required and @employee_required in app/auth.py; templates extend base.html with blocks 'title' and 'unauthenticated_content'; logging configured in create_app with RotatingFileHandler to logs/erpportal.log; existing username/password auth preserved in database schema",
+  "relevant_files": [
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\.agents\\tasks\\entra-sso\\sso-design.md",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\.agents\\tasks\\entra-sso\\sso-requirements.md",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\config.py",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\app\\__init__.py",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\app\\routes\\auth.py",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\app\\models.py",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\app\\templates\\login.html",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\requirements.txt",
+    "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\.env.example"
+  ],
+  "directory_structure": "Root contains config.py, run.py, requirements.txt, .env files, schema.sql, README.md; app/ contains __init__.py (factory), models.py (SQLAlchemy), forms.py (WTForms), auth.py (decorators), utils.py (helpers); app/routes/ contains auth.py (authentication), admin.py (admin routes), employee.py (employee routes); app/templates/ contains base.html, login.html, admin/, employee/, errors/ subdirectories; app/static/ contains css/, js/, uploads/; logs/ directory for erpportal.log; .agents/tasks/entra-sso/ contains design documents and implementation plan"
+}

@@ -1,757 +1,269 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Dashboard - TR Portal{% endblock %}
+{% block title %}Admin Dashboard - TR ERP{% endblock %}
 
 {% block authenticated_content %}
-<!-- Page Header with Global Search -->
-<div class="admin-dashboard-header">
-    <div class="header-top">
-        <div class="header-title-section">
-            <h1 class="dashboard-title">Admin Dashboard</h1>
-            <p class="dashboard-subtitle">Manage and monitor all TR submissions</p>
-        </div>
-        
-        <!-- Global Search Bar -->
-        <div class="global-search-wrapper">
-            <form action="{{ url_for('admin.employee_list') }}" method="GET" class="global-search-form">
-                <div class="search-input-group">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="text" 
-                           name="search" 
-                           class="global-search-input" 
-                           placeholder="Search employees, departments..."
-                           value="{{ request.args.get('search', '') }}">
-                    <button type="submit" class="search-submit-btn">
-                        <i class="bi bi-arrow-right"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
+<!-- Header -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="mb-1">Admin Dashboard</h2>
+        <p class="text-muted mb-0">Welcome back, {{ current_user.name }}</p>
     </div>
+    <a href="{{ url_for('employee.submit_tas') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>Submit TR
+    </a>
 </div>
 
 <!-- Statistics Cards -->
-<div class="stats-grid-modern">
-    <div class="stat-card-premium stat-card-purple">
-        <div class="stat-card-inner">
-            <div class="stat-content">
-                <div class="stat-icon-large">
-                    <i class="bi bi-file-earmark-text-fill"></i>
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <p class="text-muted mb-1 small">Total TR Submissions</p>
+                        <h3 class="mb-0 fw-bold">{{ total_tas }}</h3>
+                    </div>
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                        <i class="bi bi-file-earmark-text-fill text-primary fs-5"></i>
+                    </div>
                 </div>
-                <div class="stat-details">
-                    <p class="stat-label">Total TR</p>
-                    <h2 class="stat-value">{{ total_tas }}</h2>
-                    <p class="stat-desc">Travel Requests</p>
-                </div>
-            </div>
-            <div class="stat-icon-bg">
-                <i class="bi bi-file-earmark-check"></i>
             </div>
         </div>
     </div>
     
-    <div class="stat-card-premium stat-card-pink">
-        <div class="stat-card-inner">
-            <div class="stat-content">
-                <div class="stat-icon-large">
-                    <i class="bi bi-people-fill"></i>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <p class="text-muted mb-1 small">Total Employees</p>
+                        <h3 class="mb-0 fw-bold">{{ total_employees }}</h3>
+                    </div>
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                        <i class="bi bi-people-fill text-success fs-5"></i>
+                    </div>
                 </div>
-                <div class="stat-details">
-                    <p class="stat-label">Total Employees</p>
-                    <h2 class="stat-value">{{ total_employees }}</h2>
-                    <p class="stat-desc">Active Staff Members</p>
-                </div>
-            </div>
-            <div class="stat-icon-bg">
-                <i class="bi bi-person-badge"></i>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Charts Section -->
-<div class="chart-section-modern">
-    <div class="chart-card">
-        <div class="chart-header">
-            <div>
-                <h3 class="chart-title">TR Submissions Over Time</h3>
-                <p class="chart-subtitle">Monthly submission trends</p>
+<!-- Chart Section -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-4 pb-3">
+                <h5 class="mb-0">TR Submissions Over Time</h5>
+                <p class="text-muted small mb-0">Last 7 days activity</p>
             </div>
-            <div class="chart-actions">
-                <button class="chart-filter-btn active">Month</button>
-                <button class="chart-filter-btn">Year</button>
+            <div class="card-body pt-2">
+                <canvas id="submissionChart" style="max-height: 300px;"></canvas>
             </div>
-        </div>
-        <div class="chart-body">
-            <canvas id="tasChart"></canvas>
         </div>
     </div>
 </div>
 
-<!-- Recent Submissions Table -->
-<div class="table-section-modern">
-    <div class="table-header-modern">
-        <div class="table-title-group">
-            <h3 class="table-title">
-                <i class="bi bi-clock-history"></i>
-                Recent TR Submissions
-            </h3>
-            <span class="table-count">{{ recent_tas|length }} records</span>
-        </div>
-        <a href="{{ url_for('admin.tas_list') }}" class="btn-view-all">
-            <span>View All Records</span>
-            <i class="bi bi-arrow-right"></i>
-        </a>
-    </div>
-    
-    <div class="modern-table-container">
-        <table class="dashboard-table-premium">
-            <thead>
-                <tr>
-                    <th>
-                        <div class="th-content">
-                            <i class="bi bi-hash"></i>
-                            <span>TR NUMBER</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="th-content">
-                            <i class="bi bi-person"></i>
-                            <span>EMPLOYEE NAME</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="th-content">
-                            <i class="bi bi-building"></i>
-                            <span>DEPARTMENT</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="th-content">
-                            <i class="bi bi-calendar-event"></i>
-                            <span>TRAVEL DATE</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div class="th-content">
-                            <i class="bi bi-clock"></i>
-                            <span>SUBMITTED</span>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
+<!-- Recent Submissions Section -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pt-4 pb-3">
+                <div>
+                    <h5 class="mb-0">Recent TR Submissions</h5>
+                    <p class="text-muted small mb-0">Latest travel requests from all employees</p>
+                </div>
+                <a href="{{ url_for('admin.tas_list') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-list-ul me-1"></i>View All
+                </a>
+            </div>
+            <div class="card-body p-0">
                 {% if recent_tas %}
-                    {% for tas, employee in recent_tas %}
-                    <tr class="table-row-hover">
-                        <td>
-                            <a href="{{ url_for('admin.tas_detail', tas_id=tas.tas_id) }}" class="tas-link">
-                                {{ tas.tas_number }}
-                            </a>
-                        </td>
-                        <td>
-                            <div class="employee-cell">
-                                <div class="employee-avatar">
-                                    {{ employee.name[0] }}
-                                </div>
-                                <span class="employee-name">{{ employee.name }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            {% if employee.department %}
-                                {% set dept_colors = {
-                                    'Admin': 'admin',
-                                    'Americas': 'americas',
-                                    'Asia & MENA': 'asia-mena',
-                                    'Company Ops': 'company-ops',
-                                    'Company Secretary': 'company-secretary',
-                                    'Country': 'country',
-                                    'Desk': 'desk',
-                                    'Europe & UK': 'europe-uk',
-                                    'Finance & Accounts': 'finance',
-                                    'Global Marketing': 'marketing',
-                                    'Human Resources': 'hr',
-                                    'I Cube': 'icube',
-                                    'Industrial': 'industrial',
-                                    'IT': 'it',
-                                    'IT Infrastructure Support': 'it-infra',
-                                    'Legal': 'legal',
-                                    'MD office': 'md-office',
-                                    'Procurement': 'procurement',
-                                    'Special Programs': 'special-programs',
-                                    'Startup India': 'startup-india',
-                                    'State Facilitation': 'state-facilitation',
-                                    'Technology': 'technology',
-                                    'Travel': 'travel'
-                                } %}
-                                {% set dept_icons = {
-                                    'Admin': 'bi-person-gear',
-                                    'Americas': 'bi-globe-americas',
-                                    'Asia & MENA': 'bi-globe-asia-australia',
-                                    'Company Ops': 'bi-briefcase-fill',
-                                    'Company Secretary': 'bi-file-earmark-text',
-                                    'Country': 'bi-flag-fill',
-                                    'Desk': 'bi-display',
-                                    'Europe & UK': 'bi-globe-europe-africa',
-                                    'Finance & Accounts': 'bi-cash-coin',
-                                    'Global Marketing': 'bi-megaphone-fill',
-                                    'Human Resources': 'bi-people-fill',
-                                    'I Cube': 'bi-box-seam',
-                                    'Industrial': 'bi-gear-fill',
-                                    'IT': 'bi-laptop',
-                                    'IT Infrastructure Support': 'bi-server',
-                                    'Legal': 'bi-shield-check',
-                                    'MD office': 'bi-star-fill',
-                                    'Procurement': 'bi-cart-check-fill',
-                                    'Special Programs': 'bi-award-fill',
-                                    'Startup India': 'bi-rocket-takeoff-fill',
-                                    'State Facilitation': 'bi-building',
-                                    'Technology': 'bi-code-slash',
-                                    'Travel': 'bi-airplane-fill'
-                                } %}
-                                {% set color = dept_colors.get(employee.department, 'default') %}
-                                {% set icon = dept_icons.get(employee.department, 'bi-tag-fill') %}
-                                <span class="badge badge-dept-{{ color }}">
-                                    <i class="{{ icon }}"></i>
-                                    {{ employee.department }}
-                                </span>
-                            {% else %}
-                                <span class="text-muted">N/A</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="date-text">
-                                <i class="bi bi-calendar3"></i>
-                                {{ tas.travel_date_start.strftime('%d %b %Y') }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="date-text">
-                                <i class="bi bi-clock"></i>
-                                {{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}
-                            </span>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 ps-4 py-3">TR Number</th>
+                                <th class="border-0 py-3">Employee</th>
+                                <th class="border-0 py-3">Designation</th>
+                                <th class="border-0 py-3">Travel Date</th>
+                                <th class="border-0 py-3">Submitted</th>
+                                <th class="border-0 pe-4 py-3 text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tas_record, employee in recent_tas %}
+                            <tr>
+                                <td class="ps-4 py-3">
+                                    <a href="{{ url_for('admin.tas_detail', tas_id=tas_record.tas_id) }}" 
+                                       class="text-decoration-none fw-semibold text-primary">
+                                        {{ tas_record.tas_number }}
+                                    </a>
+                                </td>
+                                <td class="py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                             style="width: 36px; height: 36px; font-size: 14px; font-weight: 600;">
+                                            {{ employee.name[0].upper() }}
+                                        </div>
+                                        <span class="fw-medium">{{ employee.name }}</span>
+                                    </div>
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-muted">{{ employee.designation or 'N/A' }}</span>
+                                </td>
+                                <td class="py-3">
+                                    <i class="bi bi-calendar3 me-1 text-muted small"></i>
+                                    <span>{{ tas_record.travel_date_start.strftime('%d %b %Y') if tas_record.travel_date_start else 'N/A' }}</span>
+                                </td>
+                                <td class="py-3">
+                                    <span class="text-muted small">{{ tas_record.submitted_at.strftime('%d %b, %I:%M %p') if tas_record.submitted_at else 'N/A' }}</span>
+                                </td>
+                                <td class="pe-4 py-3 text-end">
+                                    <a href="{{ url_for('admin.tas_detail', tas_id=tas_record.tas_id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye me-1"></i>View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
-                    <tr>
-                        <td colspan="5" class="empty-state">
-                            <div class="empty-icon">
-                                <i class="bi bi-inbox"></i>
-                            </div>
-                            <p class="empty-text">No TR records found</p>
-                        </td>
-                    </tr>
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox text-muted opacity-25" style="font-size: 4rem;"></i>
+                    <p class="text-muted mt-3 mb-0">No TR records found</p>
+                </div>
                 {% endif %}
-            </tbody>
-        </table>
+            </div>
+        </div>
     </div>
 </div>
 
-<style>
-/* Admin Dashboard Header - Compact */
-.admin-dashboard-header {
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
-    border-radius: 16px;
-    padding: 1.25rem 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 6px 24px rgba(91, 95, 255, 0.2);
-}
-
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.header-title-section {
-    flex: 1;
-}
-
-.dashboard-title {
-    color: #ffffff;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0 0 0.25rem 0;
-}
-
-.dashboard-subtitle {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.875rem;
-    margin: 0;
-}
-
-/* Global Search - Compact */
-.global-search-wrapper {
-    flex: 1;
-    max-width: 450px;
-}
-
-.global-search-form {
-    width: 100%;
-}
-
-.search-input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 0.375rem 0.625rem;
-    transition: all 0.3s ease;
-}
-
-.search-input-group:focus-within {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.search-icon {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.125rem;
-    margin-right: 0.625rem;
-}
-
-.global-search-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #ffffff;
-    font-size: 0.875rem;
-    padding: 0.375rem 0;
-}
-
-.global-search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.global-search-input:focus {
-    outline: none;
-}
-
-.search-submit-btn {
-    background: rgba(255, 255, 255, 0.25);
-    border: none;
-    color: #ffffff;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.search-submit-btn:hover {
-    background: rgba(255, 255, 255, 0.35);
-}
-
-/* Stats Grid */
-.stats-grid-modern {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    margin-bottom: 2.5rem;
-}
-
-.stat-card-premium {
-    border-radius: 20px;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-.stat-card-purple {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.stat-card-pink {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.stat-card-inner {
-    position: relative;
-    z-index: 2;
-}
-
-.stat-content {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.5rem;
-}
-
-.stat-icon-large {
-    width: 70px;
-    height: 70px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.stat-icon-large i {
-    font-size: 2rem;
-    color: #ffffff;
-}
-
-.stat-details {
-    flex: 1;
-}
-
-.stat-label {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 0 0 0.5rem 0;
-}
-
-.stat-value {
-    color: #ffffff;
-    font-size: 3rem;
-    font-weight: 800;
-    margin: 0 0 0.5rem 0;
-    line-height: 1;
-}
-
-.stat-desc {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-.stat-icon-bg {
-    position: absolute;
-    right: -30px;
-    bottom: -30px;
-    font-size: 12rem;
-    color: rgba(255, 255, 255, 0.08);
-    z-index: 1;
-}
-
-/* Chart Section */
-.chart-section-modern {
-    margin-bottom: 2.5rem;
-}
-
-.chart-card {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 2px solid #f3f4f6;
-}
-
-.chart-title {
-    color: #1f2937;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0 0 0.25rem 0;
-}
-
-.chart-subtitle {
-    color: #6b7280;
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-.chart-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.chart-filter-btn {
-    background: #f3f4f6;
-    border: none;
-    color: #6b7280;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.chart-filter-btn.active {
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
-    color: #ffffff;
-}
-
-.chart-body {
-    position: relative;
-    height: 350px;
-}
-
-/* Table Section */
-.table-section-modern {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.table-header-modern {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 2px solid #f3f4f6;
-}
-
-.table-title-group {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.table-title {
-    color: #1f2937;
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.table-count {
-    background: #f3f4f6;
-    color: #6b7280;
-    padding: 0.35rem 0.85rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.btn-view-all {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
-    color: #ffffff;
-    padding: 0.75rem 1.5rem;
-    border-radius: 12px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.btn-view-all:hover {
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(91, 95, 255, 0.3);
-}
-
-/* Premium Table */
-.modern-table-container {
-    overflow-x: auto;
-}
-
-.dashboard-table-premium {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-.dashboard-table-premium thead th {
-    background: #f9fafb;
-    padding: 1rem 1.25rem;
-    text-align: left;
-    font-weight: 700;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    color: #6b7280;
-    border-bottom: 2px solid #e5e7eb;
-}
-
-.th-content {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.th-content i {
-    font-size: 0.9rem;
-    color: #9ca3af;
-}
-
-.dashboard-table-premium tbody td {
-    padding: 1.25rem 1.25rem;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.table-row-hover {
-    transition: all 0.2s ease;
-}
-
-.table-row-hover:hover {
-    background: #f9fafb;
-}
-
-.tas-link {
-    color: #5b5fff;
-    font-weight: 700;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.tas-link:hover {
-    color: #7c3aed;
-}
-
-.employee-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.employee-avatar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #5b5fff 0%, #7c3aed 100%);
-    color: #ffffff;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1rem;
-}
-
-.employee-name {
-    color: #374151;
-    font-weight: 600;
-}
-
-.designation-text {
-    color: #6b7280;
-}
-
-.travel-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.85rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.badge-domestic {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #ffffff;
-}
-
-.badge-international {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: #ffffff;
-}
-
-.badge-default {
-    background: #f3f4f6;
-    color: #6b7280;
-}
-
-.date-text {
-    color: #374151;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.date-text i {
-    color: #9ca3af;
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 4rem 2rem !important;
-}
-
-.empty-icon {
-    font-size: 4rem;
-    color: #e5e7eb;
-    margin-bottom: 1rem;
-}
-
-.empty-text {
-    color: #9ca3af;
-    font-size: 1rem;
-    margin: 0;
-}
-
-/* Responsive Design */
-@media (max-width: 992px) {
-    .admin-dashboard-header {
-        padding: 2rem;
-    }
-
-    .header-top {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .global-search-wrapper {
-        max-width: 100%;
-    }
-
-    .stats-grid-modern {
-        grid-template-columns: 1fr;
-    }
-
-    .table-header-modern {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .btn-view-all {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-@media (max-width: 576px) {
-    .dashboard-title {
-        font-size: 1.5rem;
-    }
-
-    .stat-value {
-        font-size: 2.5rem;
-    }
-
-    .chart-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-}
-</style>
-
-<!-- Chart.js Data -->
+<!-- My TR Requests Section (if admin is also an employee) -->
+<div class="row g-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-4 pb-3">
+                <h5 class="mb-0">My TR Requests</h5>
+                <p class="text-muted small mb-0">Your personal travel requests</p>
+            </div>
+            <div class="card-body p-0">
+                {% if admin_tas_records %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 ps-4 py-3">TR Number</th>
+                                <th class="border-0 py-3">Travel Date</th>
+                                <th class="border-0 pe-4 py-3">Submitted Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tas in admin_tas_records %}
+                            <tr>
+                                <td class="ps-4 py-3">
+                                    <a href="{{ url_for('employee.tas_detail', tas_id=tas.tas_id) }}" 
+                                       class="text-decoration-none fw-semibold text-primary">
+                                        {{ tas.tas_number }}
+                                    </a>
+                                </td>
+                                <td class="py-3">
+                                    <i class="bi bi-calendar3 me-1 text-muted small"></i>
+                                    <span>{{ tas.travel_date_start.strftime('%d %b %Y') if tas.travel_date_start else 'N/A' }}</span>
+                                </td>
+                                <td class="pe-4 py-3">
+                                    <i class="bi bi-calendar-check me-1 text-muted small"></i>
+                                    <span>{{ tas.submitted_at.strftime('%d %b %Y') if tas.submitted_at else 'N/A' }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox text-muted opacity-25" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-3 mb-0">No travel requests yet</p>
+                    <a href="{{ url_for('employee.submit_tas') }}" class="btn btn-primary btn-sm mt-3">
+                        <i class="bi bi-plus-circle me-1"></i>Submit TR
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const chartData = {
-        dates: {{ chart_dates | tojson }},
-        counts: {{ chart_counts | tojson }}
-    };
+    const ctx = document.getElementById('submissionChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_dates | tojson }},
+            datasets: [{
+                label: 'TR Submissions',
+                data: {{ chart_counts | tojson }},
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#0d6efd',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14,
+                        weight: '600'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    cornerRadius: 8
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0,
+                        font: {
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
 </script>
 {% endblock %}

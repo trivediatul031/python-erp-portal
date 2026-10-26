@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+<!-- UPDATED VERSION: 2026-10-16-v3-FORCE-UPDATE -->
+
+{% block title %}User Management - TR ERP{% endblock %}
+
+{% block authenticated_content %}
+<!-- Header -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="mb-1">User Management</h2>
+        <p class="text-muted mb-0">Manage employee roles and permissions</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                        <i class="bi bi-people-fill text-primary fs-4"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-0 small">Total Users</p>
+                        <h4 class="mb-0 fw-bold">{{ employees|length }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="bg-danger bg-opacity-10 rounded-circle p-3 me-3">
+                        <i class="bi bi-shield-check text-danger fs-4"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-0 small">Administrators</p>
+                        <h4 class="mb-0 fw-bold">{{ employees|selectattr('role', 'equalto', 'admin')|list|length }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="bg-info bg-opacity-10 rounded-circle p-3 me-3">
+                        <i class="bi bi-person-badge text-info fs-4"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-0 small">Employees</p>
+                        <h4 class="mb-0 fw-bold">{{ employees|selectattr('role', 'equalto', 'employee')|list|length }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 pt-4 pb-3">
+        <h5 class="mb-0">All Users</h5>
+        <p class="text-muted small mb-0">Click "Assign Role" to manage user permissions</p>
+    </div>
+    <div class="card-body p-0">
+        {% if employees %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle" id="userManagementTable">
+                <thead class="table-light">
+                    <tr>
+                        <th class="border-0 ps-4 py-3">Emp Code</th>
+                        <th class="border-0 py-3">Name</th>
+                        <th class="border-0 py-3">Email</th>
+                        <th class="border-0 py-3">Department</th>
+                        <th class="border-0 py-3 text-center">Current Role</th>
+                        <th class="border-0 pe-4 py-3 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td class="ps-4 py-3">
+                            <span class="fw-semibold text-primary">{{ employee.emp_code }}</span>
+                        </td>
+                        <td class="py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                     style="width: 36px; height: 36px; font-size: 14px; font-weight: 600;">
+                                    {{ employee.name[0].upper() if employee.name else 'U' }}
+                                </div>
+                                <span class="fw-medium">{{ employee.name or 'N/A' }}</span>
+                            </div>
+                        </td>
+                        <td class="py-3">
+                            <span class="text-muted">{{ employee.email or 'N/A' }}</span>
+                        </td>
+                        <td class="py-3">
+                            <span class="text-muted small">{{ employee.organisation_unit or 'N/A' }}</span>
+                        </td>
+                        <td class="py-3 text-center">
+                            {% if employee.role == 'admin' %}
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-shield-check me-1"></i>Admin
+                                </span>
+                            {% else %}
+                                <span class="badge bg-info">
+                                    <i class="bi bi-person me-1"></i>Employee
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-4 py-3 text-end">
+                            <button class="btn btn-sm btn-success shadow-sm assign-role-btn" 
+                                    data-emp-code="{{ employee.emp_code }}"
+                                    data-emp-name="{{ employee.name }}"
+                                    data-current-role="{{ employee.role }}"
+                                    onclick="openRoleModal(this)">
+                                <i class="bi bi-person-gear me-2"></i>
+                                <span>Assign Role</span>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-people text-muted opacity-25" style="font-size: 4rem;"></i>
+            <p class="text-muted mt-3 mb-0">No users found</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- FORCE BUTTON UPDATE SCRIPT -->
+<script>
+// This script runs immediately to replace any old "Promote to Admin" buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all buttons with "Promote to Admin" text
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(function(btn) {
+        if (btn.textContent.includes('Promote to Admin') || btn.textContent.includes('Demote to Employee')) {
+            // Get employee data from the row
+            const row = btn.closest('tr');
+            const empCodeCell = row.querySelector('td:first-child span');
+            const nameCell = row.querySelector('td:nth-child(2)');
+            const roleCell = row.querySelector('td:nth-last-child(2)');
+            
+            if (empCodeCell && nameCell && roleCell) {
+                const empCode = empCodeCell.textContent.trim();
+                const empName = nameCell.textContent.trim();
+                const currentRole = roleCell.textContent.toLowerCase().includes('admin') ? 'admin' : 'employee';
+                
+                // Replace button
+                btn.className = 'btn btn-sm btn-success shadow-sm assign-role-btn';
+                btn.innerHTML = '<i class="bi bi-person-gear me-2"></i><span>Assign Role</span>';
+                btn.setAttribute('data-emp-code', empCode);
+                btn.setAttribute('data-emp-name', empName);
+                btn.setAttribute('data-current-role', currentRole);
+                btn.onclick = function() { openRoleModal(this); };
+            }
+        }
+    });
+    console.log('Buttons updated to Assign Role');
+});
+</script>
+
+<!-- Assign Role Modal -->
+<div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="background: white;">
+            <div class="modal-header border-0 pb-0" style="background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);">
+                <h5 class="modal-title text-white" id="roleModalLabel">
+                    <i class="bi bi-person-gear me-2"></i>Assign Role
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 py-4">
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                             style="width: 48px; height: 48px; font-size: 20px; font-weight: 600;" id="modalEmpInitial">
+                            U
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-semibold" id="modalEmpName">Employee Name</h6>
+                            <small class="text-muted">Employee Code: <span id="modalEmpCode">EMP000</span></small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-secondary mb-3">
+                        <i class="bi bi-shield-check me-1"></i>Select Role
+                    </label>
+                    <div class="d-flex gap-3">
+                        <div class="form-check flex-fill">
+                            <input class="form-check-input" type="radio" name="roleSelection" id="roleEmployee" value="employee" checked>
+                            <label class="form-check-label w-100 border rounded p-3 cursor-pointer" for="roleEmployee" style="cursor: pointer;">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-person fs-4 text-info me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Employee</div>
+                                        <small class="text-muted">Standard access</small>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="form-check flex-fill">
+                            <input class="form-check-input" type="radio" name="roleSelection" id="roleAdmin" value="admin">
+                            <label class="form-check-label w-100 border rounded p-3 cursor-pointer" for="roleAdmin" style="cursor: pointer;">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-shield-check fs-4 text-danger me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Admin</div>
+                                        <small class="text-muted">Full access</small>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="updateRole()">
+                    <i class="bi bi-check-circle me-1"></i>Update Role
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Enhanced Assign Role Button Styling */
+.assign-role-btn {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    border: none;
+    padding: 0.375rem 0.875rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.assign-role-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.assign-role-btn:active {
+    transform: translateY(0);
+}
+
+.assign-role-btn i {
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+
+.assign-role-btn span {
+    vertical-align: middle;
+    font-size: 0.875rem;
+}
+
+/* Role selection card hover effects */
+label[for="roleEmployee"], label[for="roleAdmin"] {
+    transition: all 0.2s ease;
+}
+
+label[for="roleEmployee"]:hover, label[for="roleAdmin"]:hover {
+    border-color: #4F46E5 !important;
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+input[name="roleSelection"]:checked + label {
+    border-color: #4F46E5 !important;
+    background-color: #E0E7FF;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+/* Role badge styling */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Table row hover effect */
+#userManagementTable tbody tr {
+    transition: all 0.2s ease;
+}
+
+#userManagementTable tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.005);
+}
+
+/* Avatar styling */
+.bg-primary.bg-opacity-10 {
+    transition: all 0.2s ease;
+}
+
+#userManagementTable tbody tr:hover .bg-primary.bg-opacity-10 {
+    background-color: rgba(79, 70, 229, 0.2) !important;
+}
+</style>
+
+<script>
+let currentEmpCode = '';
+
+function openRoleModal(element) {
+    const empCode = element.getAttribute('data-emp-code');
+    const empName = element.getAttribute('data-emp-name');
+    const currentRole = element.getAttribute('data-current-role');
+    
+    currentEmpCode = empCode;
+    
+    // Update modal content
+    document.getElementById('modalEmpName').textContent = empName;
+    document.getElementById('modalEmpCode').textContent = empCode;
+    document.getElementById('modalEmpInitial').textContent = empName ? empName[0].toUpperCase() : 'U';
+    
+    // Set current role as selected
+    if (currentRole === 'admin') {
+        document.getElementById('roleAdmin').checked = true;
+    } else {
+        document.getElementById('roleEmployee').checked = true;
+    }
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('roleModal'));
+    modal.show();
+}
+
+function updateRole() {
+    const selectedRole = document.querySelector('input[name="roleSelection"]:checked');
+    
+    if (!selectedRole) {
+        alert('Please select a role');
+        return;
+    }
+    
+    const newRole = selectedRole.value;
+    
+    // Show loading state
+    const updateBtn = event.target;
+    const originalText = updateBtn.innerHTML;
+    updateBtn.disabled = true;
+    updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Updating...';
+    
+    // Send AJAX request
+    fetch(`/admin/update_role/${currentEmpCode}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ role: newRole })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('roleModal')).hide();
+            
+            // Show success toast
+            showToast('Success', 'Role updated successfully!', 'success');
+            
+            // Reload page after short delay
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            alert('Error: ' + data.message);
+            updateBtn.disabled = false;
+            updateBtn.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating the role');
+        updateBtn.disabled = false;
+        updateBtn.innerHTML = originalText;
+    });
+}
+
+function showToast(title, message, type) {
+    const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+    const toastHtml = `
+        <div class="toast align-items-center text-white ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <strong>${title}:</strong> ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+    
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.className = 'position-fixed top-0 end-0 p-3';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const toastElement = document.createElement('div');
+    toastElement.innerHTML = toastHtml;
+    toastContainer.appendChild(toastElement.firstElementChild);
+    
+    const toastInstance = new bootstrap.Toast(toastElement.firstElementChild);
+    toastInstance.show();
+    
+    // Remove toast element after it's hidden
+    toastElement.firstElementChild.addEventListener('hidden.bs.toast', function() {
+        this.remove();
+    });
+}
+</script>
+{% endblock %}

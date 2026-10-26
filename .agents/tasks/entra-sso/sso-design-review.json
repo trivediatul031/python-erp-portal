@@ -1,0 +1,86 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "id": "HIGH-1",
+      "severity": "HIGH",
+      "title": "Database Transaction Not Committed for Auto-Created Users",
+      "location": "microsoft_callback() route, User auto-creation section",
+      "issue": "After auto-creating a User record and committing, the user object may not be refreshed, causing user_id to be None. Additionally, the IntegrityError race condition handler doesn't verify the retrieved user is active before proceeding to login.",
+      "fix": "Add db.session.refresh(user) after commit. In IntegrityError handler, add is_active check before login_user()."
+    },
+    {
+      "id": "HIGH-2",
+      "severity": "HIGH",
+      "title": "Missing Validation for Malformed Email Claims",
+      "location": "microsoft_callback() route, email extraction section",
+      "issue": "Design checks for empty email but doesn't validate email format. Malformed values from Azure AD (e.g., 'user@' or '@@company.com') would be normalized and used in database queries, causing unexpected behavior.",
+      "fix": "Add regex email format validation after normalization: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$. Import re module."
+    },
+    {
+      "id": "MEDIUM-1",
+      "severity": "MEDIUM",
+      "title": "Incomplete Redirect URI Validation in Production",
+      "location": "ProductionConfig.init_app() in config.py",
+      "issue": "APP_URL validation checks http/https prefix and warns about HTTP, but doesn't validate URL structure (no whitespace check, no path segment warning). Invalid URLs like 'https://domain .com' would pass.",
+      "fix": "Add whitespace validation. Parse URL with urlparse and warn if path segments exist. Import urllib.parse.urlparse in config.py."
+    },
+    {
+      "id": "MEDIUM-2",
+      "severity": "MEDIUM",
+      "title": "log_auth_attempt() Function Has No Error Handling",
+      "location": "log_auth_attempt() helper function in auth.py",
+      "issue": "Function has no try/except. If logging fails (disk full, permissions), entire authentication callback crashes, denying legitimate users access.",
+      "fix": "Wrap function body in try/except. On exception, log simple error message without structured format to avoid cascading failure."
+    },
+    {
+      "id": "MEDIUM-3",
+      "severity": "MEDIUM",
+      "title": "Missing HTTP Method Validation for Callback Route",
+      "location": "/auth/Microsoft/callback route implementation",
+      "issue": "Route accepts GET and POST but only uses request.args.get() (query params). If Azure AD sends POST with form data, authorization code extraction fails silently.",
+      "fix": "Check both sources: auth_code = request.args.get('code') or request.form.get('code'). Same for error and state parameters."
+    },
+    {
+      "id": "NIT-1",
+      "severity": "NIT",
+      "title": "Inconsistent Import Organization",
+      "location": "Import section of auth.py",
+      "issue": "Imports not in standard order (stdlib, third-party, local). MSAL try/except in middle makes code harder to scan.",
+      "fix": "Reorganize: stdlib first, then Flask/SQLAlchemy, then local, then MSAL try/except last."
+    },
+    {
+      "id": "NIT-2",
+      "severity": "NIT",
+      "title": "Magic Number in State Generation",
+      "location": "microsoft_auth() route, state generation",
+      "issue": "secrets.token_urlsafe(32) uses hardcoded 32 without comment. Not obvious why 32 was chosen.",
+      "fix": "Add comment: # Generate state for CSRF protection (32 bytes = 256 bits of entropy, OWASP recommendation)"
+    },
+    {
+      "id": "NIT-3",
+      "severity": "NIT",
+      "title": "Duplicate Email Normalization Logic",
+      "location": "microsoft_callback() route",
+      "issue": "Email normalization logic (.lower().strip()) might be reused elsewhere but is inline. Should be extracted to helper function.",
+      "fix": "Create normalize_email(email) helper function and use it in callback."
+    },
+    {
+      "id": "NIT-4",
+      "severity": "NIT",
+      "title": "No Timeout Specified for MSAL Token Exchange",
+      "location": "acquire_token_by_authorization_code() call",
+      "issue": "No timeout specified. If Microsoft token endpoint is slow, request could hang indefinitely. MSAL doesn't expose timeout parameter in high-level API.",
+      "fix": "Document limitation in code comment. Add timeout-specific error message in generic exception handler. Recommend reverse proxy timeout for production."
+    },
+    {
+      "id": "NIT-5",
+      "severity": "NIT",
+      "title": "Rate Limit Configuration Comments Missing in .env.example",
+      "location": ".env.example rate limiting section",
+      "issue": "Rate limit variables added but format not explained (e.g., '30 per minute' vs '30/minute').",
+      "fix": "Add detailed comments explaining format: '<number> per <unit>' with examples and description of each variable's purpose."
+    }
+  ],
+  "reviewDoc": "c:\\Users\\AtulTrivedi\\erpportalflask\\.worktrees\\entra-sso\\.agents\\tasks\\entra-sso\\sso-design-review.md"
+}

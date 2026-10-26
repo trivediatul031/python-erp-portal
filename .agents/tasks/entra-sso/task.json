@@ -1,0 +1,7 @@
+{
+  "task_id": "task-entra-sso",
+  "task_description": "Implement Microsoft Entra ID (Azure AD) SSO for Flask Travel Request Portal using OAuth2 authorization code flow via MSAL, replacing username/password authentication with case-insensitive email matching",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null
+}

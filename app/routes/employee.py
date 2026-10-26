@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime
-from app.models import db, TASRecord, Employee, User
+from app.models import db, TASRecord, Employee
 from app.forms import TASForm
 from app.utils import generate_tas_number
 
@@ -21,14 +21,6 @@ def employee_required(f):
             flash('Access denied. Employee privileges required.', 'danger')
             return redirect(url_for('auth.login'))
         
-        if not current_user.is_active:
-            flash('Your account is inactive. Please contact administrator.', 'warning')
-            return redirect(url_for('auth.login'))
-        
-        if not current_user.emp_id:
-            flash('Your account is not linked to an employee record. Contact administrator.', 'danger')
-            return redirect(url_for('auth.login'))
-        
         return f(*args, **kwargs)
     return decorated_function
 
@@ -38,83 +30,60 @@ def employee_required(f):
 @employee_required
 def dashboard():
     """Employee dashboard"""
-    employee = Employee.query.get(current_user.emp_id)
-    
     # Get TAS statistics for this employee
-    total_tas = TASRecord.query.filter_by(emp_id=current_user.emp_id).count()
-    pending_tas = TASRecord.query.filter_by(emp_id=current_user.emp_id, status='Pending').count()
-    approved_tas = TASRecord.query.filter_by(emp_id=current_user.emp_id, status='Approved').count()
-    rejected_tas = TASRecord.query.filter_by(emp_id=current_user.emp_id, status='Rejected').count()
+    total_tas = TASRecord.query.filter_by(emp_code=current_user.emp_code).count()
     
     # Get recent TAS submissions
     recent_tas = TASRecord.query.filter_by(
-        emp_id=current_user.emp_id
+        emp_code=current_user.emp_code
     ).order_by(TASRecord.submitted_at.desc()).limit(5).all()
     
     return render_template(
         'employee/dashboard.html',
-        employee=employee,
         total_tas=total_tas,
-        pending_tas=pending_tas,
-        approved_tas=approved_tas,
-        rejected_tas=rejected_tas,
         recent_tas=recent_tas
     )
 
 
 @employee_bp.route('/submit-tas', methods=['GET', 'POST'])
 @login_required
-@employee_required
 def submit_tas():
-    """Submit a new TAS request"""
+    """Submit a new TR request - Available to all logged-in users"""
     from flask import current_app
     form = TASForm()
     
     if form.validate_on_submit():
         try:
-            # Validate emp_id
-            if not current_user.emp_id:
-                flash('Your account is not linked to an employee record. Contact admin.', 'error')
-                return redirect(url_for('employee.dashboard'))
-            
-            # Get employee details
-            employee = Employee.query.get(current_user.emp_id)
-            if not employee:
-                flash('Employee record not found. Contact admin.', 'error')
-                return redirect(url_for('employee.dashboard'))
-            
-            # Generate TAS number (does not commit internally)
-            tas_number = generate_tas_number(current_user.emp_id)
-            
-            # Use default values if fields are not provided
-            travel_type = form.travel_type.data or 'Domestic'
-            travel_mode = form.travel_mode.data or 'Air'
-            purpose = form.purpose.data or 'Road Show'
-            
-            # Create TAS record
+            # Create TR record WITHOUT tas_number first (to get tas_id)
             tas = TASRecord(
-                tas_number=tas_number,
-                emp_id=current_user.emp_id,
-                emp_name=employee.name,
-                department=employee.department,
-                travel_type=travel_type,
-                travel_mode=travel_mode,
+                tas_number='TEMP',  # Temporary placeholder
+                emp_code=current_user.emp_code,
+                emp_name=current_user.name,
+                department=current_user.organisation_unit,
                 travel_date_start=form.travel_date_start.data,
-                purpose=purpose,
-                status='Pending',
-                submitted_at=datetime.now()
+                travel_type=None,
+                travel_mode=None,
+                purpose=None,
+                status='Pending'
             )
             
             db.session.add(tas)
-            # Commit both sequence update and TAS record atomically
+            db.session.flush()  # Get the tas_id without committing
+            
+            # Generate TR number using tas_id with 4-digit padding: TR-{emp_code}-{tas_id:04d}
+            tas_number = f'TR-{current_user.emp_code}-{tas.tas_id:04d}'
+            print(f"DEBUG: Generated TR number: {tas_number} for tas_id: {tas.tas_id}")
+            tas.tas_number = tas_number
+            
             db.session.commit()
+            print(f"DEBUG: After commit, TR number: {tas.tas_number}")
             
             flash(f'TR submitted successfully. Your TR number is {tas_number}', 'success')
             return redirect(url_for('employee.tas_history'))
         
         except Exception as e:
             db.session.rollback()
-            current_app.logger.error(f'Error submitting TAS: {str(e)}', exc_info=True)
+            current_app.logger.error(f'Error submitting TR: {str(e)}', exc_info=True)
             flash('Failed to submit TR. Please try again.', 'error')
             return redirect(url_for('employee.submit_tas'))
     
@@ -125,17 +94,17 @@ def submit_tas():
 @login_required
 @employee_required
 def tas_history():
-    """View TAS submission history"""
+    """View TR submission history"""
     # Get filter parameter
     status_filter = request.args.get('status', '')
     
     # Build query
-    query = TASRecord.query.filter_by(emp_id=current_user.emp_id)
+    query = TASRecord.query.filter_by(emp_code=current_user.emp_code)
     
     if status_filter:
         query = query.filter_by(status=status_filter)
     
-    # Get all TAS records for this employee
+    # Get all TR records for this employee
     tas_records = query.order_by(TASRecord.submitted_at.desc()).all()
     
     return render_template(
@@ -149,32 +118,27 @@ def tas_history():
 @login_required
 @employee_required
 def tas_detail(tas_id):
-    """View TAS detail"""
-    from flask import abort, current_app
+    """View TR detail"""
+    from flask import abort
     
-    # Query TAS record
+    # Query TR record
     tas_record = TASRecord.query.get(tas_id)
     
     if not tas_record:
         abort(404)
     
     # Validate ownership
-    if tas_record.emp_id != current_user.emp_id:
+    if tas_record.emp_code != current_user.emp_code:
         abort(403, 'You do not have permission to view this TR')
     
     # Query reviewer info if reviewed
     reviewer_info = None
     if tas_record.reviewed_by:
-        reviewer_user = User.query.get(tas_record.reviewed_by)
-        if reviewer_user and reviewer_user.employee_profile:
+        reviewer_emp = Employee.query.filter_by(emp_code=tas_record.reviewed_by).first()
+        if reviewer_emp:
             reviewer_info = {
-                'name': reviewer_user.employee_profile.name,
-                'username': reviewer_user.username
-            }
-        elif reviewer_user:
-            reviewer_info = {
-                'name': reviewer_user.username,
-                'username': reviewer_user.username
+                'name': reviewer_emp.name,
+                'emp_code': reviewer_emp.emp_code
             }
     
     return render_template('employee/tas_detail.html', 

@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Update UI and documentation: replace login.html template with Microsoft sign-in button following branding guidelines, update .env.example with comprehensive Azure AD configuration documentation including redirect URI setup instructions emphasizing capital M",
+  "status": "completed",
+  "steps": [
+    "Replace entire contents of app/templates/login.html: keep extends base.html and unauthenticated_content block structure; remove WTForms form; add Microsoft sign-in button with official styling (white background, gray border #8c8c8c, gray text #5e5e5e); add SVG four-color Microsoft logo (red #f25022, blue #00a4ef, green #7fba00, yellow #ffb900); button links to url_for('auth.microsoft_auth'); change heading from 'TAS ERP Login' to 'TR Portal Login' per original user request; add helper text about using company Microsoft account and contacting IT support",
+    "Update .env.example: add new section 'Microsoft Entra ID (Azure AD) SSO Configuration' with detailed comments; add AZURE_TENANT_ID with provided value as example; add AZURE_CLIENT_ID with provided value; add AZURE_CLIENT_SECRET with instructions to obtain from Azure Portal > Certificates & secrets; add APP_URL with examples for development (http://localhost:5000) and production (https://yourdomain.com); add optional rate limiting section with LOGIN_RATE_LIMIT, AUTH_INITIATE_RATE_LIMIT, AUTH_CALLBACK_RATE_LIMIT commented out with defaults; add important multi-line note about redirect URI configuration in Azure Portal emphasizing the exact URL format ${APP_URL}/auth/Microsoft/callback and that the M in Microsoft must be capitalized"
+  ],
+  "acceptance_criteria": [
+    "login.html displays 'TR Portal Login' heading (not 'TAS ERP')",
+    "login.html shows 'Sign in with Microsoft' button with correct Microsoft branding colors and four-square logo",
+    "login.html button links to /auth/microsoft route",
+    "No username/password form is visible in login.html",
+    ".env.example contains complete Azure AD configuration section with all required variables",
+    ".env.example includes clear instructions for obtaining client secret from Azure Portal",
+    ".env.example emphasizes redirect URI must use capital M in Microsoft",
+    ".env.example documents optional rate limiting configuration"
+  ],
+  "verification": [
+    "Run: flask run, navigate to http://localhost:5000/login in browser, confirm page title is 'Login - TR Portal', heading shows 'TR Portal Login', Microsoft button is visible with four-color logo, no username/password fields are present",
+    "Run: cat .env.example | grep -A 20 'Microsoft Entra' and confirm Azure AD section exists with comprehensive documentation",
+    "Run: cat .env.example | grep 'Microsoft/callback' and confirm redirect URI examples include capital M",
+    "Run: cat .env.example | grep -i 'RATE_LIMIT' and confirm optional rate limiting configuration is documented",
+    "Visual inspection: open login page in browser and confirm Microsoft button styling matches design (white background, gray border, Microsoft logo colors correct)"
+  ],
+  "blocked_reason": null,
+  "findings": "UI and documentation updates successfully implemented. login.html replaced with Microsoft SSO button design: heading changed from 'TAS ERP Login' to 'TR Portal Login' per original user request (message index 1), page title updated to 'Login - TR Portal', WTForms username/password form removed, Microsoft sign-in button added with official four-color logo (red #f25022, blue #00a4ef, green #7fba00, yellow #ffb900) and branding-compliant styling (white background, gray border #8c8c8c, gray text #5e5e5e), button links to url_for('auth.microsoft_auth'), helper text added about using company Microsoft account and contacting IT support. .env.example updated with comprehensive Azure AD SSO configuration section: AZURE_TENANT_ID and AZURE_CLIENT_ID documented with provided example values, AZURE_CLIENT_SECRET with instructions to obtain from Azure Portal Certificates & secrets, APP_URL with examples for development (http://localhost:5000) and production (https://yourdomain.com), optional rate limiting configuration section added with LOGIN_RATE_LIMIT/AUTH_INITIATE_RATE_LIMIT/AUTH_CALLBACK_RATE_LIMIT commented out with default values, comprehensive multi-line redirect URI configuration note added emphasizing ${APP_URL}/auth/Microsoft/callback format with step-by-step Azure Portal instructions and explicit note that 'M' in Microsoft must be capitalized. All acceptance criteria met: heading shows 'TR Portal Login', Microsoft button with correct branding visible, links to /auth/microsoft route, no username/password fields present, .env.example contains complete Azure AD section with clear client secret instructions, redirect URI documentation emphasizes capital M, rate limiting configuration documented. Verification confirmed: redirect URI examples show capital M in Microsoft/callback, Azure AD section present with comprehensive documentation including tenant ID/client ID/client secret/APP_URL, rate limiting configuration documented with three configurable parameters."
+}

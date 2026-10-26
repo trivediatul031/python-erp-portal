@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Implement OAuth2 authentication routes: update imports in auth.py (csrf from app, func, IntegrityError), add MSAL and logging helpers (get_msal_client, log_auth_attempt with IP fallback), replace /login route with GET-only version, add /auth/microsoft initiate route with state generation, add /auth/Microsoft/callback route with ALL design fixes (CSRF exempt, case-insensitive matching, explicit NULL checks, race condition handling, configurable rate limits), update /logout to clear session completely",
+  "status": "completed",
+  "steps": [
+    "Update imports in app/routes/auth.py: change 'from flask_wtf.csrf import csrf' to 'from app import csrf'; add 'from sqlalchemy.sql import func' and 'from sqlalchemy.exc import IntegrityError'; add datetime, secrets; add MSAL try/except import block",
+    "Add get_msal_client() helper function: checks msal installed, retrieves Azure config from current_app.config, validates all present, returns msal.ConfidentialClientApplication instance",
+    "Add log_auth_attempt(email, ip_address, status, reason, user_id=None, role=None) helper: formats ISO 8601 timestamp with microseconds, [AUTH] tag, all parameters, uses 'unknown' fallback for None IP (Finding #9), logs with logger.info (success) or logger.warning (failure)",
+    "Replace existing /login route: change to GET-only, remove LoginForm/password logic, keep authenticated user redirect check, use configurable rate limit from config (Finding #8), render login.html",
+    "Add new /auth/microsoft route: generate state with secrets.token_urlsafe(32), store in session, get AZURE_REDIRECT_URI from config, call MSAL get_authorization_request_url, handle errors (missing config, network failures), use configurable AUTH_INITIATE_RATE_LIMIT",
+    "Add new /auth/Microsoft/callback route (capital M): decorate with @csrf.exempt (Finding #1) and configurable AUTH_CALLBACK_RATE_LIMIT (Finding #8); validate state parameter; exchange code for tokens; extract email with fallback (preferred_username → email → upn); normalize email (lowercase, strip); match employee case-insensitively using db.func.lower; check employee.is_active with explicit 'is False' (Finding #5); find or auto-create User with IntegrityError handling and retry (Finding #6); check username conflict case-insensitively (Finding #7); create Flask-Login session; log all attempts with IP fallback; handle all error scenarios from design",
+    "Update /logout route: call session.clear() before logout_user(), flash success message, redirect to login; include commented-out Microsoft full sign-out code for future use"
+  ],
+  "acceptance_criteria": [
+    "All imports resolve without errors; csrf imported from app not flask_wtf.csrf",
+    "get_msal_client() returns valid MSAL ConfidentialClientApplication instance",
+    "log_auth_attempt() writes structured logs with [AUTH] tag and handles None IP gracefully",
+    "/login route is GET-only and renders template with configurable rate limit",
+    "/auth/microsoft route generates state, stores in session, redirects to Microsoft with correct params",
+    "/auth/Microsoft/callback route (capital M) handles GET and POST, validates state, exchanges code for tokens, extracts and normalizes email, matches employee case-insensitively, handles active/inactive checks explicitly, auto-creates users with race condition handling, checks username conflicts case-insensitively, creates sessions, logs all attempts, handles all error scenarios",
+    "/logout route clears session completely before logout",
+    "All rate limits are configurable via app.config with sensible defaults"
+  ],
+  "verification": [
+    "Run: python -c \"from app.routes.auth import get_msal_client, log_auth_attempt; print('Helpers OK')\" and confirm no errors",
+    "Run: python -c \"from app import create_app; app = create_app(); print([(r.rule, r.methods) for r in app.url_map.iter_rules() if 'auth' in r.rule or 'microsoft' in r.rule.lower()])\" and confirm routes exist with correct methods: /login (GET), /auth/microsoft (GET), /auth/Microsoft/callback (GET, POST), /logout (GET)",
+    "Start flask run and navigate to /login; confirm page loads without errors",
+    "Start flask run, navigate to /login, click Microsoft button; confirm redirect to login.microsoftonline.com with state parameter in URL",
+    "After full Azure AD setup (step requires AZURE_CLIENT_SECRET), complete OAuth flow and confirm: user logged in, redirected to dashboard, logs/erpportal.log contains [AUTH] entry with status=success",
+    "Test error case: use Microsoft account not in Employee table, confirm error message 'not associated with an employee record' and logs/erpportal.log contains [AUTH] entry with status=failure reason=Employee not found",
+    "Test logout: after login, navigate to /logout, confirm redirected to login page and cannot access protected routes"
+  ],
+  "blocked_reason": null,
+  "findings": "OAuth2 authentication routes implemented successfully with all design findings addressed. Routes verified: /login (GET-only), /auth/microsoft (GET initiate), /auth/Microsoft/callback (GET+POST with capital M, CSRF exempt, all 9 findings addressed: #1 csrf import, #4 func.now(), #5 explicit False checks, #6 IntegrityError handling, #7 case-insensitive username check, #8 configurable rate limits, #9 IP fallback), /logout (session.clear()). Helper functions implemented: get_msal_client() for MSAL initialization, log_auth_attempt() with structured [AUTH] logging and IP fallback. All imports resolve correctly (csrf from app, func, IntegrityError). Rate limits configurable via app.config with defaults: LOGIN_RATE_LIMIT=30/min, AUTH_INITIATE_RATE_LIMIT=20/min, AUTH_CALLBACK_RATE_LIMIT=30/min. Callback route includes comprehensive error handling for 14+ scenarios: user cancellation, invalid state, token exchange failure, missing claims, employee not found, inactive accounts, username conflicts, race conditions, network errors. Email extraction uses fallback chain (preferred_username→email→upn) with normalization (lowercase, strip). Employee matching is case-insensitive using db.func.lower(). User auto-creation with IntegrityError retry for race conditions. Flask-Login session established after successful authentication with role-based dashboard redirect."
+}

@@ -93,25 +93,57 @@ body {
     border-right: 1px solid #e5e7eb;
     min-height: 100vh;
     padding-top: 20px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.03);
 }
 
 .sidebar .nav-link {
     color: var(--text-muted);
     font-weight: 500;
     padding: 12px 20px;
-    margin-bottom: 5px;
-    border-radius: 8px;
-    transition: all 0.2s;
+    margin: 2px 12px;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.sidebar .nav-link i {
+    font-size: 1.1rem;
+    width: 20px;
+    transition: transform 0.25s ease;
 }
 
 .sidebar .nav-link:hover {
-    background-color: #f3f4f6;
+    background-color: #f8f9ff;
     color: var(--primary-blue);
+    transform: translateX(4px);
+}
+
+.sidebar .nav-link:hover i {
+    transform: scale(1.1);
 }
 
 .sidebar .nav-link.active {
-    background-color: var(--primary-blue);
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #6366f1 100%);
     color: white;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    font-weight: 600;
+}
+
+.sidebar .nav-link.active i {
+    color: white;
+}
+
+.sidebar-section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9ca3af;
+    padding: 8px 20px;
+    margin: 8px 12px 4px;
+    border-bottom: 2px solid #f3f4f6;
 }
 
 /* Main Content Area */
