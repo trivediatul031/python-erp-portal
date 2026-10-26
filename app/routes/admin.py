@@ -836,21 +836,25 @@ def demote_employee(emp_code):
                              role_filter='')
 
 
-@admin_bp.route('/update_role/<emp_code>', methods=['POST'])
-@admin_required
+@admin_bp.route('/update_role/<emp_code>', methods=['POST', 'GET'])
 def update_role(emp_code):
     """Update employee role via AJAX."""
+    # Simple test first
+    if request.method == 'GET':
+        return jsonify({'success': True, 'message': 'GET works', 'emp_code': emp_code})
+    
+    print(f"=== UPDATE ROLE CALLED for {emp_code} ===")
+    print(f"Request method: {request.method}")
+    print(f"Request content type: {request.content_type}")
+    print(f"Request data (raw): {request.get_data()}")
+    
     try:
-        # Log the request
-        logger.info(f"Role update request for emp_code: {emp_code}")
-        logger.info(f"Request data: {request.get_data()}")
-        logger.info(f"Request headers: {dict(request.headers)}")
-        
         # Get the new role from request
-        data = request.get_json()
+        data = request.get_json(force=True)  # Force JSON parsing
         logger.info(f"Parsed JSON data: {data}")
         
         if not data:
+            print("ERROR: No data provided")
             return jsonify({'success': False, 'message': 'No data provided'}), 400
             
         new_role = data.get('role', '').strip()
@@ -870,7 +874,7 @@ def update_role(emp_code):
         employee.role = new_role
         db.session.commit()
         
-        logger.info(f"Role updated for {emp_code} ({employee.name}) from {old_role} to {new_role} by {current_user.emp_code}")
+        logger.info(f"Role updated for {emp_code} ({employee.name}) from {old_role} to {new_role}")
         
         return jsonify({
             'success': True, 
@@ -881,5 +885,6 @@ def update_role(emp_code):
         
     except Exception as e:
         db.session.rollback()
+        print(f"ERROR: {str(e)}")
         logger.error(f"Error updating role for {emp_code}: {str(e)}", exc_info=True)
         return jsonify({'success': False, 'message': f'Error: {str(e)}'}), 500
