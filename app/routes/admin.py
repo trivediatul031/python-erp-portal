@@ -840,6 +840,17 @@ def demote_employee(emp_code):
 @admin_required
 def update_role(emp_code):
     """Update employee role via AJAX."""
+    from flask_wtf.csrf import validate_csrf
+    from wtforms import ValidationError
+    
+    # Validate CSRF token from header
+    try:
+        csrf_token = request.headers.get('X-CSRFToken') or request.form.get('csrf_token')
+        if csrf_token:
+            validate_csrf(csrf_token)
+    except ValidationError:
+        return jsonify({'success': False, 'message': 'CSRF validation failed'}), 403
+    
     try:
         # Get the new role from request
         data = request.get_json()
