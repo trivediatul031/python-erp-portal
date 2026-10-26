@@ -841,9 +841,20 @@ def demote_employee(emp_code):
 def update_role(emp_code):
     """Update employee role via AJAX."""
     try:
+        # Log the request
+        logger.info(f"Role update request for emp_code: {emp_code}")
+        logger.info(f"Request data: {request.get_data()}")
+        logger.info(f"Request headers: {dict(request.headers)}")
+        
         # Get the new role from request
         data = request.get_json()
+        logger.info(f"Parsed JSON data: {data}")
+        
+        if not data:
+            return jsonify({'success': False, 'message': 'No data provided'}), 400
+            
         new_role = data.get('role', '').strip()
+        logger.info(f"New role: {new_role}")
         
         # Validate role
         if new_role not in ['employee', 'admin']:

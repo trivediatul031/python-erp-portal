@@ -365,12 +365,11 @@ function updateRole() {
     updateBtn.disabled = true;
     updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Updating...';
     
-    // Send AJAX request with CSRF token
+    // Send AJAX request
     fetch(`/admin/update_role/${currentEmpCode}`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token() }}'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({ role: newRole })
     })
