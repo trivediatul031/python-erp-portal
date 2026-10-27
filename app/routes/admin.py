@@ -3,6 +3,7 @@ from flask_login import current_user
 from app.auth import admin_required
 from app.models import db, Employee, TASRecord
 from app.forms import ImportEmployeesForm
+from app import csrf
 from werkzeug.utils import secure_filename
 from sqlalchemy import func, cast, Date, extract, case
 from sqlalchemy.exc import IntegrityError
@@ -239,11 +240,30 @@ def import_employees():
                 flash(f'Duplicate Email ID found in file: {", ".join(duplicate_emails)}', 'error')
                 return redirect(url_for('admin.import_employees'))
             
+            # Check for existing employees in database
+            emp_codes_in_file = df['Emp. Code'].astype(str).str.strip().tolist()
+            existing_emp_codes = db.session.query(Employee.emp_code).filter(
+                Employee.emp_code.in_(emp_codes_in_file)
+            ).all()
+            existing_emp_codes_set = {emp[0] for emp in existing_emp_codes}
+            
+            # Filter out rows with existing emp_codes
+            df['Emp. Code'] = df['Emp. Code'].astype(str).str.strip()
+            new_employees_df = df[~df['Emp. Code'].isin(existing_emp_codes_set)]
+            skipped_count = len(df) - len(new_employees_df)
+            
+            if skipped_count > 0:
+                flash(f'{skipped_count} employee(s) already exist in database and will be skipped', 'info')
+            
+            if len(new_employees_df) == 0:
+                flash('No new employees to import. All records already exist in database.', 'warning')
+                return redirect(url_for('admin.import_employees'))
+            
             # Process rows with partial success
             success_count = 0
             error_rows = []
             
-            for index, row in df.iterrows():
+            for index, row in new_employees_df.iterrows():
                 try:
                     # Extract and validate required fields
                     emp_code = str(row.get('Emp. Code', '')).strip()
@@ -258,13 +278,9 @@ def import_employees():
                         error_rows.append((index + 2, f'Invalid email: {email}'))
                         continue
                     
-                    # Check if employee exists
-                    employee = Employee.query.filter_by(emp_code=emp_code).first()
-                    
-                    if not employee:
-                        # Create new employee
-                        employee = Employee()
-                        db.session.add(employee)
+                    # Create new employee (we already filtered out existing ones)
+                    employee = Employee()
+                    db.session.add(employee)
                     
                     # Set all fields
                     employee.emp_code = emp_code
@@ -836,25 +852,19 @@ def demote_employee(emp_code):
                              role_filter='')
 
 
-@admin_bp.route('/update_role/<emp_code>', methods=['POST', 'GET'])
+@admin_bp.route('/update_role/<emp_code>', methods=['POST'])
+@csrf.exempt
+@admin_required
 def update_role(emp_code):
     """Update employee role via AJAX."""
-    # Simple test first
-    if request.method == 'GET':
-        return jsonify({'success': True, 'message': 'GET works', 'emp_code': emp_code})
-    
-    print(f"=== UPDATE ROLE CALLED for {emp_code} ===")
-    print(f"Request method: {request.method}")
-    print(f"Request content type: {request.content_type}")
-    print(f"Request data (raw): {request.get_data()}")
+    logger.info(f"update_role called for {emp_code}")
     
     try:
         # Get the new role from request
-        data = request.get_json(force=True)  # Force JSON parsing
-        logger.info(f"Parsed JSON data: {data}")
+        data = request.get_json()
         
         if not data:
-            print("ERROR: No data provided")
+            logger.error("No JSON data provided")
             return jsonify({'success': False, 'message': 'No data provided'}), 400
             
         new_role = data.get('role', '').strip()
@@ -885,6 +895,5 @@ def update_role(emp_code):
         
     except Exception as e:
         db.session.rollback()
-        print(f"ERROR: {str(e)}")
         logger.error(f"Error updating role for {emp_code}: {str(e)}", exc_info=True)
         return jsonify({'success': False, 'message': f'Error: {str(e)}'}), 500
