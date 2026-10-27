@@ -10,14 +10,15 @@ employee_bp = Blueprint('employee', __name__, url_prefix='/employee')
 
 
 def employee_required(f):
-    """Decorator to require employee role"""
+    """Decorator to require employee role (admins also have access)"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated:
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('auth.login'))
         
-        if current_user.role != 'employee':
+        # Allow both employees and admins to access
+        if current_user.role not in ['employee', 'admin']:
             flash('Access denied. Employee privileges required.', 'danger')
             return redirect(url_for('auth.login'))
         
