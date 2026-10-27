@@ -373,31 +373,83 @@ function updateRole() {
         },
         body: JSON.stringify({ role: newRole })
     })
-    .then(response => response.json())
+    .then(response => {
+        // Check if response is OK (200-299)
+        if (!response.ok) {
+            // Try to parse error JSON, fallback to status text
+            return response.json()
+                .catch(() => ({ message: `Server error: ${response.status} ${response.statusText}` }))
+                .then(errorData => {
+                    throw new Error(errorData.message || `HTTP ${response.status}`);
+                });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             // Close modal
             bootstrap.Modal.getInstance(document.getElementById('roleModal')).hide();
             
+            // Update the role badge in the table immediately (no reload needed)
+            updateRoleBadgeInTable(currentEmpCode, data.new_role);
+            
             // Show success toast
             showToast('Success', 'Role updated successfully!', 'success');
             
-            // Reload page after short delay
+            // Optional: Still reload after delay to ensure full sync
             setTimeout(() => {
-                location.reload();
-            }, 1000);
+                location.reload(true); // true forces reload from server, bypassing cache
+            }, 2000);
         } else {
-            alert('Error: ' + data.message);
-            updateBtn.disabled = false;
-            updateBtn.innerHTML = originalText;
+            // Server returned success: false
+            throw new Error(data.message || 'Unknown error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while updating the role');
+        showToast('Error', error.message || 'An error occurred while updating the role', 'danger');
         updateBtn.disabled = false;
         updateBtn.innerHTML = originalText;
     });
+}
+
+function updateRoleBadgeInTable(empCode, newRole) {
+    // Find the button for this employee
+    const button = document.querySelector(`button[data-emp-code="${empCode}"]`);
+    if (!button) return;
+    
+    // Find the table row
+    const row = button.closest('tr');
+    if (!row) return;
+    
+    // Find the badge cell (it's before the actions column)
+    const badgeCell = row.querySelector('td:nth-child(5)'); // Adjust index if needed
+    if (!badgeCell) return;
+    
+    // Update the badge HTML
+    if (newRole === 'admin') {
+        badgeCell.innerHTML = `
+            <span class="badge bg-danger">
+                <i class="bi bi-shield-check me-1"></i>Admin
+            </span>
+        `;
+    } else {
+        badgeCell.innerHTML = `
+            <span class="badge bg-info">
+                <i class="bi bi-person me-1"></i>Employee
+            </span>
+        `;
+    }
+    
+    // Update the button's data attribute
+    button.setAttribute('data-current-role', newRole);
+    
+    // Add a brief highlight animation
+    badgeCell.style.transition = 'background-color 0.5s';
+    badgeCell.style.backgroundColor = '#d4edda';
+    setTimeout(() => {
+        badgeCell.style.backgroundColor = '';
+    }, 1500);
 }
 
 function showToast(title, message, type) {
