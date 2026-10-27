@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle me-1"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary" onclick="updateRole()">
+                <button type="button" class="btn btn-primary" id="updateRoleBtn" onclick="updateRole()">
                     <i class="bi bi-check-circle me-1"></i>Update Role
                 </button>
             </div>
@@ -324,6 +324,7 @@ input[name="roleSelection"]:checked + label {
 
 <script>
 let currentEmpCode = '';
+let updateButton = null; // Store button reference globally
 
 function openRoleModal(element) {
     const empCode = element.getAttribute('data-emp-code');
@@ -331,6 +332,13 @@ function openRoleModal(element) {
     const currentRole = element.getAttribute('data-current-role');
     
     currentEmpCode = empCode;
+    
+    // Reset update button to original state
+    updateButton = document.getElementById('updateRoleBtn');
+    if (updateButton) {
+        updateButton.disabled = false;
+        updateButton.innerHTML = '<i class="bi bi-check-circle me-2"></i>Update Role';
+    }
     
     // Update modal content
     document.getElementById('modalEmpName').textContent = empName;
@@ -359,11 +367,22 @@ function updateRole() {
     
     const newRole = selectedRole.value;
     
-    // Show loading state
-    const updateBtn = event.target;
+    // Get button reference
+    const updateBtn = document.getElementById('updateRoleBtn');
+    if (!updateBtn) return;
+    
+    // Save original button state
     const originalText = updateBtn.innerHTML;
+    
+    // Show loading state
     updateBtn.disabled = true;
     updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Updating...';
+    
+    // Helper function to reset button
+    const resetButton = () => {
+        updateBtn.disabled = false;
+        updateBtn.innerHTML = originalText;
+    };
     
     // Send AJAX request
     fetch(`/admin/update_role/${currentEmpCode}`, {
@@ -408,8 +427,7 @@ function updateRole() {
     .catch(error => {
         console.error('Error:', error);
         showToast('Error', error.message || 'An error occurred while updating the role', 'danger');
-        updateBtn.disabled = false;
-        updateBtn.innerHTML = originalText;
+        resetButton(); // Reset button on error
     });
 }
 
